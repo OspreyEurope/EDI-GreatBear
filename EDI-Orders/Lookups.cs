@@ -56,11 +56,46 @@ namespace EDI_Orders
         {
             switch (Header)
             {
-                //Addresses
-                case "DeliveryDate":
+                case "Ordernumber":
+                    return "";
+                case "OrderDate":
                     return "DTM+DEL";
-                case "LoadDate":
+                case "RequestedDate":
                     return "DTM+LOA";
+                case "CustomerName":
+                    return "NAD+BY+3124";
+                case "OrderImportType":
+                    return "";
+                case "OrderReference":
+                    return "RFF+1154";
+                case "Priority":
+                    return "";
+                case "CustomerVATCode":
+                    return "NAD+BY+K205";
+                case "WareHouse":
+                    return "NAD+TRA+3124";
+                case "DelPostalName":
+                    return "NAD+TRA+3124";
+                case "DelCity":
+                    return "NAD+TRA+3164";
+                case "DelPostCode":
+                    return "NAD+TRA+3251";
+                case "DelCountry":
+                    return "NAD+TRA+K485";
+                case "ProductCode":
+                    return "LIN+7140";
+                case "ProductDescription":
+                    return "LIN+7009";
+                case "Quantity":
+                    return "QTY";
+                case "UnitPrice":
+                    return "ALI+3203";
+                case "Currency":
+                    return "ALI+6345";
+                case "Incoterms":
+                    return "ALI+K301";
+                case "LanguageCode":
+                    return "FTX+3453";
 
 
                 //Dates
@@ -68,28 +103,6 @@ namespace EDI_Orders
                     return "NAD+CZ";
                 case "BuyerAddress":
                     return "NAD+BY";
-
-
-                //Think i need?
-                case "Reference":
-                    return "RFF";
-                case "PackingUnit":
-                    return "PAC";
-
-
-
-                case "StockCode":
-                    return "LIN";
-                case "Quantity":
-                    return "Qty";
-                case "CustomerID":
-                    return "BY";
-                case "SupplierID":
-                    return "SU";
-                case "BillingID":
-                    return "DP";
-                case "DeliveryID":
-                    return "IV";
                 default:
                     return null;
             }
