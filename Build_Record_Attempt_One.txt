@@ -1,0 +1,257 @@
+        #region Build Record            
+        /**
+        * Using the read file method, it builds the record that will be inserted into the database,
+        * It reads through each heading in the file and breaks down the values needed from there,
+        * When it has found the value it needs, it then adds that value a a parameter t0 the stored procedure.
+        */
+        public static void buildRecord(string[][] order, SqlConnection conOE)
+        {
+
+            conOE.Open();
+            SqlCommand storedProcedure = new SqlCommand("OSP_iNSERT_EDI", conOE);    //This part is where we put the order into the table
+            storedProcedure.CommandType = CommandType.StoredProcedure;
+            bool flag = true;
+            int z = 0;
+            for (int x = 0; x < order.Length-1; x++)
+            {
+                string a = new string(order[x][0].Where(c => char.IsLetter(c)).ToArray());
+                switch (a)
+                {
+                    case "UNA":                                                                         //dOESNT MATTER AS CONDITIONAL AND SERVICE STRING ADVICE
+                        
+                        break;
+                    case "UNB":                                                                             //INTERCHANGE HEADER NOT SURE WHAT THE PURPOSE OF THIS IS
+                        switch (order[x][1])
+                        {
+                            case "UNOC":
+
+                                break;
+                        }
+                        break ;UNS
+                    case "UNH":                                                                         //DO WE NEED AS MESSAGE HEADER
+                        
+                        break;
+                    case "BGM":                                                                         //Do we need as its beginning of message
+                        for (int y = 1; y < order[x].Length; y++)
+                        {
+                            if (order[x][y].Length > 4)
+                            {
+                                string[] s = order[x][y].Split('/');
+                                string check = s[0].Substring(0, 1);
+                                char c = check.First();
+                                if (char.IsDigit(c))
+                                {
+                                    storedProcedure.Parameters.AddWithValue("@StockCode", s[0]);
+                                }
+                            }
+                        };
+                        break;
+                    case "DTM":
+                        for (int y = 1; y < order[x].Length; y++)
+                        {
+                            if (order[x][y].Length == 8)
+                            {
+                                if (flag==true)                                                               //No clue as 2 DTM's
+                                {
+                                    storedProcedure.Parameters.AddWithValue("@RequestedDate", order[x][y]);
+                                    Console.WriteLine("2");
+                                    flag = false;
+                                }
+                                else
+                                {
+                                    storedProcedure.Parameters.AddWithValue("@PromisedDate", order[x][y]);
+                                    Console.WriteLine("3");
+                                }
+                            }
+                        };
+                        break;
+                    case "FTX":                                                                             //Free text not sure what to do with this
+                        //Build into a string and then add to description
+                        
+                        storedProcedure.Parameters.AddWithValue("@FreeTxt", order[x][2]);
+                        Console.WriteLine("4");
+                        break;
+                    case "NAD":
+                        switch (order[x][1])
+                        {
+                            case "BY":
+                                for (int y = 2; y < order[x].Length; y++)
+                                {
+                                    
+                                    if (order[x][y].Length == 13)
+                                    {
+                                        storedProcedure.Parameters.AddWithValue("@CustomerID", order[x][y]);
+                                        Console.WriteLine("5");
+                                    }
+                                }
+                                break;
+                            case "SU":
+                                for (int y = 2; y < order[x].Length; y++)
+                                {
+                                    if (order[x][y].Length == 13)
+                                    {
+                                        storedProcedure.Parameters.AddWithValue("@SupplierID", order[x][y]);
+                                        Console.WriteLine("6");
+                                    }
+                                }
+                                break;
+                            case "DP":
+                                for (int y = 2; y < order[x].Length; y++)
+                                {
+                                    if (order[x][y].Length == 13)
+                                    {
+                                        storedProcedure.Parameters.AddWithValue("@BillingID", order[x][y]);
+                                        Console.WriteLine("7");
+                                    }
+                                }
+                                break;
+                            case "IV":
+                                for (int y = 2; y < order[x].Length; y++)
+                                {
+                                    if (order[x][y].Length == 13)
+                                    {
+                                        storedProcedure.Parameters.AddWithValue("@DeliveryAddress", order[x][y]);
+                                        Console.WriteLine("8");
+                                    }
+                                }
+                                break;
+                        }
+                        break;
+                    case "CUX":
+                        storedProcedure.Parameters.AddWithValue("@Currency", order[x][1]);
+                        Console.WriteLine("9");
+                        break;
+                    case "LIN":
+                        if (storedProcedure.Parameters.Contains("@LineType"))
+                        { }
+                        else
+                        {
+                            for (int y = 2; y < order[x].Length; y++)
+                            {
+                                if (order[x][y].Length == 12)
+                                {
+                                    storedProcedure.Parameters.AddWithValue("@LineType", order[x][y]);
+                                    Console.WriteLine("10");
+                                }
+                            }
+                        }
+                        break;
+                    case "QTY":
+                        if(z == 0)
+                        {
+                            storedProcedure.Parameters.AddWithValue("@Qty", order[x][1]);
+                            z++;
+                            Console.WriteLine("11");
+                        }
+                        
+                        break;
+                    case "UNS":                                                                                         //NO CLUE SECTION CONTROL????
+                        
+                        break;
+                    case "UNT":
+                        Console.WriteLine("Total number of lines in file is: " + order[x][1]);
+                        Console.WriteLine("Parms added: " + storedProcedure.Parameters.Count);
+                        Console.WriteLine("Expected is 11.");
+
+                        if (!storedProcedure.Parameters.Contains("@FreeTxt"))
+                        {
+                            storedProcedure.Parameters.AddWithValue("@FreeTxt", null);
+                            Console.WriteLine("Default");
+                        }
+
+                        storedProcedure.ExecuteScalar();
+                        storedProcedure.Parameters.Clear();
+                        flag = true;
+                        z = 0;
+                        Console.WriteLine("Order added!");
+                        break;
+                    case "UNZ":
+                        Console.WriteLine("The total number of parameters is: " + storedProcedure.Parameters.Count);
+                        Console.WriteLine("End of file, EDI value is:" + order[x][2]);
+                        break;
+                    default:
+                        Console.WriteLine("Yall messed up");
+                        break;
+                }
+            }
+            //Needs to be moved to the final line of the order and cleared there to ensure that multiple orders in one EDI can be added
+            conOE.Close();
+        }
+
+
+
+
+
+        Lookup
+
+
+
+         public static string lookUp(string EDI)
+        {
+            switch (EDI)
+            {
+                case "UNA":
+                    return "";
+                    break;
+                case "UNB":
+                    return "";
+                    break;
+                case "UNH":
+                    return "";
+                    break;
+                case "BGM":
+                    return "";
+                    break;
+                case "DTM":
+                    return "dates";
+                    break;
+                case "FTX":
+                    return "freeText";
+                    break;
+                case "NAD":
+                    return "addressIDs";
+                    break;
+                case "CUX":
+                    return "currency";
+                    break;
+                case "LIN":
+                    return "lineType";
+                    break;
+                case "QTY":
+                    return "quantity";
+                    break;
+                case "UNT":
+                    return "orderEnd";
+                    break;
+                case "UNZ":
+                    return "fileEnd";
+                    break;
+                case "PIA":
+                    return "additionalProductID";
+                    break;
+                case "IMD":
+                    return "itemDescription";
+                    break;
+                case "PRI":
+                    return "priceDetails";
+                    break;
+                case "RFF":
+                    return "reference";
+                    break;
+                case "BY":
+                    return "buyerID";
+                    break;
+                case "SU":
+                    return "supplierID";
+                    break;
+                case "DP":
+                    return "billingID";
+                    break;
+                case "IV":
+                    return "deliveryID";
+                    break;
+                //Solution to the dates issue
+                default:
+                    return "";
+                    break;
+            }
