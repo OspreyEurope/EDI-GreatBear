@@ -19,6 +19,7 @@ using File = System.IO.File;
 //TODO: Swap the run program to utilize the EDI Type Decision function,
 //            string[][] file = readEDIFile("C://Bespoke/EDITest.edi");
 //            EDIDecision(file);
+//GitHub created and all files pushed
 
 
 
