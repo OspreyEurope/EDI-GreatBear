@@ -49,19 +49,15 @@ namespace EDI_Orders
                 for (int j = 0; j < data.Columns.Count; j++)
                 {
                     string header = Lookups.WriteLookUp(nameArray[j]);
-
                     if (header == "NAD+TRA+K3207")
                     {
                         WriteEDIFactProducts(con, streamWriter, row["OrderNumber"].ToString());
                     }
-
                     text = text + row[j].ToString();
                     streamWriter.WriteLine(header + "+" + text + "'");
                     text = "";
                     counter++;
                 }
-
-
                 streamWriter.WriteLine("UNS+S'");
                 streamWriter.WriteLine("UNT+" + counter + "'");
                 streamWriter.WriteLine("UNZ + THE LINE COUNT HAS NOT WORKED CORRECTLY'");
@@ -81,7 +77,6 @@ namespace EDI_Orders
             /**
              * Retrives the data from the database and then writes it line by line into a file.
              */
-
             for (int i = 0; i < data.Rows.Count; i++)
             {
                 DataRow row = data.Rows[i];
