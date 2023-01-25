@@ -341,7 +341,7 @@ namespace EDI_Orders
             dataQuery.CommandType = CommandType.StoredProcedure;
             if (id != null)
             {
-                dataQuery.Parameters.AddWithValue("@OrderNumber", id);
+                dataQuery.Parameters.AddWithValue("@id", id);
             }
             DataTable data = new DataTable();
             dataQuery.ExecuteNonQuery();

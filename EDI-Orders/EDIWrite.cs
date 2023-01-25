@@ -50,9 +50,9 @@ namespace EDI_Orders
                 {
                     string header = Lookups.WriteLookUp(nameArray[j]);
 
-                    if (header == "DelCountry")
+                    if (header == "NAD+TRA+K3207")
                     {
-                        WriteEDIFactProducts(con, streamWriter, data.Select("@OrderNumber").ToString());
+                        WriteEDIFactProducts(con, streamWriter, row["OrderNumber"].ToString());
                     }
 
                     text = text + row[j].ToString();
@@ -72,8 +72,7 @@ namespace EDI_Orders
         public static void WriteEDIFactProducts(SqlConnection con, StreamWriter sw, string orderNo)
         {
             Console.WriteLine("Made to Write Products");
-            DataTable data = SharedFunctions.QueryDB(con, "OSP_Write_Products_EDI");
-            sw.Write("UNA:+.?'");
+            DataTable data = SharedFunctions.QueryDB(con, "OSP_Write_Products_EDI", orderNo);
             int counter = 0;
             /**
              * Retrives the data from the database and then writes it line by line into a file.
@@ -86,19 +85,19 @@ namespace EDI_Orders
                 string[] nameArray = data.Columns.Cast<DataColumn>()
                              .Select(x => x.ColumnName)
                              .ToArray();
-                string header = Lookups.WriteLookUp(nameArray[i]);
                 string text = "";
                 /**
                  * This sectin writes all the information in that data row into a single line in the EDI file.
                  */
                 for (int j = 0; j < data.Columns.Count; j++)
                 {
+                    string header = Lookups.WriteLookUp(nameArray[j]);
                     text = text + row[j].ToString();
-                    sw.Write(header + "+" + text + "'");
+                    sw.WriteLine(header + "+" + text + "'");
                     counter++;
+                    text = "";
                 }
             }
-            sw.Write("UNS+S'UNT+" + counter + "'UNZ+" + /**IDK ABOUT THIS PART*/ counter + "'");
             //SharedFunctions.UpdateRecords(con, "OSP_Update_EDI_Order_Flags");
         }
         #endregion

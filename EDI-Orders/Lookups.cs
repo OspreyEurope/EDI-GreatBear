@@ -116,7 +116,7 @@ namespace EDI_Orders
                     return "NAD+INV+K200";
                 case "InvoiceAddressLine2":
                     return "NAD+INV+K200";
-                case "DeInvoiceAddressLine3":
+                case "InvoiceAddressLine3":
                     return "NAD+INV+K200";
                 case "InvoiceAddressLine4":
                     return "NAD+INV+K200";
