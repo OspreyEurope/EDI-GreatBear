@@ -5,8 +5,11 @@ using System.Data.SqlClient;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace EDI_Orders
 {
@@ -22,7 +25,7 @@ namespace EDI_Orders
         public static void WriteEDIFact (SqlConnection con)
         {
             DataTable data = SharedFunctions.GetData(con, "OSP_Get_Responce_Data");
-            StreamWriter streamWriter = new StreamWriter("File Location +"  + data.Select("@OrderNumber") + ".txt");
+            StreamWriter streamWriter = new StreamWriter("C:\\Bespoke\\EDI\\OutputFiles" + data.Select("@OrderNumber") + ".txt");
             streamWriter.Write("UNA:+.?'");
             int counter = 0;
             /**
@@ -38,6 +41,10 @@ namespace EDI_Orders
                              .ToArray();
                 string header = Lookups.WriteLookUp(nameArray[i]);
                 string text = "";
+                if (header.Equals(""))
+                {
+                    WriteEDIFactProducts(con,streamWriter);
+                }
                 /**
                  * This sectin writes all the information in that data row into a single line in the EDI file.
                  */
@@ -49,7 +56,41 @@ namespace EDI_Orders
                 }
             }
             streamWriter.Write("UNS+S'UNT+"+ counter +"'UNZ+"+ /**IDK ABOUT THIS PART*/ counter + "'");
-            SharedFunctions.UpdateRecords(con, "OSP_Update_EDI_Order_Flags");
+            //SharedFunctions.UpdateRecords(con, "OSP_Update_EDI_Order_Flags");
+        }
+        #endregion
+
+        #region Write products
+        public static void WriteEDIFactProducts(SqlConnection con, StreamWriter sw)
+        {
+            DataTable data = SharedFunctions.GetData(con, "");
+            sw.Write("UNA:+.?'");
+            int counter = 0;
+            /**
+             * Retrives the data from the database and then writes it line by line into a file.
+             */
+
+            for (int i = 0; i < data.Rows.Count; i++)
+            {
+                DataRow row = data.Rows[i];
+                List<string> columnNames = new List<string>();
+                string[] nameArray = data.Columns.Cast<DataColumn>()
+                             .Select(x => x.ColumnName)
+                             .ToArray();
+                string header = Lookups.WriteLookUp(nameArray[i]);
+                string text = "";
+                /**
+                 * This sectin writes all the information in that data row into a single line in the EDI file.
+                 */
+                for (int j = 0; j < data.Columns.Count; j++)
+                {
+                    text = text + row[j].ToString();
+                    sw.Write(header + "+" + text + "'");
+                    counter++;
+                }
+            }
+            sw.Write("UNS+S'UNT+" + counter + "'UNZ+" + /**IDK ABOUT THIS PART*/ counter + "'");
+            //SharedFunctions.UpdateRecords(con, "OSP_Update_EDI_Order_Flags");
         }
         #endregion
     }

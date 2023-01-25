@@ -39,6 +39,8 @@ namespace EDI_Orders
             //string choice = Console.ReadLine();  //Infinite loop
             while (true)
             {
+                SqlConnection conOE = new SqlConnection();
+                conOE.ConnectionString = ConfigurationManager.ConnectionStrings["OERADEV"].ConnectionString;
                 string choice = Console.ReadLine();
                 switch (choice)
                 {
@@ -415,6 +417,11 @@ namespace EDI_Orders
                         SharedFunctions.EDIDecision(file);
                         file = FileManipulation.readEDIFile("C://Bespoke/EDI/EXPD856_02779576_COB_20230110033100.856");
                         SharedFunctions.EDIDecision(file);
+                        break;
+                    #endregion
+                    #region Testing Wite File
+                    case "A":
+                        EDIWrite.WriteEDIFact(conOE);
                         break;
                     #endregion
                     default:
