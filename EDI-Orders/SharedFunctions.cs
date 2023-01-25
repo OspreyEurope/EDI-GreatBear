@@ -5,6 +5,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -333,13 +334,17 @@ namespace EDI_Orders
         /**
          * This function runs the stored procedure to query the database for the information needed to write the edi file
          */
-        public static DataTable GetData(SqlConnection con, string SP)
+        public static DataTable QueryDB(SqlConnection con, string SP, string id = null)
         {
             con.Open();
-            SqlDataAdapter dataQuery = new SqlDataAdapter(SP, con);
-            dataQuery.SelectCommand.CommandType = CommandType.StoredProcedure;
+            SqlCommand dataQuery = new SqlCommand(SP, con);
+            dataQuery.CommandType = CommandType.StoredProcedure;
+            if (id != null)
+            {
+                dataQuery.Parameters.AddWithValue("@OrderNumber", id);
+            }
             DataTable data = new DataTable();
-            dataQuery.Fill(data);
+            dataQuery.ExecuteNonQuery();
             con.Close();
             return data;
         }
