@@ -356,7 +356,7 @@ namespace EDI_Orders
         /**
          * This function runs the stored procedure thatwil pdate the DB
          */
-        public static void UpdateRecords(SqlConnection con, string SP)
+        public static void UpdateRecords(SqlConnection con, string SP, string id)
         {
             con.Open();
             SqlDataAdapter dataQuery = new SqlDataAdapter(SP, con);

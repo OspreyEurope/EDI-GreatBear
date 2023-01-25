@@ -38,8 +38,8 @@ namespace EDI_Orders
                 string[] nameArray = data.Columns.Cast<DataColumn>()
                              .Select(x => x.ColumnName)
                              .ToArray();
-
-                StreamWriter streamWriter = new StreamWriter("C:\\Bespoke\\EDI\\OutputFiles\\" + row["OrderNumber"] + ".txt");
+                string file = "C:\\Bespoke\\EDI\\OutputFiles\\" + row["OrderNumber"] + ".txt";
+                StreamWriter streamWriter = new StreamWriter(file);
                 Console.WriteLine(row["OrderNumber"]);
                 streamWriter.WriteLine("UNA:+.?'");
                 string text = "";
@@ -61,10 +61,14 @@ namespace EDI_Orders
                     counter++;
                 }
 
-                streamWriter.WriteLine("UNS+S'UNT+" + counter + "'UNZ+" + /**IDK ABOUT THIS PART*/ counter + "'");
+
+                streamWriter.WriteLine("UNS+S'");
+                streamWriter.WriteLine("UNT+" + counter + "'");
+                streamWriter.WriteLine("UNZ + THE LINE COUNT HAS NOT WORKED CORRECTLY'");
                 streamWriter.Close();
+                var lineCount = File.ReadLines(file).Count();
+                File.AppendAllText(file, "UNZ+" + (lineCount + 1) + "'");
             }
-            //SharedFunctions.UpdateRecords(con, "OSP_Update_EDI_Order_Flags");
         }
         #endregion
 
@@ -98,7 +102,7 @@ namespace EDI_Orders
                     text = "";
                 }
             }
-            //SharedFunctions.UpdateRecords(con, "OSP_Update_EDI_Order_Flags");
+            SharedFunctions.QueryDB(con, "OSP_Update_StatusID_KTN_Orders", orderNo);
         }
         #endregion
     }
