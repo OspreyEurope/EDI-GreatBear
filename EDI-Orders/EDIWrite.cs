@@ -24,10 +24,8 @@ namespace EDI_Orders
          */
         public static void WriteEDIFact (SqlConnection con)
         {
-            Console.WriteLine("Made to Write file");
-            DataTable data = SharedFunctions.QueryDB(con, "OSP_Get_Responce_Data");
-            StreamWriter streamWriter = new StreamWriter("C:\\Bespoke\\EDI\\OutputFiles" + data.Select("@OrderNumber") + ".txt");
-            streamWriter.Write("UNA:+.?'");
+            DataTable data = SharedFunctions.QueryDB(con, "OSP_Write_Header_EDI");
+            Console.WriteLine(data.Rows.Count);
             int counter = 0;
             /**
              * Retrives the data from the database and then writes it line by line into a file.
@@ -40,23 +38,32 @@ namespace EDI_Orders
                 string[] nameArray = data.Columns.Cast<DataColumn>()
                              .Select(x => x.ColumnName)
                              .ToArray();
-                string header = Lookups.WriteLookUp(nameArray[i]);
+
+                StreamWriter streamWriter = new StreamWriter("C:\\Bespoke\\EDI\\OutputFiles\\" + row["OrderNumber"] + ".txt");
+                Console.WriteLine(row["OrderNumber"]);
+                streamWriter.WriteLine("UNA:+.?'");
                 string text = "";
-                if (header.Equals("@DelCountry"))
-                {
-                    WriteEDIFactProducts(con,streamWriter,data.Select("@OrderNumber").ToString());
-                }
                 /**
                  * This sectin writes all the information in that data row into a single line in the EDI file.
                  */
                 for (int j = 0; j < data.Columns.Count; j++)
                 {
+                    string header = Lookups.WriteLookUp(nameArray[j]);
+
+                    if (header == "DelCountry")
+                    {
+                        WriteEDIFactProducts(con, streamWriter, data.Select("@OrderNumber").ToString());
+                    }
+
                     text = text + row[j].ToString();
-                    streamWriter.Write(header + "+" + text + "'");
+                    streamWriter.WriteLine(header + "+" + text + "'");
+                    text = "";
                     counter++;
                 }
+
+                streamWriter.WriteLine("UNS+S'UNT+" + counter + "'UNZ+" + /**IDK ABOUT THIS PART*/ counter + "'");
+                streamWriter.Close();
             }
-            streamWriter.Write("UNS+S'UNT+"+ counter +"'UNZ+"+ /**IDK ABOUT THIS PART*/ counter + "'");
             //SharedFunctions.UpdateRecords(con, "OSP_Update_EDI_Order_Flags");
         }
         #endregion
@@ -65,7 +72,7 @@ namespace EDI_Orders
         public static void WriteEDIFactProducts(SqlConnection con, StreamWriter sw, string orderNo)
         {
             Console.WriteLine("Made to Write Products");
-            DataTable data = SharedFunctions.QueryDB(con, "");
+            DataTable data = SharedFunctions.QueryDB(con, "OSP_Write_Products_EDI");
             sw.Write("UNA:+.?'");
             int counter = 0;
             /**

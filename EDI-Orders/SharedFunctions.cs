@@ -345,6 +345,8 @@ namespace EDI_Orders
             }
             DataTable data = new DataTable();
             dataQuery.ExecuteNonQuery();
+            SqlDataAdapter adapter = new SqlDataAdapter(dataQuery);
+            adapter.Fill(data);
             con.Close();
             return data;
         }

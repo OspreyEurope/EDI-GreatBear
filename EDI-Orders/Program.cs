@@ -39,8 +39,8 @@ namespace EDI_Orders
             //string choice = Console.ReadLine();  //Infinite loop
             while (true)
             {
-                SqlConnection conOE = new SqlConnection();
-                conOE.ConnectionString = ConfigurationManager.ConnectionStrings["OERADEV"].ConnectionString;
+                SqlConnection conKTN = new SqlConnection();
+                conKTN.ConnectionString = ConfigurationManager.ConnectionStrings["Orbis_Interface"].ConnectionString;
                 string choice = Console.ReadLine();
                 switch (choice)
                 {
@@ -421,7 +421,7 @@ namespace EDI_Orders
                     #endregion
                     #region Testing Wite File
                     case "A":
-                        EDIWrite.WriteEDIFact(conOE);
+                        EDIWrite.WriteEDIFact(conKTN);
                         break;
                     #endregion
                     default:
