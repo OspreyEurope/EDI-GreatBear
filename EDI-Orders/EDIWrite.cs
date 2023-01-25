@@ -21,13 +21,14 @@ namespace EDI_Orders
          */
         public static void WriteEDIFact (SqlConnection con)
         {
-            StreamWriter streamWriter = new StreamWriter("OSP_EDIWriteFile");
+            DataTable data = SharedFunctions.GetData(con, "OSP_Get_Responce_Data");
+            StreamWriter streamWriter = new StreamWriter("File Location +"  + data.Select("@OrderNumber") + ".txt");
             streamWriter.Write("UNA:+.?'");
             int counter = 0;
             /**
              * Retrives the data from the database and then writes it line by line into a file.
              */
-            DataTable data = SharedFunctions.GetData(con,"OSP_Get_Responce_Data");
+            
             for (int i = 0; i < data.Rows.Count; i++)
             {
                 DataRow row = data.Rows[i];
