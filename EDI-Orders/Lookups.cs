@@ -64,7 +64,7 @@ namespace EDI_Orders
                     return "DTM+LOA";
                 case "CustomerAccountName":
                     return "NAD+BY+3124";
-                case "OrderImportType":
+                case "OrderType":
                     return "TDT+1684";
                 case "OrderReference":
                     return "RFF+1154";
