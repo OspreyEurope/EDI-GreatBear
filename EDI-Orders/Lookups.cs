@@ -56,8 +56,8 @@ namespace EDI_Orders
         {
             switch (Header)
             {
-                case "Ordernumber":
-                    return "";
+                case "OrderNumber":
+                    return "TRA+UID+K977";
                 case "OrderDate":
                     return "DTM+DEL";
                 case "OrderRequestedDate":
@@ -65,7 +65,7 @@ namespace EDI_Orders
                 case "CustomerAccountName":
                     return "NAD+BY+3124";
                 case "OrderImportType":
-                    return "";
+                    return "TDT+1684";
                 case "OrderReference":
                     return "RFF+1154";
                 case "Priority":
