@@ -24,6 +24,7 @@ namespace EDI_Orders
          */
         public static void WriteEDIFact (SqlConnection con)
         {
+            Console.WriteLine("Made to Write file");
             DataTable data = SharedFunctions.GetData(con, "OSP_Get_Responce_Data");
             StreamWriter streamWriter = new StreamWriter("C:\\Bespoke\\EDI\\OutputFiles" + data.Select("@OrderNumber") + ".txt");
             streamWriter.Write("UNA:+.?'");
@@ -41,7 +42,7 @@ namespace EDI_Orders
                              .ToArray();
                 string header = Lookups.WriteLookUp(nameArray[i]);
                 string text = "";
-                if (header.Equals(""))
+                if (header.Equals("@DelCountry"))
                 {
                     WriteEDIFactProducts(con,streamWriter);
                 }
@@ -63,6 +64,7 @@ namespace EDI_Orders
         #region Write products
         public static void WriteEDIFactProducts(SqlConnection con, StreamWriter sw)
         {
+            Console.WriteLine("Made to Write Products");
             DataTable data = SharedFunctions.GetData(con, "");
             sw.Write("UNA:+.?'");
             int counter = 0;
