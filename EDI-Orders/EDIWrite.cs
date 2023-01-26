@@ -43,18 +43,41 @@ namespace EDI_Orders
                 Console.WriteLine(row["OrderNumber"]);
                 streamWriter.WriteLine("UNA:+.?'");
                 string text = "";
+                string DeliveryAddressLines = "";
+                string InvoiceAddressLines = "";
                 /**
                  * This sectin writes all the information in that data row into a single line in the EDI file.
                  */
                 for (int j = 0; j < data.Columns.Count; j++)
                 {
                     string header = Lookups.WriteLookUp(nameArray[j]);
-                    if (header == "NAD+TRA+K3207")
-                    {
-                        WriteEDIFactProducts(con, streamWriter, row["OrderNumber"].ToString());
-                    }
                     text = text + row[j].ToString();
-                    streamWriter.WriteLine(header + "+" + text + "'");
+                    if (header == "NAD+TRA+K200")
+                    {
+                        DeliveryAddressLines = DeliveryAddressLines + "+" + text;
+                    }
+                    else if (header == "NAD+INV+K200")
+                    {
+                        InvoiceAddressLines = InvoiceAddressLines + "+" + text;
+                    }
+                    else if (header == "NAD+TRA+3164")
+                    {
+                        streamWriter.WriteLine("NAD+TRA+K200+" + DeliveryAddressLines + "'");
+                        streamWriter.WriteLine(header + "+" + text + "'");
+                    }
+                    else if (header == "NAD+INV+3164")
+                    {
+                        streamWriter.WriteLine("NAD+INV+K200+" + text + "'");
+                        streamWriter.WriteLine(header + "+" + text + "'");
+                    }
+                    else 
+                    { 
+                    if (header == "NAD+TRA+K3207")
+                        {
+                            WriteEDIFactProducts(con, streamWriter, row["OrderNumber"].ToString());
+                        }
+                        streamWriter.WriteLine(header + "+" + text + "'");
+                    }
                     text = "";
                     counter++;
                 }
