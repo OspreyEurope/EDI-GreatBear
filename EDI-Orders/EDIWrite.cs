@@ -52,6 +52,9 @@ namespace EDI_Orders
                 {
                     string header = Lookups.WriteLookUp(nameArray[j]);
                     text = text + row[j].ToString();
+                    /**
+                     * This switch case allows addresslines 1-4 to be written into a single line and also identifys when the products need to be written to the file.
+                     */
                     switch (header)
                     {
                         case "NAD+TRA+K200":
@@ -75,6 +78,9 @@ namespace EDI_Orders
                     text = "";
                     counter++;
                 }
+                /**
+                 * Generates the footer of the file
+                 */
                 streamWriter.WriteLine("UNS+S'");
                 streamWriter.WriteLine("UNT+" + counter + "'");
                 streamWriter.WriteLine("UNZ + THE LINE COUNT HAS NOT WORKED CORRECTLY'");
