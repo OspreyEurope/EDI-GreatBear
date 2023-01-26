@@ -52,31 +52,25 @@ namespace EDI_Orders
                 {
                     string header = Lookups.WriteLookUp(nameArray[j]);
                     text = text + row[j].ToString();
-                    if (header == "NAD+TRA+K200")
+                    switch (header)
                     {
-                        DeliveryAddressLines = DeliveryAddressLines + "+" + text;
-                    }
-                    else if (header == "NAD+INV+K200")
-                    {
-                        InvoiceAddressLines = InvoiceAddressLines + "+" + text;
-                    }
-                    else if (header == "NAD+TRA+3164")
-                    {
-                        streamWriter.WriteLine("NAD+TRA+K200+" + DeliveryAddressLines + "'");
-                        streamWriter.WriteLine(header + "+" + text + "'");
-                    }
-                    else if (header == "NAD+INV+3164")
-                    {
-                        streamWriter.WriteLine("NAD+INV+K200+" + text + "'");
-                        streamWriter.WriteLine(header + "+" + text + "'");
-                    }
-                    else 
-                    { 
-                    if (header == "NAD+TRA+K3207")
-                        {
+                        case "NAD+TRA+K200":
+                            DeliveryAddressLines = DeliveryAddressLines + "+" + text;
+                            break;
+                        case "NAD+INV+K200":
+                            InvoiceAddressLines = InvoiceAddressLines + "+" + text;
+                            break;
+                        case "NAD+TRA+3164":
+                            streamWriter.WriteLine("NAD+TRA+K200+" + DeliveryAddressLines + "'");
+                            streamWriter.WriteLine(header + "+" + text + "'");
+                            break;
+                        case "NAD+INV+3164":
+                            streamWriter.WriteLine("NAD+INV+K200+" + text + "'");
+                            streamWriter.WriteLine(header + "+" + text + "'");
+                            break;
+                        case "NAD+TRA+K3207":
                             WriteEDIFactProducts(con, streamWriter, row["OrderNumber"].ToString());
-                        }
-                        streamWriter.WriteLine(header + "+" + text + "'");
+                            break;
                     }
                     text = "";
                     counter++;
