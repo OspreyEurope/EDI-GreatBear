@@ -83,7 +83,6 @@ namespace EDI_Orders
                  */
                 streamWriter.WriteLine("UNS+S'");
                 streamWriter.WriteLine("UNT+" + counter + "'");
-                streamWriter.WriteLine("UNZ + THE LINE COUNT HAS NOT WORKED CORRECTLY'");
                 streamWriter.Close();
                 var lineCount = File.ReadLines(file).Count();
                 File.AppendAllText(file, "UNZ+" + (lineCount + 1) + "'");
