@@ -69,7 +69,7 @@ namespace EDI_Orders
                 case "OrderReference":
                     return "RFF+1154";
                 case "Priority":
-                    return "";
+                    return "TDT+1326";
                 case "CustomerVATCode":
                     return "NAD+BY+K205";
                 case "Warehouse":
@@ -97,7 +97,7 @@ namespace EDI_Orders
                 case "LanguageCode":
                     return "FTX+3453";
                 case "DeliveryRequirments":
-                    return "";
+                    return "TDT+1684";
                 case "DelTelephone":
                     return "NAD+TRA+K203";
                 case "DelEmail":
