@@ -57,77 +57,77 @@ namespace EDI_Orders
             switch (Header)
             {
                 case "OrderNumber":
-                    return "TRA+UID+K977";
+                    return "RFF+ON";
                 case "OrderDate":
                     return "DTM+DEL";
                 case "OrderRequestedDate":
                     return "DTM+LOA";
                 case "CustomerAccountName":
-                    return "NAD+BY+3124";
+                    return "NAD+BY";
                 case "OrderType":
-                    return "TDT+1684";
+                    return "TDT";
                 case "OrderReference":
-                    return "RFF+1154";
+                    return "RFF+ON";
                 case "Priority":
-                    return "TDT+1326";
+                    return "TDT";
                 case "CustomerVATCode":
-                    return "NAD+BY+K205";
+                    return "NAD+BY";
                 case "Warehouse":
-                    return "NAD+TRA+3124";
+                    return "NAD+DP";
                 case "DelPostalName":
-                    return "NAD+TRA+3124";
+                    return "NAD+DP";
                 case "DelCity":
-                    return "NAD+TRA+3164";
+                    return "NAD+DP";
                 case "DelPostCode":
-                    return "NAD+TRA+3251";
+                    return "NAD+DP";
                 case "DelCountry":
-                    return "NAD+TRA+K485";
+                    return "NAD+DP";
                 case "ProductCode":
-                    return "LIN+7140";
+                    return "LIN";
                 case "ProductDescription":
-                    return "LIN+7009";
+                    return "LIN";
                 case "Quantity":
                     return "QTY";
                 case "UnitPrice":
                     return "ALI+3203";
                 case "Currency":
-                    return "ALI+6345";
+                    return "CUX";
                 case "Incoterms":
-                    return "ALI+K301";
+                    return "ALI";
                 case "LanguageCode":
-                    return "FTX+3453";
-                case "DeliveryRequirments":
-                    return "TDT+1684";
+                    return "FTX";
+                case "DeliveryRequirements":
+                    return "TDT";
                 case "DelTelephone":
-                    return "NAD+TRA+K203";
+                    return "NAD+DP";
                 case "DelEmail":
-                    return "NAD+TRA+K204";
+                    return "NAD+DP";
                 case "DelAddressLine1":
-                    return "NAD+TRA+K200";
+                    return "NAD+DP";
                 case "DelAddressLine2":
-                    return "NAD+TRA+K200";
+                    return "NAD+DP";
                 case "DelAddressLine3":
-                    return "NAD+TRA+K200";
+                    return "NAD+DP";
                 case "DelAddressLine4":
-                    return "NAD+TRA+K200";
+                    return "NAD+DP";
                 case "DelCountryCode":
-                    return "NAD+TRA+K3207";
+                    return "NAD+DP";
                 case "InvoiceAddressLine1":
-                    return "NAD+INV+K200";
+                    return "NAD+IV";
                 case "InvoiceAddressLine2":
-                    return "NAD+INV+K200";
+                    return "NAD+IV";
                 case "InvoiceAddressLine3":
-                    return "NAD+INV+K200";
+                    return "NAD+IV";
                 case "InvoiceAddressLine4":
-                    return "NAD+INV+K200";
+                    return "NAD+IV";
                 case "InvoiceCountry":
-                    return "NAD+INV+K3207";
+                    return "NAD+IV";
                 case "InvoiceCity":
-                    return "NAD+INV+3164";
+                    return "NAD+IV";
                 case "InvoicePostCode":
-                    return "NAD+INV+3251";
+                    return "NAD+IV";
                 case "InvoicePostalAddress":
-                    return "NAD+INV+3124";
+                    return "NAD+IV";
 
 
                 //Dates

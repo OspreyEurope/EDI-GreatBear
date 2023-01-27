@@ -43,38 +43,53 @@ namespace EDI_Orders
                 Console.WriteLine(row["OrderNumber"]);
                 streamWriter.WriteLine("UNA:+.?'");
                 string text = "";
-                string DeliveryAddressLines = "";
-                string InvoiceAddressLines = "";
+                string tempLine = "";
+                bool flag = false;
+                string header = "UNA";
                 /**
                  * This sectin writes all the information in that data row into a single line in the EDI file.
                  */
+                string prevHeader = "";
                 for (int j = 0; j < data.Columns.Count; j++)
                 {
-                    string header = Lookups.WriteLookUp(nameArray[j]);
-                    text = text + row[j].ToString();
+                    header = Lookups.WriteLookUp(nameArray[j]);
+                    
+                    text += row[j].ToString();
                     /**
                      * This switch case allows addresslines 1-4 to be written into a single line and also identifys when the products need to be written to the file.
                      */
-                    switch (header)
+                    if (header == "NAD+DP")
                     {
-                        case "NAD+TRA+K200":
-                            DeliveryAddressLines = DeliveryAddressLines + "+" + text;
-                            break;
-                        case "NAD+INV+K200":
-                            InvoiceAddressLines = InvoiceAddressLines + "+" + text;
-                            break;
-                        case "NAD+TRA+3164":
-                            streamWriter.WriteLine("NAD+TRA+K200+" + DeliveryAddressLines + "'");
-                            streamWriter.WriteLine(header + "+" + text + "'");
-                            break;
-                        case "NAD+INV+3164":
-                            streamWriter.WriteLine("NAD+INV+K200+" + text + "'");
-                            streamWriter.WriteLine(header + "+" + text + "'");
-                            break;
-                        case "NAD+TRA+K3207":
-                            WriteEDIFactProducts(con, streamWriter, row["OrderNumber"].ToString());
-                            break;
+                        tempLine = tempLine + "+" + text;
+                        flag = true;
                     }
+                    else if ((header == "NAD+IV") && (header != prevHeader))
+                    {
+                        streamWriter.WriteLine(prevHeader + ":" + tempLine + "'");
+                        tempLine = "";
+                        tempLine = tempLine + "+" + text;
+                        flag = true;
+                    }
+                    else if (header == prevHeader)
+                    {
+                        tempLine = tempLine + "+" + text;
+                        flag = true;
+                    }
+                    else
+                    {
+                        if (flag == true)
+                        {
+                            streamWriter.WriteLine(prevHeader + ":" + tempLine + "'");
+                            streamWriter.WriteLine(header + ":" + text + "'");
+                            tempLine = "";
+                            flag = false;
+                        }
+                        else
+                        {
+                            streamWriter.WriteLine(header + ":" + text + "'");
+                        }
+                    }
+                    prevHeader = header;
                     text = "";
                     counter++;
                 }
@@ -113,13 +128,13 @@ namespace EDI_Orders
                 for (int j = 0; j < data.Columns.Count; j++)
                 {
                     string header = Lookups.WriteLookUp(nameArray[j]);
-                    text = text + row[j].ToString();
+                    text += row[j].ToString();
                     sw.WriteLine(header + "+" + text + "'");
                     counter++;
                     text = "";
                 }
             }
-            SharedFunctions.QueryDB(con, "OSP_Update_StatusID_KTN_Orders", orderNo);
+            //SharedFunctions.QueryDB(con, "OSP_Update_StatusID_KTN_Orders", orderNo);
         }
         #endregion
     }
