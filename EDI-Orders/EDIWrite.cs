@@ -84,6 +84,12 @@ namespace EDI_Orders
                             tempLine = "";
                             flag = false;
                         }
+                        else if (prevHeader == "CUX")
+                        {
+                            Console.WriteLine("HI");
+                            WriteEDIFactProducts(con, streamWriter, row["OrderNumber"].ToString());
+                            streamWriter.WriteLine(header + ":" + text + "'");
+                        }
                         else
                         {
                             streamWriter.WriteLine(header + ":" + text + "'");
