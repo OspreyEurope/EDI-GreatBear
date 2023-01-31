@@ -436,12 +436,5 @@ namespace EDI_Orders
             }
         }
         #endregion
-
-        #region Run Program Writing Outgoing
-        static void Main(string data)
-        {
-
-        }
-        #endregion
     }
 }
