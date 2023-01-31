@@ -227,8 +227,8 @@ namespace EDI_Orders
                 }
             }
             /**
-                 * Generates the footer of the file
-                 */
+             * Generates the footer of the file
+             */
             streamWriter.WriteLine("UNS+S'");
             streamWriter.WriteLine("UNT+" + counter + "'");
             streamWriter.Close();
