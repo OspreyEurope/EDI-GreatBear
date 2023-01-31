@@ -114,9 +114,7 @@ namespace EDI_Orders
         #region Write products
         public static void WriteEDIFactProducts(SqlConnection con, StreamWriter sw, string orderNo)
         {
-            Console.WriteLine("Made to Write Products");
             DataTable data = SharedFunctions.QueryDB(con, "OSP_Write_Products_EDI", orderNo);
-            int counter = 0;
             /**
              * Retrives the data from the database and then writes it line by line into a file.
              */
@@ -128,20 +126,75 @@ namespace EDI_Orders
                              .Select(x => x.ColumnName)
                              .ToArray();
                 string text = "";
+                string prevHeader = "";
                 /**
                  * This sectin writes all the information in that data row into a single line in the EDI file.
                  */
                 for (int j = 0; j < data.Columns.Count; j++)
                 {
                     string header = Lookups.WriteLookUp(nameArray[j]);
-                    text += row[j].ToString();
-                    sw.WriteLine(header + "+" + text + "'");
-                    counter++;
-                    text = "";
+                    if (header == "LIN")
+                    {
+                        text += "+" +row[j].ToString();
+                    }
+                    else 
+                    {
+                        if (prevHeader == "LIN")
+                        {
+                            sw.WriteLine(prevHeader + ":" + text + "'");
+                            text = "";
+                        }
+                        text += row[j].ToString();
+                        sw.WriteLine(header + ":" + text + "'");
+                        text = "";
+                    }
+                    prevHeader = header;
+                    
                 }
             }
             //SharedFunctions.QueryDB(con, "OSP_Update_StatusID_KTN_Orders", orderNo);
         }
         #endregion
+
+        public static void WriteProductList(SqlConnection con, string id)
+        {
+            DataTable data = SharedFunctions.QueryDB(con, "OSP_Get_Product_List", id);
+            Console.WriteLine(data.Rows.Count);
+            int counter = 0;
+            /**
+             * Retrives the data from the database and then writes it line by line into a file.
+             */
+
+            for (int i = 0; i < data.Rows.Count; i++)
+            {
+                DataRow row = data.Rows[i];
+                List<string> columnNames = new List<string>();
+                string[] nameArray = data.Columns.Cast<DataColumn>()
+                             .Select(x => x.ColumnName)
+                             .ToArray();
+                string file = "C:\\Bespoke\\EDI\\OutputFiles\\ProductListFor" + id + ".txt";
+                StreamWriter streamWriter = new StreamWriter(file);
+                streamWriter.WriteLine("UNH:+.?'");
+                string text = "";
+                string header = "";
+                /**
+                 * This sectin writes all the information in that data row into a single line in the EDI file.
+                 */
+                for (int j = 0; j < data.Columns.Count; j++)
+                {
+                    header = Lookups.WriteLookUp(nameArray[j]);
+                    text += row[j].ToString();
+                    streamWriter.WriteLine(header + ":" + text + "'");
+                }
+                /**
+                 * Generates the footer of the file
+                 */
+                streamWriter.WriteLine("UNS+S'");
+                streamWriter.WriteLine("UNT+" + counter + "'");
+                streamWriter.Close();
+                var lineCount = File.ReadLines(file).Count();
+                File.AppendAllText(file, "UNZ+" + (lineCount + 1) + "'");
+            }
+        }
     }
 }

@@ -85,7 +85,7 @@ namespace EDI_Orders
                 case "ProductCode":
                     return "LIN";
                 case "ProductDescription":
-                    return "LIN";
+                    return "IMD";
                 case "Quantity":
                     return "QTY";
                 case "UnitPrice":
@@ -128,6 +128,14 @@ namespace EDI_Orders
                     return "NAD+IV";
                 case "InvoicePostalAddress":
                     return "NAD+IV";
+                case "StockCode":
+                    return "LIN";
+                case "Name":
+                    return "IMD";
+                case "PartNumbber":
+                    return "TRA";     //I think
+                case "ProductGroup":
+                    return "GRI";
 
 
                 //Dates

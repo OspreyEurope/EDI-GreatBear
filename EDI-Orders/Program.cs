@@ -423,6 +423,11 @@ namespace EDI_Orders
                     case "A":
                         EDIWrite.WriteEDIFact(conKTN);
                         break;
+                    case "Products":
+                        SqlConnection conLive = new SqlConnection();
+                        conLive.ConnectionString = ConfigurationManager.ConnectionStrings["OERA"].ConnectionString;
+                        EDIWrite.WriteProductList(conLive, "100994002");
+                        break;
                     #endregion
                     default:
                         Console.WriteLine("Please input a number between 1 and 60.");
