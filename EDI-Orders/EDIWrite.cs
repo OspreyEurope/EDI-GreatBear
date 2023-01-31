@@ -10,6 +10,8 @@ using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Threading.Tasks;
 using static System.Net.Mime.MediaTypeNames;
+using static System.Net.WebRequestMethods;
+using File = System.IO.File;
 
 namespace EDI_Orders
 {
@@ -164,6 +166,11 @@ namespace EDI_Orders
             /**
              * Retrives the data from the database and then writes it line by line into a file.
              */
+            string file = "C:\\Bespoke\\EDI\\OutputFiles\\ProductListFor" + id + ".txt";
+            StreamWriter streamWriter = new StreamWriter(file);
+            streamWriter.WriteLine("UNH:+.?'");
+            string text = "";
+            string header = "";
 
             for (int i = 0; i < data.Rows.Count; i++)
             {
@@ -172,18 +179,13 @@ namespace EDI_Orders
                 string[] nameArray = data.Columns.Cast<DataColumn>()
                              .Select(x => x.ColumnName)
                              .ToArray();
-                string file = "C:\\Bespoke\\EDI\\OutputFiles\\ProductListFor" + id + ".txt";
-                StreamWriter streamWriter = new StreamWriter(file);
-                streamWriter.WriteLine("UNH:+.?'");
-                string text = "";
-                string header = "";
                 /**
                  * This sectin writes all the information in that data row into a single line in the EDI file.
                  */
                 for (int j = 0; j < data.Columns.Count; j++)
                 {
                     header = Lookups.WriteLookUp(nameArray[j]);
-                    text += row[j].ToString();
+                    text = row[j].ToString();
                     streamWriter.WriteLine(header + ":" + text + "'");
                 }
                 /**
@@ -191,10 +193,10 @@ namespace EDI_Orders
                  */
                 streamWriter.WriteLine("UNS+S'");
                 streamWriter.WriteLine("UNT+" + counter + "'");
-                streamWriter.Close();
-                var lineCount = File.ReadLines(file).Count();
-                File.AppendAllText(file, "UNZ+" + (lineCount + 1) + "'");
             }
+            streamWriter.Close();
+            var lineCount = File.ReadLines(file).Count();
+            File.AppendAllText(file, "UNZ+" + (lineCount + 1) + "'");
         }
     }
 }

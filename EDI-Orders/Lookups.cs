@@ -132,7 +132,7 @@ namespace EDI_Orders
                     return "LIN";
                 case "Name":
                     return "IMD";
-                case "PartNumbber":
+                case "PartNumber":
                     return "TRA";     //I think
                 case "ProductGroup":
                     return "GRI";
