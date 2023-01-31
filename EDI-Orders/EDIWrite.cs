@@ -158,6 +158,7 @@ namespace EDI_Orders
         }
         #endregion
 
+        #region Write Product List For Selected Warehouse
         public static void WriteProductList(SqlConnection con, string id)
         {
             DataTable data = SharedFunctions.QueryDB(con, "OSP_Get_Product_List", id);
@@ -198,5 +199,49 @@ namespace EDI_Orders
             var lineCount = File.ReadLines(file).Count();
             File.AppendAllText(file, "UNZ+" + (lineCount + 1) + "'");
         }
+        #endregion
+
+        #region ASN Write
+        public static void WriteASN()
+        {
+            DataTable data = SharedFunctions.QueryDB(con, "OSP_Get_Product_List", id);
+            Console.WriteLine(data.Rows.Count);
+            int counter = 0;
+            /**
+             * Retrives the data from the database and then writes it line by line into a file.
+             */
+            string file = "C:\\Bespoke\\EDI\\OutputFiles\\ProductListFor" + id + ".txt";
+            StreamWriter streamWriter = new StreamWriter(file);
+            streamWriter.WriteLine("UNH:+.?'");
+            string text = "";
+            string header = "";
+
+            for (int i = 0; i < data.Rows.Count; i++)
+            {
+                DataRow row = data.Rows[i];
+                List<string> columnNames = new List<string>();
+                string[] nameArray = data.Columns.Cast<DataColumn>()
+                             .Select(x => x.ColumnName)
+                             .ToArray();
+                /**
+                 * This sectin writes all the information in that data row into a single line in the EDI file.
+                 */
+                for (int j = 0; j < data.Columns.Count; j++)
+                {
+                    header = Lookups.ASNLookup(nameArray[j]);
+                    text = row[j].ToString();
+                    streamWriter.WriteLine(header + ":" + text + "'");
+                }
+            }
+            /**
+                 * Generates the footer of the file
+                 */
+            streamWriter.WriteLine("UNS+S'");
+            streamWriter.WriteLine("UNT+" + counter + "'");
+            streamWriter.Close();
+            var lineCount = File.ReadLines(file).Count();
+            File.AppendAllText(file, "UNZ+" + (lineCount + 1) + "'");
+        }
+        #endregion
     }
 }

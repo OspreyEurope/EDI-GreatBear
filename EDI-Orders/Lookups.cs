@@ -51,6 +51,43 @@ namespace EDI_Orders
         }
         #endregion
 
+        #region ASN Lookup
+        public static string ASNLookup (string Header)
+        {
+            switch (Header)
+            {
+                case "PurchaseOrderNumber":
+                    return "DOC||TRA+UID"; //??
+                case "SupplierDocumentNumber":
+                    return "NAD+SUP";
+                case "Warehouse":
+                    return "NAD+"; //Need the delivery location tag
+                case "SuppAccRef":
+                    return "RFF"; //??
+                case "OrderDate":
+                    return ""; //Not sure if needed or wanted and if so which DTM+ value to use
+                case "OrderRequestedDate":
+                    return "DTM+PLA";
+                case "LotCode":
+                    return "TRA+LNO";
+                case "ProductDescription":
+                    return "LIN"; //This needs to be paired with the stockitemcode, this cna be done in the SP
+                case "Quantity":
+                    return "GTY";
+                case "UnitPrice":
+                    return "MOA";
+                case "Currency":
+                    return "MOA"; //This needs to be added on same line as unit price as well
+                case "Quality":
+                    return ""; //Not sure if this is needed/wanted and how to map it if so
+                case "StockItemCode":
+                    return "LIN";
+                default :
+                    return null;
+            }
+        }
+        #endregion
+
         #region Write Lookup
         public static string WriteLookUp(string Header)
         {
