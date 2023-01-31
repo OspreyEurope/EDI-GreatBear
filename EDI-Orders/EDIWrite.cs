@@ -202,15 +202,15 @@ namespace EDI_Orders
         #endregion
 
         #region ASN Write
-        public static void WriteASN()
+        public static void WriteASN(SqlConnection con)
         {
-            DataTable data = SharedFunctions.QueryDB(con, "OSP_Get_Product_List", id);
+            DataTable data = SharedFunctions.QueryDB(con, "OSP_");
             Console.WriteLine(data.Rows.Count);
             int counter = 0;
             /**
              * Retrives the data from the database and then writes it line by line into a file.
              */
-            string file = "C:\\Bespoke\\EDI\\OutputFiles\\ProductListFor" + id + ".txt";
+            string file = "C:\\Bespoke\\EDI\\OutputFiles\\.txt";
             StreamWriter streamWriter = new StreamWriter(file);
             streamWriter.WriteLine("UNH:+.?'");
             string text = "";
