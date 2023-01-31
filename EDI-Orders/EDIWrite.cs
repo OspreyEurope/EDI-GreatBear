@@ -188,12 +188,12 @@ namespace EDI_Orders
                     text = row[j].ToString();
                     streamWriter.WriteLine(header + ":" + text + "'");
                 }
-                /**
+            }
+            /**
                  * Generates the footer of the file
                  */
-                streamWriter.WriteLine("UNS+S'");
-                streamWriter.WriteLine("UNT+" + counter + "'");
-            }
+            streamWriter.WriteLine("UNS+S'");
+            streamWriter.WriteLine("UNT+" + counter + "'");
             streamWriter.Close();
             var lineCount = File.ReadLines(file).Count();
             File.AppendAllText(file, "UNZ+" + (lineCount + 1) + "'");
