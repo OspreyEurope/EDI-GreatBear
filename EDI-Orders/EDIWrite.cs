@@ -36,7 +36,7 @@ namespace EDI_Orders
                 string file = "C:\\Bespoke\\EDI\\OutputFiles\\" + row["OrderNumber"] + ".txt";
                 StreamWriter streamWriter = new StreamWriter(file);
                 Console.WriteLine(row["OrderNumber"]);
-                streamWriter.WriteLine("UNA:+.?'");
+                streamWriter.WriteLine("UNA:5056302200001+.?'");
                 string text = "";
                 string tempLine = "";
                 bool flag = false;
@@ -162,7 +162,7 @@ namespace EDI_Orders
              */
             string file = "C:\\Bespoke\\EDI\\OutputFiles\\" + id + "_Product_List.txt";
             StreamWriter streamWriter = new StreamWriter(file);
-            streamWriter.WriteLine("UNH:+.?'");
+            streamWriter.WriteLine("UNH:5056302200001+.?'");
             string text = "";
             string header = "";
 
@@ -205,7 +205,7 @@ namespace EDI_Orders
              */
             string file = "C:\\Bespoke\\EDI\\OutputFiles\\PO" + id + ".txt";
             StreamWriter streamWriter = new StreamWriter(file);
-            streamWriter.WriteLine("UNH:+.?'");
+            streamWriter.WriteLine("UNH:5056302200001+.?'");
             string text = "";
             string header = "";
             string LIN = "";
