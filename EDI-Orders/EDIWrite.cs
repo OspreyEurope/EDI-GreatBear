@@ -208,6 +208,10 @@ namespace EDI_Orders
             streamWriter.WriteLine("UNH:+.?'");
             string text = "";
             string header = "";
+            string tempLine = "";
+            string LIN = "";
+            string MOA = "";
+            bool flag = false;
 
             for (int i = 0; i < data.Rows.Count; i++)
             {
@@ -223,7 +227,38 @@ namespace EDI_Orders
                 {
                     header = Lookups.ASNLookup(nameArray[j]);
                     text = row[j].ToString();
-                    streamWriter.WriteLine(header + ":" + text + "'");
+                    if (header == "LIN")
+                    {
+                        if (LIN != "")
+                        {
+                            LIN = LIN + "+" + text;
+                        }
+                        else
+                        {
+                            LIN = text;
+                        }
+                    }
+                    else if (header == "MOA")
+                    {
+                        if (MOA != "")
+                        {
+                            MOA = MOA + "+" + text;
+                        }
+                        else
+                        {
+                            MOA = text;
+                        }
+                    }
+                    else if (header == "QTY")
+                    {
+                        streamWriter.WriteLine( "LIN:" + LIN + "'");
+                        streamWriter.WriteLine("MOA:" + MOA + "'");
+                        streamWriter.WriteLine(header + ":" + text + "'");
+                    }
+                    else
+                    {
+                        streamWriter.WriteLine(header + ":" + text + "'");
+                    }
                 }
             }
             /**

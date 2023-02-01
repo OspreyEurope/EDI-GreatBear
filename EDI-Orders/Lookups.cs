@@ -51,7 +51,7 @@
             switch (Header)
             {
                 case "PurchaseOrderNumber":
-                    return "DOC||TRA+UID"; //??
+                    return "TRA+UID"; //??
                 case "SupplierDocumentNumber":
                     return "NAD+SUP";
                 case "Warehouse":
