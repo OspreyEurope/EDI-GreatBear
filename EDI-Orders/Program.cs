@@ -428,6 +428,11 @@ namespace EDI_Orders
                         conLive.ConnectionString = ConfigurationManager.ConnectionStrings["OERA"].ConnectionString;
                         EDIWrite.WriteProductList(conLive, "100994002");
                         break;
+                    case "PO":
+                        SqlConnection conDev = new SqlConnection();
+                        conDev.ConnectionString = ConfigurationManager.ConnectionStrings["OERADEVORBIS"].ConnectionString;
+                        EDIWrite.WriteASN(conDev, "0000020985");
+                        break;
                     #endregion
                     default:
                         Console.WriteLine("Please input a number between 1 and 60.");

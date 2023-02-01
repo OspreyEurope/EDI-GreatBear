@@ -67,7 +67,7 @@
                 case "ProductDescription":
                     return "LIN"; //This needs to be paired with the stockitemcode, this cna be done in the SP
                 case "Quantity":
-                    return "GTY";
+                    return "QTY";
                 case "UnitPrice":
                     return "MOA";
                 case "Currency":
