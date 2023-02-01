@@ -208,10 +208,8 @@ namespace EDI_Orders
             streamWriter.WriteLine("UNH:+.?'");
             string text = "";
             string header = "";
-            string tempLine = "";
             string LIN = "";
             string MOA = "";
-            bool flag = false;
 
             for (int i = 0; i < data.Rows.Count; i++)
             {
