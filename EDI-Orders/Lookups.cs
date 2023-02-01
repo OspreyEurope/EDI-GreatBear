@@ -55,9 +55,9 @@
                 case "SupplierDocumentNumber":
                     return "NAD+SUP";
                 case "Warehouse":
-                    return "NAD+"; //Need the delivery location tag
+                    return "NAD+DP";
                 case "SuppAccRef":
-                    return "RFF"; //??
+                    return "RFF+SUP"; //??
                 case "OrderDate":
                     return ""; //Not sure if needed or wanted and if so which DTM+ value to use
                 case "OrderRequestedDate":

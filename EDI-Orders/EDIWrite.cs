@@ -160,7 +160,7 @@ namespace EDI_Orders
             /**
              * Retrives the data from the database and then writes it line by line into a file.
              */
-            string file = "C:\\Bespoke\\EDI\\OutputFiles\\ProductListFor" + id + ".txt";
+            string file = "C:\\Bespoke\\EDI\\OutputFiles\\" + id + "_Product_List.txt";
             StreamWriter streamWriter = new StreamWriter(file);
             streamWriter.WriteLine("UNH:+.?'");
             string text = "";
