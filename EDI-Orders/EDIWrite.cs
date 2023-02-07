@@ -413,7 +413,7 @@ namespace EDI_Orders
                 streamWriter.WriteLine("FTX+DEL+" + text + "'");
                 text = "";
 
-                text = "";// row[""].ToString();                                //Section reserved for incoterms
+                text = row["Incoterms"].ToString();                                //Section reserved for incoterms
                 text = text.PadRight((140-text.Length), ' ');
                 streamWriter.WriteLine("ALI+" + text + "'");
                 text = "";
