@@ -152,47 +152,47 @@ namespace EDI_Orders
         }
         #endregion
 
-        #region Write Product List For Selected Warehouse
-        public static void WriteProductList(SqlConnection con, string id,string s)
-        {
-            DataTable data = SharedFunctions.QueryDB(con, "OSP_Get_Product_List", id);
-            Console.WriteLine(data.Rows.Count);
-            int counter = 0;
-            /**
-             * Retrives the data from the database and then writes it line by line into a file.
-             */
-            string file = "C:\\Bespoke\\EDI\\OutputFiles\\" + id + "_Product_List.txt";
-            StreamWriter streamWriter = new StreamWriter(file);
-            streamWriter.WriteLine("UNH:5056302200001+.?'");
-            string text = "";
-            string header = "";
+        #region Write Product List For Selected Warehouse Version 1 (Incorrect Formatting for KTN)
+        //public static void WriteProductList(SqlConnection con, string id)
+        //{
+        //    DataTable data = SharedFunctions.QueryDB(con, "OSP_Get_Product_List", id);
+        //    Console.WriteLine(data.Rows.Count);
+        //    int counter = 0;
+        //    /**
+        //     * Retrives the data from the database and then writes it line by line into a file.
+        //     */
+        //    string file = "C:\\Bespoke\\EDI\\OutputFiles\\" + id + "_Product_List.txt";
+        //    StreamWriter streamWriter = new StreamWriter(file);
+        //    streamWriter.WriteLine("UNH:5056302200001+.?'");
+        //    string text = "";
+        //    string header = "";
 
-            for (int i = 0; i < data.Rows.Count; i++)
-            {
-                DataRow row = data.Rows[i];
-                List<string> columnNames = new List<string>();
-                string[] nameArray = data.Columns.Cast<DataColumn>()
-                             .Select(x => x.ColumnName)
-                             .ToArray();
-                /**
-                 * This sectin writes all the information in that data row into a single line in the EDI file.
-                 */
-                for (int j = 0; j < data.Columns.Count; j++)
-                {
-                    header = Lookups.WriteLookUp(nameArray[j]);
-                    text = row[j].ToString();
-                    streamWriter.WriteLine(header + ":" + text + "'");
-                }
-            }
-            /**
-                 * Generates the footer of the file
-                 */
-            streamWriter.WriteLine("UNS+S'");
-            streamWriter.WriteLine("UNT+" + counter + "'");
-            streamWriter.Close();
-            var lineCount = File.ReadLines(file).Count();
-            File.AppendAllText(file, "UNZ+" + (lineCount + 1) + "'");
-        }
+        //    for (int i = 0; i < data.Rows.Count; i++)
+        //    {
+        //        DataRow row = data.Rows[i];
+        //        List<string> columnNames = new List<string>();
+        //        string[] nameArray = data.Columns.Cast<DataColumn>()
+        //                     .Select(x => x.ColumnName)
+        //                     .ToArray();
+        //        /**
+        //         * This sectin writes all the information in that data row into a single line in the EDI file.
+        //         */
+        //        for (int j = 0; j < data.Columns.Count; j++)
+        //        {
+        //            header = Lookups.WriteLookUp(nameArray[j]);
+        //            text = row[j].ToString();
+        //            streamWriter.WriteLine(header + ":" + text + "'");
+        //        }
+        //    }
+        //    /**
+        //         * Generates the footer of the file
+        //         */
+        //    streamWriter.WriteLine("UNS+S'");
+        //    streamWriter.WriteLine("UNT+" + counter + "'");
+        //    streamWriter.Close();
+        //    var lineCount = File.ReadLines(file).Count();
+        //    File.AppendAllText(file, "UNZ+" + (lineCount + 1) + "'");
+        //}
         #endregion
 
         #region ASN Write
@@ -272,14 +272,87 @@ namespace EDI_Orders
         #endregion
 
 
+        #region Write ASN For KTN
+        public static void WriteASNFile (SqlConnection con, string id)
+        {
+            DataTable data = SharedFunctions.QueryDB(con, "OSP_GET_PO_DATA", id);
+            Console.WriteLine(data.Rows.Count);
+            /**
+             * Retrives the data from the database and then writes it line by line into a file.
+             */
+            string file = "C:\\Bespoke\\EDI\\OutputFiles\\PO" + id + ".txt";
+            StreamWriter streamWriter = new StreamWriter(file);
+            streamWriter.WriteLine("UNH+00000001  +ITEMS               +R4        +KTN                                          +ITEMS                                                                      +OSPREY    +KTN       +" + DateTime.Now + "+204+" + id + "_Product_List.txt        '");
+            streamWriter.WriteLine("FAC+C'");
+
+            for (int i = 0; i < data.Rows.Count; i++)
+            {
+                DataRow row = data.Rows[i];
+                List<string> columnNames = new List<string>();
+                string[] nameArray = data.Columns.Cast<DataColumn>()
+                             .Select(x => x.ColumnName)
+                             .ToArray();
+                string text = "NORMAL";                                            //Currently hardcoded as we do not have an eqevilant field
+                text = text.PadRight((15 - text.Length), ' ');
+                streamWriter.WriteLine("RFF+TYP+" + text + "'");
+                text = "";
+
+                text = row["PurchaseOrderNumber"].ToString();
+                text = text.PadRight((40 - text.Length), ' ');
+                streamWriter.WriteLine("RFF+CR+" + text + "'");
+                text = "";
+
+                text = row["OrderRequestedDate"].ToString();
+                streamWriter.WriteLine("DTM+PLA+" + text + "+102'");
+                text = "";
+
+
+                streamWriter.WriteLine("NAD+SUP+KTN'");
+                text = i.ToString();
+                text = text.PadRight((4 - text.Length), ' ');
+                text = text + "+" + row["StockCode"].ToString();
+                text = text.PadRight((30 - row["StockCode"].ToString().Length), ' ');
+                text = text + "+" + row["StockCode"].ToString();
+                text = text.PadRight((255 - row["ProductDescription"].ToString().Length), ' ');
+                streamWriter.WriteLine("LIN+" + text + "'");
+                text = "";
+
+                text = row["Quantity"].ToString();
+                text = text.PadRight((21 - text.Length), ' ');
+                streamWriter.WriteLine("QTY+EXP+" + text + "'");
+                text = "";
+
+                text = row["LotCode"].ToString();
+                text = text.PadRight((60 - text.Length), ' ');
+                streamWriter.WriteLine("TRA+LNO+" + text + "'");
+                text = "";
+
+                text = row["Name"].ToString();
+                text = text.PadRight((60 - text.Length), ' ');
+                streamWriter.WriteLine("IMD+" + text + "'");
+                text = "";
+
+                text = row["OrderRequestedDate"].ToString();
+                streamWriter.WriteLine("DTM+PLA+" + text + "+102'");
+                text = "";
+
+                text = row["UnitPrice"].ToString();
+                text = text.PadRight((24 - text.Length), ' ');
+                text = text + "+" + row["Currency"].ToString();
+                text = text.PadRight((5 - row["Currency"].ToString().Length), ' ');
+                streamWriter.WriteLine("MOA+116+" + text + "'");
+                text = "";
+            }
+            streamWriter.Close();
+            var lineCount = File.ReadLines(file).Count();
+            File.AppendAllText(file, "UNT+" + (lineCount + 1) + "+00000001  '");
+        }
+        #endregion
 
 
 
 
-
-
-
-        #region Write Product_List
+        #region Write Product List For KTN
         /**
          * Recreated write product list in the discussed fashion, using spaces to keep the segment lengths consistent regardless of data passed.
          * Check new file produced with KTN.
@@ -289,7 +362,6 @@ namespace EDI_Orders
         {
             DataTable data = SharedFunctions.QueryDB(con, "OSP_Get_Product_List", id);
             Console.WriteLine(data.Rows.Count);
-            int counter = 0;
             /**
              * Retrives the data from the database and then writes it line by line into a file.
              */
