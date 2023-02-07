@@ -421,7 +421,7 @@ namespace EDI_Orders
                     #endregion
                     #region Testing Wite File
                     case "A":
-                        EDIWrite.WriteEDIFact(conKTN);
+                        EDIWrite.WriteOrder(conKTN);
                         break;
                     case "Products":
                         SqlConnection conLive = new SqlConnection();
@@ -432,6 +432,10 @@ namespace EDI_Orders
                         SqlConnection conDev = new SqlConnection();
                         conDev.ConnectionString = ConfigurationManager.ConnectionStrings["OERADEVORBIS"].ConnectionString;
                         EDIWrite.WriteASNFile(conDev, "0000020985");
+                        break;
+                    case "T":
+                        file = FileManipulation.readEDIFile("C://Bespoke/EDI/ORDER-0000262257.txt");
+                        SharedFunctions.EDIDecision(file);
                         break;
                     #endregion
                     default:

@@ -146,5 +146,22 @@ namespace EDI_Orders
             conOE.Close();
         }
         #endregion
+
+        #region Read KTN
+        public static void ReadKTN(string[][] order, SqlConnection conOE)
+        {
+            for (int x = 0; x < order.Length - 1; x++)
+            {
+                string[] line = order[x];
+                switch (line[0])
+                {
+                    case "":
+
+                        break;
+
+                }
+            }
+        }
+        #endregion
     }
 }

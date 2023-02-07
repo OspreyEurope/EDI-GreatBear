@@ -294,8 +294,8 @@ namespace EDI_Orders
                 sw.WriteLine("LIN+" + text + "'");
                 text = "";
 
-                text = row[""].ToString();            //Customer Stock Code
-                text = text.PadRight((-text.Length), ' ');
+                text = "";// row[""].ToString();            //Customer Stock Code
+                text = text.PadRight((30-text.Length), ' ');
                 sw.WriteLine("PIA+" + text + "+DES'");
                 text = "";
 
@@ -339,91 +339,82 @@ namespace EDI_Orders
                 streamWriter.WriteLine("TDT+" + text + "'");
                 text = "";
 
-                text = row[""].ToString();                                      //Oracle Order Number
-                text = text.PadRight(( - text.Length), ' ');
+                text = row["OrderNumber"].ToString();                                    //Oracle Order Number
+                text = text.PadRight((20 - text.Length), ' ');
                 streamWriter.WriteLine("RFF+CR1+" + text + "'");
                 text = "";
 
-                text = row[""].ToString();                                      //Oracle Delivery Number
-                text = text.PadRight(( - text.Length), ' ');
-                streamWriter.WriteLine("RFF+2+" + text + "'");
-                text = "";
+                text = row["DeliveryRequirements"].ToString();                                      //Oracle Delivery Number
+                text = text.PadRight((300 - text.Length), ' ');
+                streamWriter.WriteLine("RFF+C2+" + text + "'");
 
-                text = row[""].ToString();                                     //FCPN
-                text = text.PadRight(( - text.Length), ' ');
+                text = ""; //row[""].ToString();                                     //FCPN
+                text = text.PadRight((30 - text.Length), ' ');
                 streamWriter.WriteLine("RFF+CR3+" + text + "'");
                 text = "";
 
                 text = row["OrderDate"].ToString();
                 streamWriter.WriteLine("DTM+DEL+" + text + "+102'");
-                text = "";
-
-                text = row[""].ToString();
-                text = text.PadRight(( - text.Length), ' ');
-                streamWriter.WriteLine("+" + text + "'");
-                text = "";
 
                 text = row["OrderRequestedDate"].ToString();
-                text = text.PadRight((-text.Length), ' ');
                 streamWriter.WriteLine("DTM+LOA+" + text + "+102'");
-                text = "";
 
-                text = row[""].ToString(); //Destination code
+                text = "";//row[""].ToString(); //Destination code
                 text = text.PadRight((30 - text.Length), ' ');
                 text = text + "+" + row["DelPostalName"].ToString();
-                text = text.PadRight((30 - row["DelPostalName"].ToString().Length), ' ');
-                text = text + "+" + row["DelAddressLine1"].ToString() + "," + row["DelAddressLine12"].ToString() + "," + row["DelAddressLine3"].ToString() + "," + row["DelAddressLine4"].ToString();
+                text = text.PadRight((60 - row["DelPostalName"].ToString().Length), ' ');
+                text = text + "+" + row["DelAddressLine1"].ToString() + "," + row["DelAddressLine2"].ToString() + "," + row["DelAddressLine3"].ToString() + "," + row["DelAddressLine4"].ToString();
                 text = text.PadRight((274 - text.Length), ' ');
-                text = text + "+" + row["DelPostalCode"].ToString();
+                text = text + "+" + row["DelPostCode"].ToString();
                 text = text.PadRight((285 - text.Length), ' ');
                 text = text + "+" + row["DelCity"].ToString();
                 text = text.PadRight((346 - text.Length), ' ');
                 text = text + "+" + row["DelCountryCode"].ToString();
                 text = text.PadRight((349 - text.Length), ' ');
-                text = text + "+" + row[""].ToString(); //Phone Number
+                text = text + "+" + "";//row[""].ToString(); //Phone Number
                 text = text.PadRight((365 - text.Length), ' ');
-                text = text + "+" + row[""].ToString(); //Destination Contact
+                text = text + "+" + "";// row[""].ToString(); //Destination Contact
                 text = text.PadRight((426 - text.Length), ' ');
                 text = text + "+" + row["DelEmail"].ToString();
                 text = text.PadRight((682 - text.Length), ' ');
-                text = text + "+" + row[""].ToString();  //Del Name 2
+                text = text + "+" + "";//row[""].ToString();  //Del Name 2
                 text = text.PadRight((743 - text.Length), ' ');
-                text = text + "+" + row[""].ToString();   //Del Address 2
+                text = text + "+" + "";// row[""].ToString();   //Del Address 2
                 text = text.PadRight((804 - text.Length), ' ');
                 streamWriter.WriteLine("NAD+DES+" + text + "'");
                 text = "";
 
-                text = row[""].ToString();   // Invoice Code
-                text = text.PadRight((-text.Length), ' ');
-                text = text + "+" + row["InvoicePostalName"].ToString();
-                text = text.PadRight((30 - row["InvoicePostalName"].ToString().Length), ' ');
-                text = text + "+" + row["InvoiceAddressLine1"].ToString() + "," + row["vAddressLine12"].ToString() + "," + row["InvoiceAddressLine3"].ToString() + "," + row["InvoiceAddressLine4"].ToString();
-                text = text.PadRight((274 - text.Length), ' ');
+                text = "";//row[""].ToString();   // Invoice Code
+                text = text.PadRight((30-text.Length), ' ');
+                text = text + "+" + row["InvoicePostalAddress"].ToString();
+                text = text.PadRight((91 - row["InvoicePostalAddress"].ToString().Length), ' ');
+                text = text + "+" + row["InvoiceAddressLine1"].ToString() + "," + row["InvoiceAddressLine2"].ToString() + "," + row["InvoiceAddressLine3"].ToString() + "," + row["InvoiceAddressLine4"].ToString();
+                text = text.PadRight((332 - text.Length), ' ');
                 text = text + "+" + row["InvoicePostCode"].ToString();
-                text = text.PadRight((285 - text.Length), ' ');
+                text = text.PadRight((343 - text.Length), ' ');
                 text = text + "+" + row["InvoiceCity"].ToString();
-                text = text.PadRight((346 - text.Length), ' ');
-                text = text + "+" + row["InvoiceCountryCode"].ToString();
-                text = text.PadRight((349 - text.Length), ' ');
+                text = text.PadRight((404 - text.Length), ' ');
+                text = text + "+" + row["InvoiceCountry"].ToString();
+                text = text.PadRight((565 - text.Length), ' ');
                 text = text + "+" + row["CustomerVATCode"].ToString();
-                text = text.PadRight((270 - text.Length), ' ');
+                text = text.PadRight((586 - text.Length), ' ');
                 text = text + "+" + row["Currency"].ToString();
-                text = text.PadRight((291 - text.Length), ' ');
+                text = text.PadRight((607 - text.Length), ' ');
                 streamWriter.WriteLine("DTM+INV+" + text + "+102'");
                 text = "";
 
-                text = row[""].ToString();    // transporter Code
+                text = "";// row[""].ToString();    // transporter Code
                 text = text.PadRight((60 - text.Length), ' ');
                 streamWriter.WriteLine("NAD+TRA+" + text + "'");
                 text = "";
 
-                text = row["DeliveryRequirments"].ToString();
-                text = text.PadRight((300 - text.Length), ' ');
+                text = row["Priority"].ToString();
+                text = text.PadRight((255 - text.Length), ' ');
                 streamWriter.WriteLine("FTX+DEL+" + text + "'");
                 text = "";
 
-                text = row[""].ToString();                                //Section reserved for incoterms
-                text = text.PadRight((-text.Length), ' ');
+                text = "";// row[""].ToString();                                //Section reserved for incoterms
+                text = text.PadRight((140-text.Length), ' ');
                 streamWriter.WriteLine("ALI+" + text + "'");
                 text = "";
 

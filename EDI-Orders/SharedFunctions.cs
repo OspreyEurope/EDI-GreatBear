@@ -53,6 +53,10 @@ namespace EDI_Orders
                         break;
                 }
             }
+            if (header == null)
+            {
+                header = "";
+            }
             if (header.Equals("N1"))
             {
                 if (!storedProcedure.Parameters.Contains("@Customer"))
@@ -314,7 +318,7 @@ namespace EDI_Orders
         {
             SqlConnection conOE = new SqlConnection();
             conOE.ConnectionString = ConfigurationManager.ConnectionStrings["OERADEV"].ConnectionString;
-            if (order[0][0].Equals("UNA"))
+            if (order[0][0].Equals("UNH"))
             {
                 EDIFact.BuilRecordEDIFact(order, conOE);
             }
