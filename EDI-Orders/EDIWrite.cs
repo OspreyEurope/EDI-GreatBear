@@ -4,6 +4,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using File = System.IO.File;
 
 namespace EDI_Orders
@@ -152,7 +153,7 @@ namespace EDI_Orders
         #endregion
 
         #region Write Product List For Selected Warehouse
-        public static void WriteProductList(SqlConnection con, string id)
+        public static void WriteProductList(SqlConnection con, string id,string s)
         {
             DataTable data = SharedFunctions.QueryDB(con, "OSP_Get_Product_List", id);
             Console.WriteLine(data.Rows.Count);
@@ -267,6 +268,79 @@ namespace EDI_Orders
             streamWriter.Close();
             var lineCount = File.ReadLines(file).Count();
             File.AppendAllText(file, "UNZ+" + (lineCount + 1) + "'");
+        }
+        #endregion
+
+
+
+
+
+
+
+
+
+        #region Write Product_List
+        /**
+         * Recreated write product list in the discussed fashion, using spaces to keep the segment lengths consistent regardless of data passed.
+         * Check new file produced with KTN.
+         * For now it is hardcoded for KTN due to the way EDI formats are.
+         */
+        public static void WriteProductList(SqlConnection con, string id)
+        {
+            DataTable data = SharedFunctions.QueryDB(con, "OSP_Get_Product_List", id);
+            Console.WriteLine(data.Rows.Count);
+            int counter = 0;
+            /**
+             * Retrives the data from the database and then writes it line by line into a file.
+             */
+            string file = "C:\\Bespoke\\EDI\\OutputFiles\\" + id + "_Product_List.txt";
+            StreamWriter streamWriter = new StreamWriter(file);
+            streamWriter.WriteLine("UNH+00000001  +ITEMS               +R4        +KTN                                          +ITEMS                                                                      +OSPREY    +KTN       +" + DateTime.Now + "+204+" + id + "_Product_List.txt        '");
+
+
+            for (int i = 0; i < data.Rows.Count; i++)
+            {
+                DataRow row = data.Rows[i];
+                List<string> columnNames = new List<string>();
+                string[] nameArray = data.Columns.Cast<DataColumn>()
+                             .Select(x => x.ColumnName)
+                             .ToArray();
+                string text = row["StockCode"].ToString();
+                text = text.PadRight((30 - text.Length), ' ');
+                streamWriter.WriteLine("LIN+" + text + "'");
+                text = "";
+
+                streamWriter.WriteLine("ACT+C'");
+                streamWriter.WriteLine("NAD+CUS+OSPREY'");
+
+                text = row["Name"].ToString();
+                text = text.PadRight((60 - text.Length), ' ');
+                streamWriter.WriteLine("IMD+" + text + "'");
+                text = "";
+
+                text = row["ProductGroup"].ToString();
+                text = text.PadRight((20 - text.Length), ' ');
+                streamWriter.WriteLine("GRI+ITG+" + text + "'");
+                text = "";
+
+                text = row["PartNumber"].ToString();
+                text = text.PadRight((40 - text.Length), ' ');
+                streamWriter.WriteLine("TRA+BC+" + text + "'");
+                text = "";
+
+                streamWriter.WriteLine("CFG+CONFIG1+Y+NEW'");
+                streamWriter.WriteLine("PAD+PCS+Y'");
+            }
+            streamWriter.Close();
+            var lineCount = File.ReadLines(file).Count();
+            File.AppendAllText(file, "UNT+" + (lineCount + 1) + "+00000001  '");
+
+
+
+
+
+
+
         }
         #endregion
     }

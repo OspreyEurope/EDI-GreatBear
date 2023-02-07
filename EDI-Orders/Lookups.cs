@@ -65,13 +65,13 @@
                 case "LotCode":
                     return "TRA+LNO";
                 case "ProductDescription":
-                    return "LIN"; //This needs to be paired with the stockitemcode, this cna be done in the SP
+                    return "LIN";
                 case "Quantity":
                     return "QTY";
                 case "UnitPrice":
                     return "MOA";
                 case "Currency":
-                    return "MOA"; //This needs to be added on same line as unit price as well
+                    return "MOA";
                 case "Quality":
                     return ""; //Not sure if this is needed/wanted and how to map it if so
                 case "StockItemCode":
