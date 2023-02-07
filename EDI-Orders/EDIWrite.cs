@@ -5,6 +5,7 @@ using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Runtime.Remoting.Messaging;
+using static System.Net.Mime.MediaTypeNames;
 using File = System.IO.File;
 
 namespace EDI_Orders
@@ -272,27 +273,64 @@ namespace EDI_Orders
         #endregion
 
 
+
+        #region Write Products KTN Format
+        public static void WriteProductsKTN (SqlConnection con, StreamWriter sw, string orderNo)
+        {
+            DataTable data = SharedFunctions.QueryDB(con, "OSP_Write_Products_EDI", orderNo);
+            /**
+             * Retrives the data from the database and then writes it line by line into a file.
+             */
+            for (int i = 0; i < data.Rows.Count; i++)
+            {
+                DataRow row = data.Rows[i];
+
+                string text = i.ToString();
+                text = text.PadRight((10 - text.Length), ' ');
+                text = text + "+" + row["ProductCode"].ToString();
+                text = text.PadRight((41 - text.Length), ' ');
+                text = text + "+" + row["ProductDescription"].ToString();
+                text = text.PadRight((297 - text.Length), ' ');
+                sw.WriteLine("LIN+" + text + "'");
+                text = "";
+
+                text = row[""].ToString();            //Customer Stock Code
+                text = text.PadRight((-text.Length), ' ');
+                sw.WriteLine("PIA+" + text + "+DES'");
+                text = "";
+
+                text = row["Quantity"].ToString();
+                text = text.PadRight((10 - text.Length), ' ');
+                sw.WriteLine("QTY+DEL+" + text + "'");
+                text = "";
+
+                text = row["UnitPrice"].ToString();
+                text = text.PadRight((13 - text.Length), ' ');
+                sw.WriteLine("QTY+PRC+" + text + "'");
+                text = "";
+            }
+        }
+        #endregion
+
         #region Write Order For KTN
         public static void WriteOrder (SqlConnection con)
         {
             DataTable data = SharedFunctions.QueryDB(con, "OSP_Write_Header_EDI");
             Console.WriteLine(data.Rows.Count);
 
-            /**
-             * Retrives the data from the database and then writes it line by line into a file.
-             */
-            string file = "C:\\Bespoke\\EDI\\OutputFiles\\" + row["OrderNumber"] + ".txt";
-            StreamWriter streamWriter = new StreamWriter(file);
-            Console.WriteLine(row["OrderNumber"]);
-            streamWriter.WriteLine("UNH+00000001  +ITEMS               +R4        +KTN                                          +ITEMS                                                                      +OSPREY    +KTN       +" + DateTime.Now + "+204+" + id + "_Product_List.txt        '");
-
             for (int i = 0; i < data.Rows.Count; i++)
             {
                 DataRow row = data.Rows[i];
-                List<string> columnNames = new List<string>();
-                string[] nameArray = data.Columns.Cast<DataColumn>()
-                             .Select(x => x.ColumnName)
-                             .ToArray();
+                /**
+                 * * Retrives the data from the database and then writes it line by line into a file.
+                 */
+                string file = "C:\\Bespoke\\EDI\\OutputFiles\\" + row["OrderNumber"].ToString() + ".txt";
+                string fileName = row["OrderNumber"].ToString() + ".txt";
+                fileName = fileName.PadRight((35 - fileName.Length), ' ');
+                StreamWriter streamWriter = new StreamWriter(file);
+                Console.WriteLine(row["OrderNumber"]);
+                streamWriter.WriteLine("UNH+00000001  +ORDER               +R4        +KTN                                          +ORDER                                                                      +OSPREY    +KTN       +" + DateTime.Now + "+204+" + fileName + "'");
+
                 string text = "";
                 streamWriter.WriteLine("FAC+C" + text + "'");
 
@@ -389,37 +427,14 @@ namespace EDI_Orders
                 streamWriter.WriteLine("ALI+" + text + "'");
                 text = "";
 
-                text = i.ToString();
-                text = text.PadRight((10 - text.Length), ' ');
-                text = text + "+" + row["ProductCode"].ToString();
-                text = text.PadRight((41 - text.Length), ' ');
-                text = text + "+" + row["ProductDescription"].ToString();
-                text = text.PadRight((297 - text.Length), ' ');
-                streamWriter.WriteLine("LIN+" + text + "'");
-                text = "";
+                WriteProductsKTN(con, streamWriter, row["OrderNumber"].ToString());
 
-                text = row[""].ToString();            //Customer Stock Code
-                text = text.PadRight((-text.Length), ' ');
-                streamWriter.WriteLine("PIA+" + text + "+DES'");
-                text = "";
-
-                text = row["Quantity"].ToString();
-                text = text.PadRight((10 - text.Length), ' ');
-                streamWriter.WriteLine("QTY+DEL+" + text + "'");
-                text = "";
-
-                text = row["UnitPrice"].ToString();
-                text = text.PadRight((13 - text.Length), ' ');
-                streamWriter.WriteLine("QTY+PRC+" + text + "'");
-                text = "";
+                streamWriter.Close();
+                var lineCount = File.ReadLines(file).Count();
+                File.AppendAllText(file, "UNT+" + (lineCount + 1) + "+00000001  '");
             }
-            streamWriter.Close();
-            var lineCount = File.ReadLines(file).Count();
-            File.AppendAllText(file, "UNT+" + (lineCount + 1) + "+00000001  '");
         }
         #endregion
-
-
 
         #region Write ASN For KTN
         public static void WriteASNFile (SqlConnection con, string id)
@@ -431,16 +446,15 @@ namespace EDI_Orders
              */
             string file = "C:\\Bespoke\\EDI\\OutputFiles\\PO" + id + ".txt";
             StreamWriter streamWriter = new StreamWriter(file);
-            streamWriter.WriteLine("UNH+00000001  +ITEMS               +R4        +KTN                                          +ITEMS                                                                      +OSPREY    +KTN       +" + DateTime.Now + "+204+" + id + "_Product_List.txt        '");
+            string fileName = "PO" + id + ".txt";
+            fileName = fileName.PadRight((35 - fileName.Length), ' ');
+            streamWriter.WriteLine("UNH+00000001  +ASN                 +R4        +KTN                                          +ASN                                                                        +OSPREY    +KTN       +" + DateTime.Now + "+204+" + fileName + "'");
             streamWriter.WriteLine("FAC+C'");
 
             for (int i = 0; i < data.Rows.Count; i++)
             {
                 DataRow row = data.Rows[i];
-                List<string> columnNames = new List<string>();
-                string[] nameArray = data.Columns.Cast<DataColumn>()
-                             .Select(x => x.ColumnName)
-                             .ToArray();
+
                 string text = "NORMAL";                                            //Currently hardcoded as we do not have an eqevilant field
                 text = text.PadRight((15 - text.Length), ' ');
                 streamWriter.WriteLine("RFF+TYP+" + text + "'");
@@ -508,16 +522,15 @@ namespace EDI_Orders
              */
             string file = "C:\\Bespoke\\EDI\\OutputFiles\\" + id + "_Product_List.txt";
             StreamWriter streamWriter = new StreamWriter(file);
-            streamWriter.WriteLine("UNH+00000001  +ITEMS               +R4        +KTN                                          +ITEMS                                                                      +OSPREY    +KTN       +" + DateTime.Now + "+204+" + id + "_Product_List.txt        '");
+            string fileName = id + "_Product_List.txt";
+            fileName = fileName.PadRight((35 - fileName.Length), ' ');
+            streamWriter.WriteLine("UNH+00000001  +ITEMS               +R4        +KTN                                          +ITEMS                                                                      +OSPREY    +KTN       +" + DateTime.Now + "+204+" + fileName + "'");
 
 
             for (int i = 0; i < data.Rows.Count; i++)
             {
                 DataRow row = data.Rows[i];
-                List<string> columnNames = new List<string>();
-                string[] nameArray = data.Columns.Cast<DataColumn>()
-                             .Select(x => x.ColumnName)
-                             .ToArray();
+ 
                 string text = row["StockCode"].ToString();
                 text = text.PadRight((30 - text.Length), ' ');
                 streamWriter.WriteLine("LIN+" + text + "'");
