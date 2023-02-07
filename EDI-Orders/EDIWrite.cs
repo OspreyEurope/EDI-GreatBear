@@ -272,6 +272,155 @@ namespace EDI_Orders
         #endregion
 
 
+        #region Write Order For KTN
+        public static void WriteOrder (SqlConnection con)
+        {
+            DataTable data = SharedFunctions.QueryDB(con, "OSP_Write_Header_EDI");
+            Console.WriteLine(data.Rows.Count);
+
+            /**
+             * Retrives the data from the database and then writes it line by line into a file.
+             */
+            string file = "C:\\Bespoke\\EDI\\OutputFiles\\" + row["OrderNumber"] + ".txt";
+            StreamWriter streamWriter = new StreamWriter(file);
+            Console.WriteLine(row["OrderNumber"]);
+            streamWriter.WriteLine("UNH+00000001  +ITEMS               +R4        +KTN                                          +ITEMS                                                                      +OSPREY    +KTN       +" + DateTime.Now + "+204+" + id + "_Product_List.txt        '");
+
+            for (int i = 0; i < data.Rows.Count; i++)
+            {
+                DataRow row = data.Rows[i];
+                List<string> columnNames = new List<string>();
+                string[] nameArray = data.Columns.Cast<DataColumn>()
+                             .Select(x => x.ColumnName)
+                             .ToArray();
+                string text = "";
+                streamWriter.WriteLine("FAC+C" + text + "'");
+
+                text = row["OrderType"].ToString();
+                text = text.PadRight((5 - text.Length), ' ');
+                streamWriter.WriteLine("TDT+" + text + "'");
+                text = "";
+
+                text = row[""].ToString();                                      //Oracle Order Number
+                text = text.PadRight(( - text.Length), ' ');
+                streamWriter.WriteLine("RFF+CR1+" + text + "'");
+                text = "";
+
+                text = row[""].ToString();                                      //Oracle Delivery Number
+                text = text.PadRight(( - text.Length), ' ');
+                streamWriter.WriteLine("RFF+2+" + text + "'");
+                text = "";
+
+                text = row[""].ToString();                                     //FCPN
+                text = text.PadRight(( - text.Length), ' ');
+                streamWriter.WriteLine("RFF+CR3+" + text + "'");
+                text = "";
+
+                text = row["OrderDate"].ToString();
+                streamWriter.WriteLine("DTM+DEL+" + text + "+102'");
+                text = "";
+
+                text = row[""].ToString();
+                text = text.PadRight(( - text.Length), ' ');
+                streamWriter.WriteLine("+" + text + "'");
+                text = "";
+
+                text = row["OrderRequestedDate"].ToString();
+                text = text.PadRight((-text.Length), ' ');
+                streamWriter.WriteLine("DTM+LOA+" + text + "+102'");
+                text = "";
+
+                text = row[""].ToString(); //Destination code
+                text = text.PadRight((30 - text.Length), ' ');
+                text = text + "+" + row["DelPostalName"].ToString();
+                text = text.PadRight((30 - row["DelPostalName"].ToString().Length), ' ');
+                text = text + "+" + row["DelAddressLine1"].ToString() + "," + row["DelAddressLine12"].ToString() + "," + row["DelAddressLine3"].ToString() + "," + row["DelAddressLine4"].ToString();
+                text = text.PadRight((274 - text.Length), ' ');
+                text = text + "+" + row["DelPostalCode"].ToString();
+                text = text.PadRight((285 - text.Length), ' ');
+                text = text + "+" + row["DelCity"].ToString();
+                text = text.PadRight((346 - text.Length), ' ');
+                text = text + "+" + row["DelCountryCode"].ToString();
+                text = text.PadRight((349 - text.Length), ' ');
+                text = text + "+" + row[""].ToString(); //Phone Number
+                text = text.PadRight((365 - text.Length), ' ');
+                text = text + "+" + row[""].ToString(); //Destination Contact
+                text = text.PadRight((426 - text.Length), ' ');
+                text = text + "+" + row["DelEmail"].ToString();
+                text = text.PadRight((682 - text.Length), ' ');
+                text = text + "+" + row[""].ToString();  //Del Name 2
+                text = text.PadRight((743 - text.Length), ' ');
+                text = text + "+" + row[""].ToString();   //Del Address 2
+                text = text.PadRight((804 - text.Length), ' ');
+                streamWriter.WriteLine("NAD+DES+" + text + "'");
+                text = "";
+
+                text = row[""].ToString();   // Invoice Code
+                text = text.PadRight((-text.Length), ' ');
+                text = text + "+" + row["InvoicePostalName"].ToString();
+                text = text.PadRight((30 - row["InvoicePostalName"].ToString().Length), ' ');
+                text = text + "+" + row["InvoiceAddressLine1"].ToString() + "," + row["vAddressLine12"].ToString() + "," + row["InvoiceAddressLine3"].ToString() + "," + row["InvoiceAddressLine4"].ToString();
+                text = text.PadRight((274 - text.Length), ' ');
+                text = text + "+" + row["InvoicePostCode"].ToString();
+                text = text.PadRight((285 - text.Length), ' ');
+                text = text + "+" + row["InvoiceCity"].ToString();
+                text = text.PadRight((346 - text.Length), ' ');
+                text = text + "+" + row["InvoiceCountryCode"].ToString();
+                text = text.PadRight((349 - text.Length), ' ');
+                text = text + "+" + row["CustomerVATCode"].ToString();
+                text = text.PadRight((270 - text.Length), ' ');
+                text = text + "+" + row["Currency"].ToString();
+                text = text.PadRight((291 - text.Length), ' ');
+                streamWriter.WriteLine("DTM+INV+" + text + "+102'");
+                text = "";
+
+                text = row[""].ToString();    // transporter Code
+                text = text.PadRight((60 - text.Length), ' ');
+                streamWriter.WriteLine("NAD+TRA+" + text + "'");
+                text = "";
+
+                text = row["DeliveryRequirments"].ToString();
+                text = text.PadRight((300 - text.Length), ' ');
+                streamWriter.WriteLine("FTX+DEL+" + text + "'");
+                text = "";
+
+                text = row[""].ToString();                                //Section reserved for incoterms
+                text = text.PadRight((-text.Length), ' ');
+                streamWriter.WriteLine("ALI+" + text + "'");
+                text = "";
+
+                text = i.ToString();
+                text = text.PadRight((10 - text.Length), ' ');
+                text = text + "+" + row["ProductCode"].ToString();
+                text = text.PadRight((41 - text.Length), ' ');
+                text = text + "+" + row["ProductDescription"].ToString();
+                text = text.PadRight((297 - text.Length), ' ');
+                streamWriter.WriteLine("LIN+" + text + "'");
+                text = "";
+
+                text = row[""].ToString();            //Customer Stock Code
+                text = text.PadRight((-text.Length), ' ');
+                streamWriter.WriteLine("PIA+" + text + "+DES'");
+                text = "";
+
+                text = row["Quantity"].ToString();
+                text = text.PadRight((10 - text.Length), ' ');
+                streamWriter.WriteLine("QTY+DEL+" + text + "'");
+                text = "";
+
+                text = row["UnitPrice"].ToString();
+                text = text.PadRight((13 - text.Length), ' ');
+                streamWriter.WriteLine("QTY+PRC+" + text + "'");
+                text = "";
+            }
+            streamWriter.Close();
+            var lineCount = File.ReadLines(file).Count();
+            File.AppendAllText(file, "UNT+" + (lineCount + 1) + "+00000001  '");
+        }
+        #endregion
+
+
+
         #region Write ASN For KTN
         public static void WriteASNFile (SqlConnection con, string id)
         {
@@ -310,9 +459,9 @@ namespace EDI_Orders
                 streamWriter.WriteLine("NAD+SUP+KTN'");
                 text = i.ToString();
                 text = text.PadRight((4 - text.Length), ' ');
-                text = text + "+" + row["StockCode"].ToString();
-                text = text.PadRight((30 - row["StockCode"].ToString().Length), ' ');
-                text = text + "+" + row["StockCode"].ToString();
+                text = text + "+" + row["StockItemCode"].ToString();
+                text = text.PadRight((30 - row["StockItemCode"].ToString().Length), ' ');
+                text = text + "+" + row["ProductDescription"].ToString();
                 text = text.PadRight((255 - row["ProductDescription"].ToString().Length), ' ');
                 streamWriter.WriteLine("LIN+" + text + "'");
                 text = "";
@@ -325,11 +474,6 @@ namespace EDI_Orders
                 text = row["LotCode"].ToString();
                 text = text.PadRight((60 - text.Length), ' ');
                 streamWriter.WriteLine("TRA+LNO+" + text + "'");
-                text = "";
-
-                text = row["Name"].ToString();
-                text = text.PadRight((60 - text.Length), ' ');
-                streamWriter.WriteLine("IMD+" + text + "'");
                 text = "";
 
                 text = row["OrderRequestedDate"].ToString();
@@ -348,9 +492,6 @@ namespace EDI_Orders
             File.AppendAllText(file, "UNT+" + (lineCount + 1) + "+00000001  '");
         }
         #endregion
-
-
-
 
         #region Write Product List For KTN
         /**

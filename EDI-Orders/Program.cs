@@ -431,7 +431,7 @@ namespace EDI_Orders
                     case "PO":
                         SqlConnection conDev = new SqlConnection();
                         conDev.ConnectionString = ConfigurationManager.ConnectionStrings["OERADEVORBIS"].ConnectionString;
-                        EDIWrite.WriteASN(conDev, "0000020985");
+                        EDIWrite.WriteASNFile(conDev, "0000020985");
                         break;
                     #endregion
                     default:
