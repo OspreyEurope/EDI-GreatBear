@@ -66,6 +66,7 @@
     <Compile Include="EDIWrite.cs" />
     <Compile Include="EDIX12.cs" />
     <Compile Include="FileManipulation.cs" />
+    <Compile Include="KTN.cs" />
     <Compile Include="Lookups.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
