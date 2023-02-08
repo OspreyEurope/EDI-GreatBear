@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
+using System.Data;
 using System.IO;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -9,8 +13,29 @@ namespace EDI_Orders
 {
     internal class KTN
     {
-        public static void ProcessKTN (string file)
+        public static void ProcessKTN (string file,SqlConnection con)
         {
+            string SP = "";
+
+
+            string OrderType = File.ReadAllLines(file)[0];
+            string Decision = OrderType.Substring(30,20);
+            switch (Decision)
+            {
+                case "STKMVT":
+                    SP = "";
+                    break;
+                case "RECCON":
+                    SP = "";
+                    break;
+                case "PPLCON":
+                    SP = "";
+                    break;
+            }
+
+            SqlCommand storedProcedure = new SqlCommand(SP, con);
+            storedProcedure.CommandType = CommandType.StoredProcedure;
+
             //Add Try catch on this block to check it can be read and is not corrupted to prevent a crash sooner rather than later
             using (StreamReader streamReader = File.OpenText(file))
             {
@@ -22,7 +47,18 @@ namespace EDI_Orders
                 string line = File.ReadLines (file).ElementAt(i);
                 var t = ReadKTN(line);
 
+
+
+
+                for (int j = 0; j < t.Length; j++)
+                {
+                    storedProcedure.Parameters.AddWithValue(t[i][0], t[i][1]);
+                }
             }
+
+            storedProcedure.ExecuteNonQuery();
+            storedProcedure.Parameters.Clear();
+            Console.WriteLine("Message Entered Successfully.");
         }
 
         #region Read Line For KTN
