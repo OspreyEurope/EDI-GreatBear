@@ -332,7 +332,7 @@ namespace EDI_Orders
                 streamWriter.WriteLine("UNH00000001  ORDER               R4        KTN                                          ORDER                                                                      OSPREY    KTN       " + DateTime.Now + "204" + fileName + "");
 
                 string text = "";
-                streamWriter.WriteLine("FAC+C" + text + "'");
+                streamWriter.WriteLine("FACC" + text + "");
 
                 text = row["OrderType"].ToString();
                 text = text.PadRight((5 - text.Length), ' ');
