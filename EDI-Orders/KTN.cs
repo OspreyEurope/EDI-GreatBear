@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,9 +9,20 @@ namespace EDI_Orders
 {
     internal class KTN
     {
-        public static void ProcessKTN ()
+        public static void ProcessKTN (string file)
         {
+            //Add Try catch on this block to check it can be read and is not corrupted to prevent a crash sooner rather than later
+            using (StreamReader streamReader = File.OpenText(file))
+            {
+                file = streamReader.ReadToEnd();
+            }
+            int lines = File.ReadLines(file).Count();
+            for (int i = 0; i < lines+1; i++)
+            {
+                string line = File.ReadLines (file).ElementAt(i);
+                var t = ReadKTN(line);
 
+            }
         }
 
         #region Read Line For KTN
