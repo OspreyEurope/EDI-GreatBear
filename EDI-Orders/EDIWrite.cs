@@ -360,9 +360,13 @@ namespace EDI_Orders
                 text = "";
 
                 text = row["OrderDate"].ToString();
+                DateTime dateTime = DateTime.ParseExact(text, "dd/MM/yyyy hh:mm:ss", null);
+                text = dateTime.ToString("yyyyMMdd");
                 streamWriter.WriteLine("000007DTMDEL" + text + "102");
 
                 text = row["OrderRequestedDate"].ToString();
+                dateTime = DateTime.ParseExact(text, "dd/MM/yyyy hh:mm:ss", null);
+                text = dateTime.ToString("yyyyMMdd");
                 streamWriter.WriteLine("000008DTMLOA" + text + "102");
 
                 text = "";//row[""].ToString(); //Destination code
@@ -467,6 +471,8 @@ namespace EDI_Orders
                 counter++;
 
                 text = row["OrderRequestedDate"].ToString();
+                DateTime dateTime = DateTime.ParseExact(text, "dd/MM/yyyy hh:mm:ss", null);
+                text = dateTime.ToString("yyyyMMdd");
                 streamWriter.WriteLine(counter.ToString().PadLeft((8 - counter.ToString().Length), '0') + "DTMPLA" + text + "102");
                 text = "";
                 counter++;
@@ -495,11 +501,14 @@ namespace EDI_Orders
                 counter++;
 
                 text = row["OrderRequestedDate"].ToString();
+                dateTime = DateTime.ParseExact(text, "dd/MM/yyyy hh:mm:ss", null);
+                text = dateTime.ToString("yyyyMMdd");
                 streamWriter.WriteLine(counter.ToString().PadLeft((8 - counter.ToString().Length), '0') + "DTMPLA" + text + "102");
                 text = "";
                 counter++;
 
                 text = row["UnitPrice"].ToString();
+                text = text.Replace(".", string.Empty);
                 text = text.PadRight((24 - text.Length), ' ');
                 text = text + row["Currency"].ToString();
                 text = text.PadRight((5 - row["Currency"].ToString().Length), ' ');
