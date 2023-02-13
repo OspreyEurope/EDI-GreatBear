@@ -445,8 +445,10 @@ namespace EDI_Orders
             StreamWriter streamWriter = new StreamWriter(file);
             string fileName = "PO" + id + ".txt";
             fileName = fileName.PadRight((35 - fileName.Length), ' ');
-            streamWriter.WriteLine("UNH00000001  ASN                 R4        KTN                                          ASN                                                                        OSPREY    KTN       " + DateTime.Now + "204" + fileName + "");
-            streamWriter.WriteLine("FACC");
+            streamWriter.WriteLine("000001UNH00000001  ASN                 R4        KTN                                          ASN                                                                        OSPREY    KTN       " + DateTime.Now + "204" + fileName + "");
+            streamWriter.WriteLine("000002FACC");
+
+            int counter = 3;
 
             for (int i = 0; i < data.Rows.Count; i++)
             {
@@ -454,18 +456,20 @@ namespace EDI_Orders
 
                 string text = "NORMAL";                                            //Currently hardcoded as we do not have an eqevilant field
                 text = text.PadRight((15 - text.Length), ' ');
-                streamWriter.WriteLine("RFFTYP" + text + "");
+                streamWriter.WriteLine(counter.ToString().PadLeft((6 - counter.ToString().Length), '0') + "RFFTYP" + text + "");
                 text = "";
+                counter++;
 
                 text = row["PurchaseOrderNumber"].ToString();
                 text = text.PadRight((40 - text.Length), ' ');
-                streamWriter.WriteLine("RFFCR" + text + "");
+                streamWriter.WriteLine(counter.ToString().PadLeft((6 - counter.ToString().Length), '0') + "RFFCR" + text + "");
                 text = "";
+                counter++;
 
                 text = row["OrderRequestedDate"].ToString();
-                streamWriter.WriteLine("DTMPLA" + text + "102");
+                streamWriter.WriteLine(counter.ToString().PadLeft((6 - counter.ToString().Length), '0') + "DTMPLA" + text + "102");
                 text = "";
-
+                counter++;
 
                 streamWriter.WriteLine("NADSUPKTN");
                 text = i.ToString();
@@ -474,33 +478,38 @@ namespace EDI_Orders
                 text = text.PadRight((30 - row["StockItemCode"].ToString().Length), ' ');
                 text = text + row["ProductDescription"].ToString();
                 text = text.PadRight((255 - row["ProductDescription"].ToString().Length), ' ');
-                streamWriter.WriteLine("LIN" + text + "");
+                streamWriter.WriteLine(counter.ToString().PadLeft((6 - counter.ToString().Length), '0') + "LIN" + text + "");
                 text = "";
+                counter++;
 
                 text = row["Quantity"].ToString();
                 text = text.PadRight((21 - text.Length), ' ');
-                streamWriter.WriteLine("QTYEXP" + text + "");
+                streamWriter.WriteLine(counter.ToString().PadLeft((6 - counter.ToString().Length), '0') + "QTYEXP" + text + "");
                 text = "";
+                counter++;
 
                 text = row["LotCode"].ToString();
                 text = text.PadRight((60 - text.Length), ' ');
-                streamWriter.WriteLine("TRALNO" + text + "");
+                streamWriter.WriteLine(counter.ToString().PadLeft((6 - counter.ToString().Length), '0') + "TRALNO" + text + "");
                 text = "";
+                counter++;
 
                 text = row["OrderRequestedDate"].ToString();
-                streamWriter.WriteLine("DTMPLA" + text + "102");
+                streamWriter.WriteLine(counter.ToString().PadLeft((6 - counter.ToString().Length), '0') + "DTMPLA" + text + "102");
                 text = "";
+                counter++;
 
                 text = row["UnitPrice"].ToString();
                 text = text.PadRight((24 - text.Length), ' ');
                 text = text + row["Currency"].ToString();
                 text = text.PadRight((5 - row["Currency"].ToString().Length), ' ');
-                streamWriter.WriteLine("MOA116" + text + "");
+                streamWriter.WriteLine(counter.ToString().PadLeft((6 - counter.ToString().Length), '0') + "MOA116" + text + "");
                 text = "";
+                counter++;
             }
             streamWriter.Close();
             var lineCount = File.ReadLines(file).Count();
-            File.AppendAllText(file, "UNT" + (lineCount + 1) + "00000001  ");
+            File.AppendAllText(file, counter.ToString().PadLeft((6 - counter.ToString().Length), '0') + "UNT" + (lineCount + 1) + "00000001  ");
         }
         #endregion
 
