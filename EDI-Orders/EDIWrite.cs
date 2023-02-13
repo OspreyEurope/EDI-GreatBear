@@ -335,7 +335,7 @@ namespace EDI_Orders
                 fileName = fileName.PadRight((35 - fileName.Length), ' ');
                 StreamWriter streamWriter = new StreamWriter(file);
                 Console.WriteLine(row["OrderNumber"]);
-                streamWriter.WriteLine("000001UNH00000001  ORDER               R4        KTN                                          ORDER                                                                      OSPREY    KTN       " + DateTime.Now + "204" + fileName + "");
+                streamWriter.WriteLine("000001UNH00000001  ORDER               R4        KTN                                          ORDER                                                                      OSPREY    KTN       " + DateTime.Now.ToString("yyyyMMddTHHmmss") + "204" + fileName + "");
 
                 string text = "";
                 streamWriter.WriteLine("000002FACC" + text + "");
@@ -445,7 +445,7 @@ namespace EDI_Orders
             StreamWriter streamWriter = new StreamWriter(file);
             string fileName = "PO" + id + ".txt";
             fileName = fileName.PadRight((35 - fileName.Length), ' ');
-            streamWriter.WriteLine("000001UNH00000001  ASN                 R4        KTN                                          ASN                                                                        OSPREY    KTN       " + DateTime.Now + "204" + fileName + "");
+            streamWriter.WriteLine("000001UNH00000001  ASN                 R4        KTN                                          ASN                                                                        OSPREY    KTN       " + DateTime.Now.ToString("yyyyMMddTHHmmss") + "204" + fileName + "");
             streamWriter.WriteLine("000002FACC");
 
             int counter = 3;
@@ -530,7 +530,7 @@ namespace EDI_Orders
             StreamWriter streamWriter = new StreamWriter(file);
             string fileName = id + "_Product_List.txt";
             fileName = fileName.PadRight((35 - fileName.Length), ' ');
-            streamWriter.WriteLine("000001UNH00000001  ITEMS               R4        KTN                                          ITEMS                                                                      OSPREY    KTN       " + DateTime.Now + "204" + fileName + "");
+            streamWriter.WriteLine("000001UNH00000001  ITEMS               R4        KTN                                          ITEMS                                                                      OSPREY    KTN       " + DateTime.Now.ToString("yyyyMMddTHHmmss") + "204" + fileName + "");
 
             int counter = 2;
 
