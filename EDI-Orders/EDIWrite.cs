@@ -302,6 +302,8 @@ namespace EDI_Orders
                 counter++;
 
                 text = row["Quantity"].ToString();
+                text.Replace(".", "");
+                text = text.PadRight(1,'0');
                 text = text.PadRight((10 - text.Length), ' ');
                 sw.WriteLine(counter.ToString().PadLeft((8 - counter.ToString().Length), '0') + "QTYDEL" + text + "");
                 text = "";
@@ -345,14 +347,14 @@ namespace EDI_Orders
                 streamWriter.WriteLine("000003TDT" + text + "");
                 text = "";
 
-                text = row["OrderNumber"].ToString();                                    //Oracle Order Number
+                text = row["DeliveryRequirements"].ToString();                                    //Oracle Order Number
                 text = text.PadRight((20 - text.Length), ' ');
                 streamWriter.WriteLine("000004RFFCR1" + text + "");
                 text = "";
 
-                text = row["DeliveryRequirements"].ToString();                                      //Oracle Delivery Number
+                text = row["OrderNumber"].ToString();                                      //Oracle Delivery Number
                 text = text.PadRight((300 - text.Length), ' ');
-                streamWriter.WriteLine("000005RFFC2" + text + "");
+                streamWriter.WriteLine("000005RFFCR2" + text + "");
 
                 text = ""; //row[""].ToString();                                     //FCPN
                 text = text.PadRight((30 - text.Length), ' ');
@@ -477,7 +479,8 @@ namespace EDI_Orders
                 text = "";
                 counter++;
 
-                streamWriter.WriteLine("NADSUPKTN");
+                streamWriter.WriteLine(counter.ToString().PadLeft((8 - counter.ToString().Length), '0') + "NADSUPKTN");
+                counter++;
                 text = i.ToString();
                 text = text.PadRight((4 - text.Length), ' ');
                 text = text + row["StockItemCode"].ToString();
@@ -489,6 +492,8 @@ namespace EDI_Orders
                 counter++;
 
                 text = row["Quantity"].ToString();
+                int a = text.IndexOf(".");
+                text.Remove(a,(text.Length-a));
                 text = text.PadRight((21 - text.Length), ' ');
                 streamWriter.WriteLine(counter.ToString().PadLeft((8 - counter.ToString().Length), '0') + "QTYEXP" + text + "");
                 text = "";
@@ -508,7 +513,8 @@ namespace EDI_Orders
                 counter++;
 
                 text = row["UnitPrice"].ToString();
-                text = text.Replace(".", string.Empty);
+                text.Replace(".", "");
+                text = text.PadRight(1, '0');
                 text = text.PadRight((24 - text.Length), ' ');
                 text = text + row["Currency"].ToString();
                 text = text.PadRight((5 - row["Currency"].ToString().Length), ' ');
