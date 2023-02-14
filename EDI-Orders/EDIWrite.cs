@@ -303,14 +303,26 @@ namespace EDI_Orders
                 counter++;
 
                 text = row["Quantity"].ToString();
-                text.Replace(".", "");
-                text = text.PadRight(1,'0');
+                //Remove the decimal
+                var temp = text.Split('.');
+                text = "";
+                foreach (string s in temp)
+                {
+                    text = text + s;
+                }
                 text = text.PadRight((18 - text.Length), ' ');
                 sw.WriteLine(counter.ToString().PadLeft((8 - counter.ToString().Length), '0') + "QTYDEL" + text + "");
                 text = "";
                 counter++;
 
                 text = row["UnitPrice"].ToString();
+                //Remove the decimal
+                temp = text.Split('.');
+                text = "";
+                foreach (string s in temp)
+                {
+                    text = text + s;
+                }
                 text = text.PadRight((18 - text.Length), ' ');
                 sw.WriteLine(counter.ToString().PadLeft((8 - counter.ToString().Length), '0') + "QTYPRC" + text + "");
                 text = "";
@@ -515,8 +527,12 @@ namespace EDI_Orders
                 counter++;
 
                 text = row["UnitPrice"].ToString();
-                text.Replace(".", "");
-                text = text.PadRight(1, '0');
+                var temp = text.Split('.');
+                text = "";
+                foreach (string s in temp)
+                {
+                    text = text + s;
+                }
                 text = text.PadRight((18 - text.Length), ' ');
                 text = text + row["Currency"].ToString();
                 text = text.PadRight((3 - row["Currency"].ToString().Length), ' ');
