@@ -339,104 +339,104 @@ namespace EDI_Orders
                 fileName = fileName.PadRight((35 - fileName.Length), ' ');
                 StreamWriter streamWriter = new StreamWriter(file);
                 Console.WriteLine(row["OrderNumber"]);
-                streamWriter.WriteLine("000001UNH00000001  ORDER               R4        KTN                                          ORDER                                                                      OSPREY    KTN       " + DateTime.Now.ToString("yyyyMMddTHHmmss") + "204" + fileName + "");
+                streamWriter.WriteLine("000001UNH00000001            ORDER               R4        KTN                                          ORDER                                                                      OSPREY     KTN        " + DateTime.Now.ToString("yyyyMMddTHHmmss").PadRight(DateTime.Now.ToString("yyyyMMddTHHmmss").Length, ' ') + "204" + fileName.PadRight((50 - fileName.Length), ' ') + "");
 
                 string text = "";
-                streamWriter.WriteLine("000002FACC" + text + "");
+                streamWriter.WriteLine("000002FACC  " + text.PadRight(35, ' ') + "");
 
                 text = row["OrderType"].ToString();
-                text = text.PadRight((5 - text.Length), ' ');
-                streamWriter.WriteLine("000003TDT" + text + "");
+                text = text.PadRight((30 - text.Length), ' ');
+                streamWriter.WriteLine("000003TDT" + text.PadLeft(83, ' ') + "");
                 text = "";
 
                 text = row["DeliveryRequirements"].ToString();                                    //Oracle Order Number
-                text = text.PadRight((20 - text.Length), ' ');
+                text = text.PadRight((80 - text.Length), ' ');
                 streamWriter.WriteLine("000004RFFCR1" + text + "");
                 text = "";
 
                 text = row["OrderNumber"].ToString();                                      //Oracle Delivery Number
-                text = text.PadRight((300 - text.Length), ' ');
+                text = text.PadRight((80 - text.Length), ' ');
                 streamWriter.WriteLine("000005RFFCR2" + text + "");
 
                 text = ""; //row[""].ToString();                                     //FCPN
-                text = text.PadRight((30 - text.Length), ' ');
+                text = text.PadRight((80 - text.Length), ' ');
                 streamWriter.WriteLine("000006RFFCR3" + text + "");
                 text = "";
 
                 text = row["OrderDate"].ToString();
                 DateTime dateTime = DateTime.ParseExact(text, "dd/MM/yyyy hh:mm:ss", null);
                 text = dateTime.ToString("yyyyMMdd");
-                streamWriter.WriteLine("000007DTMDEL" + text + "102");
+                streamWriter.WriteLine("000007DTMDEL" + text.PadRight((35 - text.Length), ' ') + "102");
 
                 text = row["OrderRequestedDate"].ToString();
                 dateTime = DateTime.ParseExact(text, "dd/MM/yyyy hh:mm:ss", null);
                 text = dateTime.ToString("yyyyMMdd");
-                streamWriter.WriteLine("000008DTMLOA" + text + "102");
+                streamWriter.WriteLine("000008DTMLOA" + text.PadRight((35 - text.Length), ' ') + "102");
 
                 text = "";//row[""].ToString(); //Destination code
-                text = text.PadRight((30 - text.Length), ' ');
+                text = text.PadRight((20 - text.Length), ' ');
                 text = text + row["DelPostalName"].ToString();
-                text = text.PadRight((60 - row["DelPostalName"].ToString().Length), ' ');
+                text = text.PadRight((80 - row["DelPostalName"].ToString().Length), ' ');
                 text = text + row["DelAddressLine1"].ToString() + "," + row["DelAddressLine2"].ToString() + "," + row["DelAddressLine3"].ToString() + "," + row["DelAddressLine4"].ToString();
-                text = text.PadRight((330 - text.Length), ' ');
+                text = text.PadRight((180 - text.Length), ' ');
                 text = text + row["DelPostCode"].ToString();
-                text = text.PadRight((340 - text.Length), ' ');
+                text = text.PadRight((200 - text.Length), ' ');
                 text = text + row["DelCity"].ToString();
-                text = text.PadRight((400 - text.Length), ' ');
+                text = text.PadRight((280 - text.Length), ' ');
                 text = text + row["DelCountryCode"].ToString();
-                text = text.PadRight((560 - text.Length), ' ');
+                text = text.PadRight((290 - text.Length), ' ');
                 text = text + "";//row[""].ToString(); //Phone Number
-                text = text.PadRight((575 - text.Length), ' ');
+                text = text.PadRight((340 - text.Length), ' ');
                 text = text + "";// row[""].ToString(); //Destination Contact
-                text = text.PadRight((635 - text.Length), ' ');
+                text = text.PadRight((443 - text.Length), ' ');
                 text = text + row["DelEmail"].ToString();
-                text = text.PadRight((860 - text.Length), ' ');
+                text = text.PadRight((493 - text.Length), ' ');
                 text = text + "";//row[""].ToString();  //Del Name 2
-                text = text.PadRight((950 - text.Length), ' ');
+                text = text.PadRight((766 - text.Length), ' ');
                 text = text + "";// row[""].ToString();   //Del Address 2
-                text = text.PadRight((1010 - text.Length), ' ');
-                streamWriter.WriteLine("000009NADDES" + text + "");
+                text = text.PadRight((916 - text.Length), ' ');
+                streamWriter.WriteLine("000009NADDES" + text.PadRight((996 - text.Length), ' ') + "");
                 text = "";
 
                 text = "";//row[""].ToString();   // Invoice Code
-                text = text.PadRight((30-text.Length), ' ');
+                text = text.PadRight((20-text.Length), ' ');
                 text = text + row["InvoicePostalAddress"].ToString();
-                text = text.PadRight((90 - row["InvoicePostalAddress"].ToString().Length), ' ');
+                text = text.PadRight((80 - row["InvoicePostalAddress"].ToString().Length), ' ');
                 text = text +  row["InvoiceAddressLine1"].ToString() + "," + row["InvoiceAddressLine2"].ToString() + "," + row["InvoiceAddressLine3"].ToString() + "," + row["InvoiceAddressLine4"].ToString();
-                text = text.PadRight((330 - text.Length), ' ');
+                text = text.PadRight((180 - text.Length), ' ');
                 text = text + row["InvoicePostCode"].ToString();
-                text = text.PadRight((340 - text.Length), ' ');
+                text = text.PadRight((200 - text.Length), ' ');
                 text = text + row["InvoiceCity"].ToString();
-                text = text.PadRight((400 - text.Length), ' ');
+                text = text.PadRight((280 - text.Length), ' ');
                 text = text + row["InvoiceCountry"].ToString();
-                text = text.PadRight((560 - text.Length), ' ');
+                text = text.PadRight((290 - text.Length), ' ');
                 text = text + row["CustomerVATCode"].ToString();
-                text = text.PadRight((580 - text.Length), ' ');
+                text = text.PadRight((673 - text.Length), ' ');
                 text = text + row["Currency"].ToString();
-                text = text.PadRight((600 - text.Length), ' ');
-                streamWriter.WriteLine("000010NADINV" + text + "102");
+                text = text.PadRight((746 - text.Length), ' ');
+                streamWriter.WriteLine("000010NADINV" + text.PadRight((996 - text.Length), ' ') + "102");
                 text = "";
 
                 text = "";// row[""].ToString();    // transporter Code
-                text = text.PadRight((60 - text.Length), ' ');
-                streamWriter.WriteLine("000011NADTRA" + text + "");
+                //text = text.PadRight(( - text.Length), ' ');
+                streamWriter.WriteLine("000011NADTRA" + text.PadRight((996 - text.Length), ' ') + "");
                 text = "";
 
                 text = row["Priority"].ToString();
-                text = text.PadRight((255 - text.Length), ' ');
+                text = text.PadRight((123 - text.Length), ' ');
                 streamWriter.WriteLine("000012FTXDEL" + text + "");
                 text = "";
 
                 text = row["Incoterms"].ToString();                                //Section reserved for incoterms
-                text = text.PadRight((140-text.Length), ' ');
-                streamWriter.WriteLine("000013ALI" + text + "");
+                text = text.PadRight((67-text.Length), ' ');
+                streamWriter.WriteLine("000013ALI" + text.PadLeft(16, ' ') + "");
                 text = "";
 
                 WriteProductsKTN(con, streamWriter, row["OrderNumber"].ToString(), counter);
 
                 streamWriter.Close();
                 var lineCount = File.ReadLines(file).Count();
-                File.AppendAllText(file, counter.ToString().PadLeft((8 - counter.ToString().Length), '0') + "UNT" + (lineCount + 1) + "00000001  ");
+                File.AppendAllText(file, counter.ToString().PadLeft((8 - counter.ToString().Length), '0') + "UNT" + (lineCount + 1).ToString().PadRight((6 - (lineCount + 1)), ' ') + "00000001            ");
             }
         }
         #endregion
