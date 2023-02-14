@@ -436,7 +436,7 @@ namespace EDI_Orders
 
                 streamWriter.Close();
                 var lineCount = File.ReadLines(file).Count();
-                File.AppendAllText(file, counter.ToString().PadLeft((8 - counter.ToString().Length), '0') + "UNT" + (lineCount + 1).ToString().PadRight((6 - (lineCount + 1)), ' ') + "00000001            ");
+                File.AppendAllText(file, counter.ToString().PadLeft((8 - counter.ToString().Length), '0') + "UNT" + (lineCount + 1).ToString().PadRight((6 - (lineCount + 1).ToString().Length), ' ') + "00000001            ");
             }
         }
         #endregion
@@ -526,7 +526,7 @@ namespace EDI_Orders
             }
             streamWriter.Close();
             var lineCount = File.ReadLines(file).Count();
-            File.AppendAllText(file, counter.ToString().PadLeft((8 - counter.ToString().Length), '0') + "UNT" + (lineCount + 1).ToString().PadRight((6-(lineCount+1)), ' ') + "00000001            ");
+            File.AppendAllText(file, counter.ToString().PadLeft((8 - counter.ToString().Length), '0') + "UNT" + (lineCount + 1).ToString().PadRight((6 - (lineCount + 1).ToString().Length), ' ') + "00000001            ");
         }
         #endregion
 
@@ -593,7 +593,7 @@ namespace EDI_Orders
             }
             streamWriter.Close();
             var lineCount = File.ReadLines(file).Count();
-            File.AppendAllText(file, counter.ToString().PadLeft((8 - counter.ToString().Length), '0') + "UNT" + (lineCount + 1).ToString().PadRight((6 - (lineCount + 1)), ' ') + "00000001            ");
+            File.AppendAllText(file, counter.ToString().PadLeft((8 - counter.ToString().Length), '0') + "UNT" + (lineCount + 1).ToString().PadRight((6 - (lineCount + 1).ToString().Length), ' ') + "00000001            ");
         }
         #endregion
     }
