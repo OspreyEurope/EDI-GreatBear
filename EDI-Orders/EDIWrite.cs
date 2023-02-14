@@ -281,6 +281,7 @@ namespace EDI_Orders
             /**
              * Retrives the data from the database and then writes it line by line into a file.
              */
+            int item = 1;
             for (int i = 0; i < data.Rows.Count; i++)
             {
                 DataRow row = data.Rows[i];
@@ -288,29 +289,29 @@ namespace EDI_Orders
                 string text = i.ToString();
                 text = text.PadRight((10 - text.Length), ' ');
                 text = text + row["ProductCode"].ToString();
-                text = text.PadRight((40 - text.Length), ' ');
+                text = text.PadRight((25 - text.Length), ' ');
                 text = text + row["ProductDescription"].ToString();
-                text = text.PadRight((295 - text.Length), ' ');
-                sw.WriteLine(counter.ToString().PadLeft((8 - counter.ToString().Length), '0') + "LIN" + counter.ToString().PadLeft((12 - counter.ToString().Length), '0') + text + "");
+                text = text.PadRight((80 - text.Length), ' ');
+                sw.WriteLine(counter.ToString().PadLeft((8 - counter.ToString().Length), '0') + "LIN" + counter.ToString().PadLeft((12 - counter.ToString().Length), '0').PadRight(18, ' ') + text.PadRight(30,' ') + "");
                 text = "";
                 counter++;
 
-                text = "";// row[""].ToString();            //Customer Stock Code
-                text = text.PadRight((30-text.Length), ' ');
-                sw.WriteLine(counter.ToString().PadLeft((8 - counter.ToString().Length), '0') + "PIA" + text + "DES");
+                text = item.ToString();// row[""].ToString();            //Customer Stock Code
+                text = text.PadRight((105-text.Length), ' ');
+                sw.WriteLine(counter.ToString().PadLeft((8 - counter.ToString().Length), '0') + "PIA" + text + "DES".PadRight(432, ' '));
                 text = "";
                 counter++;
 
                 text = row["Quantity"].ToString();
                 text.Replace(".", "");
                 text = text.PadRight(1,'0');
-                text = text.PadRight((10 - text.Length), ' ');
+                text = text.PadRight((18 - text.Length), ' ');
                 sw.WriteLine(counter.ToString().PadLeft((8 - counter.ToString().Length), '0') + "QTYDEL" + text + "");
                 text = "";
                 counter++;
 
                 text = row["UnitPrice"].ToString();
-                text = text.PadRight((13 - text.Length), ' ');
+                text = text.PadRight((18 - text.Length), ' ');
                 sw.WriteLine(counter.ToString().PadLeft((8 - counter.ToString().Length), '0') + "QTYPRC" + text + "");
                 text = "";
                 counter++;
