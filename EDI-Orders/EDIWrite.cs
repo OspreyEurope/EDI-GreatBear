@@ -477,11 +477,11 @@ namespace EDI_Orders
                 text = row["OrderRequestedDate"].ToString();
                 DateTime dateTime = DateTime.ParseExact(text, "dd/MM/yyyy hh:mm:ss", null);
                 text = dateTime.ToString("yyyyMMdd");
-                streamWriter.WriteLine(counter.ToString().PadLeft((35 - counter.ToString().Length), '0') + "DTMPLA" + text + "102");
+                streamWriter.WriteLine(counter.ToString().PadLeft((8 - counter.ToString().Length), '0') + "DTMPLA" + text.PadRight((35 - text.Length), ' ') + "102");
                 text = "";
                 counter++;
 
-                streamWriter.WriteLine(counter.ToString().PadLeft((923 - counter.ToString().Length), '0') + "NADSUPKTN");
+                streamWriter.WriteLine(counter.ToString().PadLeft((8 - counter.ToString().Length), '0') + "NADSUPKTN".PadRight((923 - counter.ToString().Length), ' '));
                 counter++;
                 text = i.ToString();
                 text = text.PadRight((4 - text.Length), ' ');
