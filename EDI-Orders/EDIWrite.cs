@@ -315,6 +315,7 @@ namespace EDI_Orders
                 sw.WriteLine(counter.ToString().PadLeft((8 - counter.ToString().Length), '0') + "QTYPRC" + text + "");
                 text = "";
                 counter++;
+                item++;
             }
             return counter;
         }
