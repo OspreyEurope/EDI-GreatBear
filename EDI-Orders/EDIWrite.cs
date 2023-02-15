@@ -292,13 +292,13 @@ namespace EDI_Orders
                 text = text.PadRight((25 - text.Length), ' ');
                 text = text + row["ProductDescription"].ToString();
                 text = text.PadRight((80 - text.Length), ' ');
-                sw.WriteLine(counter.ToString().PadLeft((8 - counter.ToString().Length), '0') + "LIN" + counter.ToString().PadLeft((12 - counter.ToString().Length), '0').PadRight(18, ' ') + text.PadRight(30,' ') + "");
+                sw.WriteLine(counter.ToString().PadLeft(6, '0') + "LIN" + counter.ToString().PadLeft((12 - counter.ToString().Length), '0').PadRight(18, ' ') + text.PadRight(30,' ') + "");
                 text = "";
                 counter++;
 
                 text = item.ToString();// row[""].ToString();            //Customer Stock Code
                 text = text.PadRight((105-text.Length), ' ');
-                sw.WriteLine(counter.ToString().PadLeft((8 - counter.ToString().Length), '0') + "PIA" + text + "DES".PadRight(432, ' '));
+                sw.WriteLine(counter.ToString().PadLeft(6, '0') + "PIA" + text + "DES".PadRight(432, ' '));
                 text = "";
                 counter++;
 
@@ -311,7 +311,7 @@ namespace EDI_Orders
                     text = text + s;
                 }
                 text = text.PadRight((18 - text.Length), ' ');
-                sw.WriteLine(counter.ToString().PadLeft((8 - counter.ToString().Length), '0') + "QTYDEL" + text + "");
+                sw.WriteLine(counter.ToString().PadLeft(6, '0') + "QTYDEL" + text + "");
                 text = "";
                 counter++;
 
@@ -324,7 +324,7 @@ namespace EDI_Orders
                     text = text + s;
                 }
                 text = text.PadRight((18 - text.Length), ' ');
-                sw.WriteLine(counter.ToString().PadLeft((8 - counter.ToString().Length), '0') + "QTYPRC" + text + "");
+                sw.WriteLine(counter.ToString().PadLeft(6, '0') + "QTYPRC" + text + "");
                 text = "";
                 counter++;
                 item++;
@@ -448,7 +448,7 @@ namespace EDI_Orders
 
                 streamWriter.Close();
                 var lineCount = File.ReadLines(file).Count();
-                File.AppendAllText(file, lineCount.ToString().PadLeft((8 - counter.ToString().Length), '0') + "UNT" + (lineCount + 1).ToString().PadRight((6 - (lineCount + 1).ToString().Length), ' ') + "00000001            ");
+                File.AppendAllText(file, lineCount.ToString().PadLeft(6, '0') + "UNT" + (lineCount + 1).ToString().PadRight((6 - (lineCount + 1).ToString().Length), ' ') + "00000001            ");
             }
         }
         #endregion
@@ -476,24 +476,25 @@ namespace EDI_Orders
 
                 string text = "NORMAL";                                            //Currently hardcoded as we do not have an eqevilant field
                 text = text.PadRight((80 - text.Length), ' ');
-                streamWriter.WriteLine(counter.ToString().PadLeft((8 - counter.ToString().Length), '0') + "RFFTYP" + text + "");
+                streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "RFFTYP" + text + "");
+                
                 text = "";
                 counter++;
 
                 text = row["PurchaseOrderNumber"].ToString();
                 text = text.PadRight((80 - text.Length), ' ');
-                streamWriter.WriteLine(counter.ToString().PadLeft((8 - counter.ToString().Length), '0') + "RFFCR " + text + "");
+                streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "RFFCR " + text + "");
                 text = "";
                 counter++;
 
                 text = row["OrderRequestedDate"].ToString();
                 DateTime dateTime = DateTime.ParseExact(text, "dd/MM/yyyy hh:mm:ss", null);
                 text = dateTime.ToString("yyyyMMdd");
-                streamWriter.WriteLine(counter.ToString().PadLeft((8 - counter.ToString().Length), '0') + "DTMPLA" + text.PadRight((35 - text.Length), ' ') + "102");
+                streamWriter.WriteLine(counter.ToString().PadLeft((6 - counter.ToString().Length), '0') + "DTMPLA" + text.PadRight((42 - text.Length), ' ') + "102");   //43 as it cuts off the time section however it is still counted using string.length
                 text = "";
                 counter++;
 
-                streamWriter.WriteLine(counter.ToString().PadLeft((8 - counter.ToString().Length), '0') + "NADSUPKTN".PadRight((923 - counter.ToString().Length), ' '));
+                streamWriter.WriteLine(counter.ToString().PadLeft((6 - counter.ToString().Length), '0') + "NADSUPKTN".PadRight((923 - counter.ToString().Length), ' '));
                 counter++;
                 text = i.ToString();
                 text = text.PadRight((4 - text.Length), ' ');
@@ -501,7 +502,7 @@ namespace EDI_Orders
                 text = text.PadRight((25 - row["StockItemCode"].ToString().Length), ' ');
                 text = text + row["ProductDescription"].ToString();
                 text = text.PadRight((80 - row["ProductDescription"].ToString().Length), ' ');
-                streamWriter.WriteLine(counter.ToString().PadLeft((8 - counter.ToString().Length), '0') + "LIN" + counter.ToString().PadLeft((8 - counter.ToString().Length), '0').PadRight(22, ' ') + text.PadRight(30, ' ') + "");
+                streamWriter.WriteLine(counter.ToString().PadLeft((6 - counter.ToString().Length), '0') + "LIN" + "1".PadRight(29, ' ') + text.PadRight(30, ' ') + "");
                 text = "";
                 counter++;
 
@@ -509,20 +510,20 @@ namespace EDI_Orders
                 int a = text.IndexOf(".");
                 text.Remove(a,(text.Length-a)).PadRight(1,'0');
                 text = text.PadRight((15 - text.Length), ' ');
-                streamWriter.WriteLine(counter.ToString().PadLeft((8 - counter.ToString().Length), '0') + "QTYEXP" + text + "");
+                streamWriter.WriteLine(counter.ToString().PadLeft((6 - counter.ToString().Length), '0') + "QTYEXP" + text + "");
                 text = "";
                 counter++;
 
                 text = row["LotCode"].ToString();
                 text = text.PadRight((35 - text.Length), ' ');
-                streamWriter.WriteLine(counter.ToString().PadLeft((8 - counter.ToString().Length), '0') + "TRALNO" + text + "");
+                streamWriter.WriteLine(counter.ToString().PadLeft((6 - counter.ToString().Length), '0') + "TRALNO" + text + "");
                 text = "";
                 counter++;
 
                 text = row["OrderRequestedDate"].ToString();
                 dateTime = DateTime.ParseExact(text, "dd/MM/yyyy hh:mm:ss", null);
-                text = dateTime.ToString("yyyyMMdd").PadRight((35-text.Length), ' ');
-                streamWriter.WriteLine(counter.ToString().PadLeft((8 - counter.ToString().Length), '0') + "DTMPLA" + text + "102");
+                text = dateTime.ToString("yyyyMMdd").PadRight((43-text.Length), ' '); //43 as it cuts off the time section however it is still counted using string.length
+                streamWriter.WriteLine(counter.ToString().PadLeft((6 - counter.ToString().Length), '0') + "DTMPLA" + text + "102");
                 text = "";
                 counter++;
 
@@ -533,16 +534,18 @@ namespace EDI_Orders
                 {
                     text = text + s;
                 }
-                text = text.PadRight((18 - text.Length), ' ');
+                text = text.PadRight(18, ' ');
                 text = text + row["Currency"].ToString();
-                text = text.PadRight((3 - row["Currency"].ToString().Length), ' ');
-                streamWriter.WriteLine(counter.ToString().PadLeft((8 - counter.ToString().Length), '0') + "MOA116" + text + "");
+                text = text.PadRight(3, ' ');
+                streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "MOA116" + text + "");
                 text = "";
                 counter++;
+                Console.WriteLine(6 - counter.ToString().Length);
+                Console.WriteLine(counter.ToString().PadLeft(6, '0'));
             }
             streamWriter.Close();
             var lineCount = File.ReadLines(file).Count();
-            File.AppendAllText(file, counter.ToString().PadLeft((8 - counter.ToString().Length), '0') + "UNT" + (lineCount + 1).ToString().PadRight((6 - (lineCount + 1).ToString().Length), ' ') + "00000001            ");
+            File.AppendAllText(file, counter.ToString().PadLeft(6, '0') + "UNT" + (lineCount + 1).ToString().PadRight((6 - (lineCount + 1).ToString().Length), ' ') + "00000001            ");
         }
         #endregion
 
@@ -562,8 +565,8 @@ namespace EDI_Orders
             string file = "C:\\Bespoke\\EDI\\OutputFiles\\" + id + "_Product_List.txt";
             StreamWriter streamWriter = new StreamWriter(file);
             string fileName = id + "_Product_List.txt";
-            fileName = fileName.PadRight((35 - fileName.Length), ' ');
-            streamWriter.WriteLine("000001UNH00000001            ITEMS               R4        KTN                                          ITEMS                                                                      OSPREY     KTN        " + DateTime.Now.ToString("yyyyMMddTHHmmss").PadRight((35 - DateTime.Now.ToString("yyyyMMddTHHmmss").Length), ' ') + "204" + fileName.PadRight((80 - fileName.Length), ' ') + "");
+            fileName = fileName.PadRight(35, ' ');
+            streamWriter.WriteLine("000001UNH00000001            ITEMS               R4        KTN                                          ITEMS                                                                      OSPREY     KTN        " + DateTime.Now.ToString("yyyyMMddTHHmmss").PadRight(35, ' ') + "204" + fileName.PadRight(50, ' ') + "");
 
             int counter = 2;
 
@@ -572,44 +575,44 @@ namespace EDI_Orders
                 DataRow row = data.Rows[i];
  
                 string text = row["StockCode"].ToString();
-                text = text.PadRight((30 - text.Length), ' ');
-                streamWriter.WriteLine(counter.ToString().PadLeft((8 - counter.ToString().Length), '0') + "LIN" + text + "");
+                text = text.PadRight(30, ' ');
+                streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "LIN" + text + "");
                 text = "";
                 counter++;
 
-                streamWriter.WriteLine(counter.ToString().PadLeft((8 - counter.ToString().Length), '0') + "ACTC".PadRight(10, ' '));
+                streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "ACTC".PadRight(10, ' '));
                 counter++;
 
-                streamWriter.WriteLine(counter.ToString().PadLeft((8 - counter.ToString().Length), '0') + "NADCUSOSPREY              ".PadRight(80, ' '));
+                streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "NADCUSOSPREY              ".PadRight(80, ' '));
                 counter++;
 
                 text = row["Name"].ToString();
-                text = text.PadRight((161 - text.Length), ' ');
-                streamWriter.WriteLine(counter.ToString().PadLeft((8 - counter.ToString().Length), '0') + "IMD" + text + "");
+                text = text.PadRight(161, ' ');
+                streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "IMD" + text + "");
                 text = "";
                 counter++;
 
                 text = row["ProductGroup"].ToString();
-                text = text.PadRight((70 - text.Length), ' ');
-                streamWriter.WriteLine(counter.ToString().PadLeft((8 - counter.ToString().Length), '0') + "GRIITG" + text + "");
+                text = text.PadRight(70, ' ');
+                streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "GRIITG" + text + "");
                 text = "";
                 counter++;
 
                 text = row["PartNumber"].ToString();
-                text = text.PadRight((37 - text.Length), ' ');
-                streamWriter.WriteLine(counter.ToString().PadLeft((8 - counter.ToString().Length), '0') + "TRABC " + text + "");
+                text = text.PadRight(35, ' ');
+                streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "TRABC " + text + "");
                 text = "";
                 counter++;
 
-                streamWriter.WriteLine(counter.ToString().PadLeft((8 - counter.ToString().Length), '0') + "CFGCONFIG1             YNEW         ");
+                streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "CFGCONFIG1             YNEW         ");
                 counter++;
 
-                streamWriter.WriteLine(counter.ToString().PadLeft((8 - counter.ToString().Length), '0') + "PADPCS                            Y");
+                streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "PADPCS                            Y");
                 counter++;
             }
             streamWriter.Close();
             var lineCount = File.ReadLines(file).Count();
-            File.AppendAllText(file, counter.ToString().PadLeft((8 - counter.ToString().Length), '0') + "UNT" + (lineCount + 1).ToString().PadRight((6 - (lineCount + 1).ToString().Length), ' ') + "00000001            ");
+            File.AppendAllText(file, counter.ToString().PadLeft(6, '0') + "UNT" + (lineCount + 1).ToString().PadRight(6, ' ') + "00000001            ");
         }
         #endregion
     }
