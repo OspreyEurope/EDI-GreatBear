@@ -298,8 +298,8 @@ namespace EDI_Orders
 
                 text = item.ToString();// row[""].ToString();            //Customer Stock Code
                 text = text.PadRight(108, ' ');
-                text = text + row[""].ToString();
-                sw.WriteLine(counter.ToString().PadLeft(6, '0') + "PIADES" + text.PadRight(544, ' '));
+                //text = text + row[""].ToString();
+                sw.WriteLine(counter.ToString().PadLeft(6, '0') + "PIADES" + text.PadRight(537, ' '));
                 text = "";
                 counter++;
 
