@@ -507,8 +507,8 @@ namespace EDI_Orders
                 counter++;
 
                 text = row["Quantity"].ToString();
-                int a = text.IndexOf(".");
-                text.Remove(a,(text.Length-a)).PadRight(1,'0');
+                var temp = text.Split('.');
+                text = temp[0];
                 text = text.PadRight((15 - text.Length), ' ');
                 streamWriter.WriteLine(counter.ToString().PadLeft((6 - counter.ToString().Length), '0') + "QTYEXP" + text + "");
                 text = "";
@@ -528,7 +528,7 @@ namespace EDI_Orders
                 counter++;
 
                 text = row["UnitPrice"].ToString();
-                var temp = text.Split('.');
+                temp = text.Split('.');
                 text = "";
                 foreach (string s in temp)
                 {
@@ -545,7 +545,7 @@ namespace EDI_Orders
             }
             streamWriter.Close();
             var lineCount = File.ReadLines(file).Count();
-            File.AppendAllText(file, counter.ToString().PadLeft(6, '0') + "UNT" + (lineCount + 1).ToString().PadRight((6 - (lineCount + 1).ToString().Length), ' ') + "00000001            ");
+            File.AppendAllText(file, counter.ToString().PadLeft(6, '0') + "UNT" + (lineCount + 1).ToString().PadRight(6, ' ') + "00000001            ");
         }
         #endregion
 
