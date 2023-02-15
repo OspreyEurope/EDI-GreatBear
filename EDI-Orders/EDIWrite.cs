@@ -448,7 +448,7 @@ namespace EDI_Orders
 
                 streamWriter.Close();
                 var lineCount = File.ReadLines(file).Count();
-                File.AppendAllText(file, counter.ToString().PadLeft((8 - counter.ToString().Length), '0') + "UNT" + (lineCount + 1).ToString().PadRight((6 - (lineCount + 1).ToString().Length), ' ') + "00000001            ");
+                File.AppendAllText(file, lineCount.ToString().PadLeft((8 - counter.ToString().Length), '0') + "UNT" + (lineCount + 1).ToString().PadRight((6 - (lineCount + 1).ToString().Length), ' ') + "00000001            ");
             }
         }
         #endregion
@@ -465,7 +465,7 @@ namespace EDI_Orders
             StreamWriter streamWriter = new StreamWriter(file);
             string fileName = "PO" + id + ".txt";
             fileName = fileName.PadRight((35 - fileName.Length), ' ');
-            streamWriter.WriteLine("000001UNH00000001            ASN                 R4        KTN                                           ASN                                                                        OSPREY    KTN       " + DateTime.Now.ToString("yyyyMMddTHHmmss") + "204" + fileName.PadRight((80 - fileName.Length), ' ') + "");
+            streamWriter.WriteLine("000001UNH00000001            ASN                 R4        KTN                                           ASN                                                                       OSPREY     KTN       " + DateTime.Now.ToString("yyyyMMddTHHmmss") + "204" + fileName.PadRight((80 - fileName.Length), ' ') + "");
             streamWriter.WriteLine("000002FACC");
 
             int counter = 3;
@@ -601,10 +601,10 @@ namespace EDI_Orders
                 text = "";
                 counter++;
 
-                streamWriter.WriteLine(counter.ToString().PadLeft((8 - counter.ToString().Length), '0') + "CFGCONFIG1YNEW                      ");
+                streamWriter.WriteLine(counter.ToString().PadLeft((8 - counter.ToString().Length), '0') + "CFGCONFIG1             YNEW         ");
                 counter++;
 
-                streamWriter.WriteLine(counter.ToString().PadLeft((8 - counter.ToString().Length), '0') + "PADPCSY".PadRight(28, ' '));
+                streamWriter.WriteLine(counter.ToString().PadLeft((8 - counter.ToString().Length), '0') + "PADPCS                            Y");
                 counter++;
             }
             streamWriter.Close();
