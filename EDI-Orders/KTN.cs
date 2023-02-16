@@ -138,6 +138,9 @@ namespace EDI_Orders
                         case "ARR":
                             result[0] = new string[] { "ArrivedDate", row.Substring(13, 35) };
                             break;
+                        case "PER":
+                            result[0] = new string[] { "DatePeriod", row.Substring(13, 35) };
+                            break;
                     }
                     return result;
                 case "NAD":
@@ -313,6 +316,20 @@ namespace EDI_Orders
                             break;
                     }
                     result[0] = new string[] { LOCParty + "Location", row.Substring(13, 25) };
+                    return result;
+                case "SBD":
+                    result[0] = new string[] { "TotalQuantity", row.Substring(48, 15) };
+                    result[1] = new string[] { "BlockedQuantity", row.Substring(63, 15) };
+                    result[2] = new string[] { "InOrderQuantity", row.Substring(78, 15) };
+                    result[3] = new string[] { "ReservedQuantity", row.Substring(93, 15) };
+                    result[4] = new string[] { "PickedQuantity", row.Substring(108, 15) };
+                    result[5] = new string[] { "AvilibleQuantity", row.Substring(123, 15) };
+                    return result;
+                case "SMD":
+                    result[0] = new string[] { "StockMovementType", row.Substring(10, 3) };
+                    result[1] = new string[] { "TypeOfOperation", row.Substring(13, 3) };
+                    result[2] = new string[] { "Reason", row.Substring(34, 20) };
+                    result[0] = new string[] { "DateOfMovement", row.Substring(124, 35) };
                     return result;
             }
             return null;
