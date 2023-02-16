@@ -296,12 +296,12 @@ namespace EDI_Orders
                 text = "";
                 counter++;
 
-                text = item.ToString();// row[""].ToString();            //Customer Stock Code
-                text = text.PadRight(108, ' ');
-                //text = text + row[""].ToString();
-                sw.WriteLine(counter.ToString().PadLeft(6, '0') + "PIADES" + text.PadRight(537, ' '));
-                text = "";
-                counter++;
+                //text = item.ToString();// row[""].ToString();            //Customer Stock Code
+                //text = text.PadRight(108, ' ');
+                ////text = text + row[""].ToString();
+                //sw.WriteLine(counter.ToString().PadLeft(6, '0') + "PIADES" + text.PadRight(537, ' '));
+                //text = "";
+                //counter++;
 
                 text = row["Quantity"].ToString();
                 //Remove the decimal
@@ -340,7 +340,7 @@ namespace EDI_Orders
         {
             DataTable data = SharedFunctions.QueryDB(con, "OSP_Write_Header_EDI");
             Console.WriteLine(data.Rows.Count);
-            int counter = 14;
+            int counter = 13;
 
             for (int i = 0; i < data.Rows.Count; i++)
             {
@@ -446,7 +446,7 @@ namespace EDI_Orders
 
                 text = row["Incoterms"].ToString();                                //Section reserved for incoterms
                 text = text.PadRight(67, ' ');
-                streamWriter.WriteLine("000013ALI" + text.PadLeft(204, ' ') + "");
+                streamWriter.WriteLine("000012ALI" + text.PadLeft(204, ' ') + "");
                 text = "";
 
                 WriteProductsKTN(con, streamWriter, row["OrderNumber"].ToString(), counter);
@@ -519,15 +519,15 @@ namespace EDI_Orders
                 text = "";
                 counter++;
 
-                text = row["LotCode"].ToString();
-                text = text.PadRight((35 - text.Length), ' ');
-                streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "TRALNO" + text + "");
-                text = "";
-                counter++;
+                //text = row["LotCode"].ToString();
+                //text = text.PadRight((35 - text.Length), ' ');
+                //streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "TRALNO" + text + "");
+                //text = "";
+                //counter++;
 
                 text = row["OrderRequestedDate"].ToString();
                 dateTime = DateTime.ParseExact(text, "dd/MM/yyyy hh:mm:ss", null);
-                text = dateTime.ToString("yyyyMMdd").PadRight((43-text.Length), ' '); //43 as it cuts off the time section however it is still counted using string.length
+                text = dateTime.ToString("yyyyMMdd").PadRight(35, ' '); //43 as it cuts off the time section however it is still counted using string.length
                 streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "DTMPLA" + text + "102");
                 text = "";
                 counter++;
@@ -539,7 +539,7 @@ namespace EDI_Orders
                 {
                     text = text + s;
                 }
-                text = text.Substring(0, text.Length - 2);
+                text = text.Substring(0, text.Length - 3);
                 text = text.PadRight(18, ' ');
                 text = text + row["Currency"].ToString();
                 text = text.PadRight(3, ' ');

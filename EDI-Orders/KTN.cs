@@ -87,7 +87,7 @@ namespace EDI_Orders
                     result[0] = new string[] { "FileActionDescription", row.Substring(13, 35) };
                     return result;
                 case "TDT":
-                    result[0] = new string[] { "TransportReferenceNumber", row.Substring(10, 80) };
+                    result[0] = new string[] { "OrderType", row.Substring(93, 10) };
                     return result;
                 case "RFF":
                     string RFFSeg =  row.Substring(10, 3);
@@ -123,6 +123,9 @@ namespace EDI_Orders
                         case "IDT":
                             result[0] = new string[] { "InboundDeliveryType", row.Substring(13, 80) };
                             break;
+                        case "TRR":
+                            result[0] = new string[] { "TransportReference", row.Substring(13, 80) };
+                            break;
                     }
                     return result;
                 case "DTM":
@@ -156,6 +159,7 @@ namespace EDI_Orders
                             break;
                         case "CZ":
                             NADParty = "Shipper";
+                            result[4] = new string[] { NADParty + "ID", row.Substring(13, 20) };
                             break;
                         case "SE":
                             NADParty = "Seller";
@@ -173,13 +177,11 @@ namespace EDI_Orders
                     result[0] = new string[] { NADParty + "Name", row.Substring(33, 80) };
                     result[1] = new string[] { NADParty + "Address", row.Substring(113, 80) };
                     result[2] = new string[] { NADParty + "Country", row.Substring(303, 80) };
-                    result[3] = new string[] { NADParty + "LicensePlate", row.Substring(759, 20) };
-
                     if (NADParty == "Transporter")
                     {
+                        result[3] = new string[] { NADParty + "LicensePlate", row.Substring(759, 20) };
                         result[4] = new string[] { NADParty + "Contact", row.Substring(486, 50) };
                     }
-
                     return result;
                 case "FTX":
                     string FTXSeg = row.Substring(10, 3);
@@ -208,8 +210,8 @@ namespace EDI_Orders
                     result[0] = new string[] { FTXParty + "Comments", row.Substring(13, 120) };
                     return result;
                 case "ALI":
-                    result[0] = new string[] { "Amount", row.Substring(131, 12) };
-                    result[1] = new string[] { "Incoterm", row.Substring(147, 10) };
+                    result[0] = new string[] { "Cost", row.Substring(132, 12) };
+                    result[1] = new string[] { "Crrency", row.Substring(144, 3) };
                     return result;
                 case "LIN":
                     result[0] = new string[] { "ItemNumber", row.Substring(40, 25) };
@@ -274,6 +276,9 @@ namespace EDI_Orders
                         case "REC":
                             QTYParty = "Recieved";
                             break;
+                        case "TLO":
+                            QTYParty = "TotalLoaded";
+                            break;
                     }
                     result[0] = new string[] { QTYParty + "Quantity", row.Substring(13, 15) };
                     return result;
@@ -330,6 +335,10 @@ namespace EDI_Orders
                     result[1] = new string[] { "TypeOfOperation", row.Substring(13, 3) };
                     result[2] = new string[] { "Reason", row.Substring(34, 20) };
                     result[0] = new string[] { "DateOfMovement", row.Substring(124, 35) };
+                    return result;
+                case "MEA":
+                    result[0] = new string[] { "TotalGrossWeight", row.Substring(13, 12) };
+                    result[1] = new string[] { "MeasurementUnit", row.Substring(49, 25) };
                     return result;
             }
             return null;
