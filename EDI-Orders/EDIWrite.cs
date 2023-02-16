@@ -286,13 +286,13 @@ namespace EDI_Orders
             {
                 DataRow row = data.Rows[i];
 
-                string text = i.ToString();
-                text = text.PadRight(10, ' ');
+                string text = (i+1).ToString();
+                text = text.PadRight(30, ' ');
                 text = text + row["ProductCode"].ToString();
-                text = text.PadRight(25, ' ');
+                text = text.PadRight(55, ' ');
                 text = text + row["ProductDescription"].ToString();
-                text = text.PadRight(80, ' ');
-                sw.WriteLine(counter.ToString().PadLeft(6, '0') + "LIN" + counter.ToString().PadLeft(12, '0').PadRight(18, ' ') + text.PadRight(30,' ') + "");
+                text = text.PadRight(135, ' ');
+                sw.WriteLine(counter.ToString().PadLeft(6, '0') + "LIN" + text.PadRight(165,' ') + "");
                 text = "";
                 counter++;
 
@@ -363,7 +363,7 @@ namespace EDI_Orders
                 streamWriter.WriteLine("000003TDT" + text.PadLeft(113, ' ') + "");
                 text = "";
 
-                text = row["DeliveryRequirements"].ToString();                                    //Oracle Order Number
+                text = row["Priority"].ToString();          //Oracle Order Number
                 text = text.PadRight(80, ' ');
                 streamWriter.WriteLine("000004RFFCR1" + text + "");
                 text = "";
@@ -387,7 +387,8 @@ namespace EDI_Orders
                 text = dateTime.ToString("yyyyMMdd");
                 streamWriter.WriteLine("000008DTMLOA" + text.PadRight(35, ' ') + "102");     //Currently hardcoded as we do not have an eqevilant field
 
-                text = "";//row[""].ToString(); //Destination code
+                string ID = row["DelPostalName"].ToString().Substring(0, 10);
+                text = ID;
                 text = text.PadRight(20, ' ');
                 text = text + row["DelPostalName"].ToString();
                 text = text.PadRight(100, ' ');
@@ -412,7 +413,8 @@ namespace EDI_Orders
                 streamWriter.WriteLine("000009NADDES" + text.PadRight(996, ' ') + "");
                 text = "";
 
-                text = "";//row[""].ToString();   // Invoice Code
+                ID = row["InvoicePostalAddress"].ToString().Substring(0, 10);
+                text = ID;
                 text = text.PadRight(20, ' ');
                 text = text + row["InvoicePostalAddress"].ToString();
                 text = text.PadRight(100, ' ');
@@ -421,6 +423,8 @@ namespace EDI_Orders
                 text = text + row["InvoicePostCode"].ToString();
                 text = text.PadRight(200, ' ');
                 text = text + row["InvoiceCity"].ToString();
+                text = text.PadRight(280, ' ');
+                text = text + row["InvoiceCountryCode"].ToString();   
                 text = text.PadRight(290, ' ');
                 text = text + row["InvoiceCountry"].ToString();
                 text = text.PadRight(653, ' ');
@@ -435,10 +439,10 @@ namespace EDI_Orders
                 streamWriter.WriteLine("000011NADTRA" + text.PadRight(996, ' ') + "");
                 text = "";
 
-                text = row["Priority"].ToString();
-                text = text.PadRight(123, ' ');
-                streamWriter.WriteLine("000012FTXDEL" + text + "");
-                text = "";
+                //text = row["DeliveryRequirements"].ToString();
+                //text = text.PadRight(123, ' ');
+                //streamWriter.WriteLine("000012FTXDEL" + text + "");
+                //text = "";
 
                 text = row["Incoterms"].ToString();                                //Section reserved for incoterms
                 text = text.PadRight(67, ' ');
@@ -491,19 +495,19 @@ namespace EDI_Orders
                 text = row["OrderRequestedDate"].ToString();
                 DateTime dateTime = DateTime.ParseExact(text, "dd/MM/yyyy hh:mm:ss", null);
                 text = dateTime.ToString("yyyyMMdd");
-                streamWriter.WriteLine(counter.ToString().PadLeft((6 - counter.ToString().Length), '0') + "DTMPLA" + text.PadRight((42 - text.Length), ' ') + "102");   //43 as it cuts off the time section however it is still counted using string.length
+                streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "DTMPLA" + text.PadRight(35, ' ') + "102");   //43 as it cuts off the time section however it is still counted using string.length
                 text = "";
                 counter++;
 
-                streamWriter.WriteLine(counter.ToString().PadLeft((6 - counter.ToString().Length), '0') + "NADSUPKTN".PadRight((923 - counter.ToString().Length), ' '));
+                streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "NADSUPKTN".PadRight(923, ' '));
                 counter++;
-                text = i.ToString();
-                text = text.PadRight((4 - text.Length), ' ');
+                text = (i+1).ToString();
+                text = text.PadRight(30, ' ');
                 text = text + row["StockItemCode"].ToString();
-                text = text.PadRight((25 - row["StockItemCode"].ToString().Length), ' ');
+                text = text.PadRight(55, ' ');
                 text = text + row["ProductDescription"].ToString();
-                text = text.PadRight((80 - row["ProductDescription"].ToString().Length), ' ');
-                streamWriter.WriteLine(counter.ToString().PadLeft((6 - counter.ToString().Length), '0') + "LIN" + "1".PadRight(29, ' ') + text.PadRight(30, ' ') + "");
+                text = text.PadRight(135, ' ');
+                streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "LIN" + text.PadRight(175, ' ') + "");
                 text = "";
                 counter++;
 
@@ -511,20 +515,20 @@ namespace EDI_Orders
                 var temp = text.Split('.');
                 text = temp[0];
                 text = text.PadRight((15 - text.Length), ' ');
-                streamWriter.WriteLine(counter.ToString().PadLeft((6 - counter.ToString().Length), '0') + "QTYEXP" + text + "");
+                streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "QTYEXP" + text + "");
                 text = "";
                 counter++;
 
                 text = row["LotCode"].ToString();
                 text = text.PadRight((35 - text.Length), ' ');
-                streamWriter.WriteLine(counter.ToString().PadLeft((6 - counter.ToString().Length), '0') + "TRALNO" + text + "");
+                streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "TRALNO" + text + "");
                 text = "";
                 counter++;
 
                 text = row["OrderRequestedDate"].ToString();
                 dateTime = DateTime.ParseExact(text, "dd/MM/yyyy hh:mm:ss", null);
                 text = dateTime.ToString("yyyyMMdd").PadRight((43-text.Length), ' '); //43 as it cuts off the time section however it is still counted using string.length
-                streamWriter.WriteLine(counter.ToString().PadLeft((6 - counter.ToString().Length), '0') + "DTMPLA" + text + "102");
+                streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "DTMPLA" + text + "102");
                 text = "";
                 counter++;
 
@@ -535,14 +539,13 @@ namespace EDI_Orders
                 {
                     text = text + s;
                 }
+                text = text.Substring(0, text.Length - 2);
                 text = text.PadRight(18, ' ');
                 text = text + row["Currency"].ToString();
                 text = text.PadRight(3, ' ');
                 streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "MOA116" + text + "");
                 text = "";
                 counter++;
-                Console.WriteLine(6 - counter.ToString().Length);
-                Console.WriteLine(counter.ToString().PadLeft(6, '0'));
             }
             streamWriter.Close();
             var lineCount = File.ReadLines(file).Count();
@@ -576,8 +579,8 @@ namespace EDI_Orders
                 DataRow row = data.Rows[i];
  
                 string text = row["StockCode"].ToString();
-                text = text.PadRight(30, ' ');
-                streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "LIN" + text + "");
+                text = text.PadRight(25, ' ');
+                streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "LIN" +(i+1).ToString().PadRight(30) + text + "");
                 text = "";
                 counter++;
 
