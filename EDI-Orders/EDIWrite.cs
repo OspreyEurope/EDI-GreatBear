@@ -611,7 +611,29 @@ namespace EDI_Orders
                 streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "CFGCONFIG1             YNEW         ");
                 counter++;
 
-                streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "PADPCS                            Y");
+                streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "PADPCS                     Y Y    Y");
+                counter++;
+
+                streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "QTYSU 1                 ");
+                counter++;
+
+                streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "PADBOX                             ");
+                counter++;
+
+                //text = row["BoxWidth"].ToString().PadRight(12, ' ');
+                //streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "MEAWD " + text.PadRight(36, ' ') + "CMT");
+                //counter++;
+
+                //text = row["BoxHeight"].ToString().PadRight(12, ' ');
+                //streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "MEAHT " + text.PadRight(36, ' ') + "CMT");
+                //counter++;
+
+                //text = row["BoxLength"].ToString().PadRight(12, ' ');
+                //streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "MEADT " + text.PadRight(36, ' ') + "CMT");
+                //counter++;
+
+                text = row["BoxQuantity"].ToString().PadRight(15, ' ');
+                streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "QTYSU " + text.PadRight(18, ' '));
                 counter++;
             }
             streamWriter.Close();
