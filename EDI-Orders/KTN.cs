@@ -8,6 +8,7 @@ using System.Runtime.Remoting.Messaging;
 using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace EDI_Orders
 {
@@ -15,49 +16,46 @@ namespace EDI_Orders
     {
         public static void ProcessKTN (string file,SqlConnection con)
         {
+            con.Open();
             string SP = "";
-
-
             string OrderType = File.ReadAllLines(file)[0];
-            string Decision = OrderType.Substring(30,20);
+            string Decision = OrderType.Substring(29,20);
             switch (Decision)
             {
-                case "STKMVT":
+                case "STKMVT              ":
                     SP = "OSP_Insert_Stock_Movement";
                     break;
-                case "RECCON":
+                case "RECCON              ":
                     SP = "OSP_Insert_Reccon";
                     break;
-                case "PPLCON":
+                case "PPLCON              ":
                     SP = "OSP_Insert_Pplcon";
                     break;
             }
-
+            Console.WriteLine(SP);
             SqlCommand storedProcedure = new SqlCommand(SP, con);
             storedProcedure.CommandType = CommandType.StoredProcedure;
-
+            int lineCount = File.ReadLines(file).Count();
             //Add Try catch on this block to check it can be read and is not corrupted to prevent a crash sooner rather than later
-            using (StreamReader streamReader = File.OpenText(file))
+            string[] lines = File.ReadAllLines(file);
+            Console.WriteLine(file);
+            for (int i = 0; i < lineCount; i++)
             {
-                file = streamReader.ReadToEnd();
-            }
-            int lines = File.ReadLines(file).Count();
-            for (int i = 0; i < lines+1; i++)
-            {
-                string line = File.ReadLines (file).ElementAt(i);
-                var t = ReadKTN(line);
-
-
-
-
-                for (int j = 0; j < t.Length; j++)
+                string[][] t = ReadKTN(lines[i]);
+                if (t != null)
                 {
-                    storedProcedure.Parameters.AddWithValue(t[i][0], t[i][1]);
+                    for (int j = 0; j < t.Length; j++)
+                    {
+                        storedProcedure.Parameters.AddWithValue(t[j][0], t[j][1]);
+                        Console.WriteLine(t[j][0]);
+                        Console.WriteLine(t[j][1]);
+                    }
                 }
             }
-
+            Console.WriteLine(storedProcedure.Parameters.Count);
             storedProcedure.ExecuteNonQuery();
             storedProcedure.Parameters.Clear();
+            con.Close();
             Console.WriteLine("Message Entered Successfully.");
         }
 
@@ -68,7 +66,7 @@ namespace EDI_Orders
              * This created the header variable to check against whitch is positions 7, 8 and 9 in the lie,
              * It then creates a result array which will hold the header for the stored procedure to use and the value.
              */
-            string header = row.Substring(7, 3);
+            string header = row.Substring(6, 3);
             string[][] result = new string[15][];
 
             /**
@@ -78,76 +76,84 @@ namespace EDI_Orders
             switch (header)
             {
                 case "UNH":
-                    result[0] = new string[] { "MessageType", row.Substring(30, 20) };
-                    result[1] = new string[] { "Warehouse", row.Substring(60, 10) };
-                    result[2] = new string[] { "DateReceived", row.Substring(202, 35) };
-                    result[3] = new string[] { "OriginalFileName", row.Substring(240, 50) };
-                    return result;
+                    result[0] = new string[] { "MessageType", row.Substring(29, 20) };
+                    result[1] = new string[] { "Warehouse", row.Substring(59, 10) };
+                    result[2] = new string[] { "DateReceived", row.Substring(201, 35) };
+                    result[3] = new string[] { "OriginalFileName", row.Substring(239, 50) };
+                    break;
                 case "FAC":
-                    result[0] = new string[] { "FileActionDescription", row.Substring(13, 35) };
-                    return result;
+                    result[0] = new string[] { "FileAction", row.Substring(12, 35) }; Console.WriteLine(result[0][1]);
+                    break;
                 case "TDT":
-                    result[0] = new string[] { "OrderType", row.Substring(93, 10) };
-                    return result;
+                    result[0] = new string[] { "OrderType", row.Substring(92, 10) };
+                    break;
                 case "RFF":
-                    string RFFSeg =  row.Substring(10, 3);
+                    string RFFSeg =  row.Substring(9, 3);
                     switch (RFFSeg)
                     {
                         case "CR1":
-                            result[0] = new string[] { "CustomerReference1", row.Substring(13, 80) };
+                            result[0] = new string[] { "CustomerReference1", row.Substring(12, 80) };
                             break;
                         case "CR2":
-                            result[0] = new string[] { "CustomerReference2", row.Substring(13, 80) };
+                            result[0] = new string[] { "CustomerReference2", row.Substring(12, 80) };
                             break;
                         case "CR3":
-                            result[0] = new string[] { "CustomerReference3", row.Substring(13, 80) };
+                            result[0] = new string[] { "CustomerReference3", row.Substring(12, 80) };
                             break;
                         case "CR4":
-                            result[0] = new string[] { "CustomerReference4", row.Substring(13, 80) };
+                            result[0] = new string[] { "CustomerReference4", row.Substring(12, 80) };
                             break;
                         case "CR5":
-                            result[0] = new string[] { "CustomerReference5", row.Substring(13, 80) };
+                            result[0] = new string[] { "CustomerReference5", row.Substring(12, 80) };
                             break;
                         case "CRI":
-                            result[0] = new string[] { "CustomerReferenceInbound", row.Substring(13, 80) };
+                            result[0] = new string[] { "CustomerReferenceInbound", row.Substring(12, 80) };
                             break;
                         case "CRT":
-                            result[0] = new string[] { "CustomerReferenceTransport", row.Substring(13, 80) };
+                            result[0] = new string[] { "CustomerReferenceTransport", row.Substring(12, 80) };
                             break;
                         case "DEL":
-                            result[0] = new string[] { "DeliveryNumber", row.Substring(13, 80) };
+                            result[0] = new string[] { "DeliveryNumber", row.Substring(12, 80) };
                             break;
                         case "TRI":
-                            result[0] = new string[] { "TransportInbound", row.Substring(13, 80) };
+                            result[0] = new string[] { "TransportInbound", row.Substring(12, 80) };
                             break;
                         case "IDT":
-                            result[0] = new string[] { "InboundDeliveryType", row.Substring(13, 80) };
+                            result[0] = new string[] { "InboundDeliveryType", row.Substring(12, 80) };
                             break;
                         case "TRR":
-                            result[0] = new string[] { "TransportReference", row.Substring(13, 80) };
+                            result[0] = new string[] { "TransportReference", row.Substring(12, 80) };
                             break;
                     }
-                    return result;
+                    break;
                 case "DTM":
-                    string DateSeg = row.Substring(10, 3);
+                    string DateSeg = row.Substring(9, 3);
+                    string DateParty = "";
                     switch (DateSeg)
                     {
                         case "DEL":
-                            result[0] = new string[] { "DeliveryDate", row.Substring(13, 35) };
+                            DateParty = "Delivery";
                             break;
                         case "LOA":
-                            result[0] = new string[] { "LoadDate", row.Substring(13, 35) };
+                            DateParty = "Load";
                             break;
                         case "ARR":
-                            result[0] = new string[] { "ArrivedDate", row.Substring(13, 35) };
+                            DateParty = "";
                             break;
                         case "PER":
-                            result[0] = new string[] { "DatePeriod", row.Substring(13, 35) };
+                            DateParty = "Period";
+                            break;
+                        default:
+                            DateParty = "";
                             break;
                     }
-                    return result;
+                    if (DateParty != "")
+                    {
+                        result[0] = new string[] { "Date" + DateParty, row.Substring(12, 35) };
+                    }
+                    break;
                 case "NAD":
-                    string NADSeg = row.Substring(10, 3);
+                    string NADSeg = row.Substring(9, 3);
                     string NADParty = "";
                     switch (NADSeg)
                     {
@@ -159,7 +165,7 @@ namespace EDI_Orders
                             break;
                         case "CZ":
                             NADParty = "Shipper";
-                            result[4] = new string[] { NADParty + "ID", row.Substring(13, 20) };
+                            result[4] = new string[] { NADParty + "ID", row.Substring(12, 20) };
                             break;
                         case "SE":
                             NADParty = "Seller";
@@ -174,17 +180,20 @@ namespace EDI_Orders
                             NADParty = "Supplier";
                             break;
                     }
-                    result[0] = new string[] { NADParty + "Name", row.Substring(33, 80) };
-                    result[1] = new string[] { NADParty + "Address", row.Substring(113, 80) };
-                    result[2] = new string[] { NADParty + "Country", row.Substring(303, 80) };
-                    if (NADParty == "Transporter")
+                    if (NADParty != "")
                     {
-                        result[3] = new string[] { NADParty + "LicensePlate", row.Substring(759, 20) };
-                        result[4] = new string[] { NADParty + "Contact", row.Substring(486, 50) };
+                        result[0] = new string[] { NADParty + "Name", row.Substring(32, 80) };
+                        result[1] = new string[] { NADParty + "Address", row.Substring(112, 80) };
+                        result[2] = new string[] { NADParty + "Country", row.Substring(302, 80) };
+                        if (NADParty == "Transporter")
+                        {
+                            result[3] = new string[] { NADParty + "LicensePlate", row.Substring(759, 20) };
+                            result[4] = new string[] { NADParty + "Contact", row.Substring(486, 50) };
+                        }
                     }
-                    return result;
+                    break;
                 case "FTX":
-                    string FTXSeg = row.Substring(10, 3);
+                    string FTXSeg = row.Substring(9, 3);
                     string FTXParty = "";
                     switch (FTXSeg)
                     {
@@ -207,18 +216,21 @@ namespace EDI_Orders
                             FTXParty = "VAS";
                             break;
                     }
-                    result[0] = new string[] { FTXParty + "Comments", row.Substring(13, 120) };
-                    return result;
+                    result[0] = new string[] { FTXParty + "Comments", row.Substring(12, 120) };
+                    break;
                 case "ALI":
-                    result[0] = new string[] { "Cost", row.Substring(132, 12) };
-                    result[1] = new string[] { "Crrency", row.Substring(144, 3) };
-                    return result;
+                    if (row.Length > 131)
+                    {
+                        result[0] = new string[] { "Cost", row.Substring(131, 12) };
+                        result[1] = new string[] { "Crrency", row.Substring(143, 3) };
+                    }
+                    break;
                 case "LIN":
-                    result[0] = new string[] { "ItemNumber", row.Substring(40, 25) };
-                    result[1] = new string[] { "ItemDescription", row.Substring(65, 80) };
-                    return result;
+                    result[0] = new string[] { "ItemNumber", row.Substring(39, 25) };
+                    result[1] = new string[] { "ItemDescription", row.Substring(64, 80) };
+                    break;
                 case "PIA":
-                    string PIASeg = row.Substring(10, 3);
+                    string PIASeg = row.Substring(9, 3);
                     string PIAParty = "";
                     switch (PIASeg)
                     {
@@ -244,20 +256,20 @@ namespace EDI_Orders
                             PIAParty = "Campaign";
                             break;
                     }
-                    result[0] = new string[] { PIAParty + "ItemNumber", row.Substring(13, 25 ) };
-                    result[1] = new string[] { PIAParty + "ItemDescripin", row.Substring(38, 80) };
-                    return result;
+                    result[0] = new string[] { PIAParty + "ItemNumber", row.Substring(12, 25 ) };
+                    result[1] = new string[] { PIAParty + "ItemDescripin", row.Substring(37, 80) };
+                    break;
                 case "PAC":
-                    string PACSeg = row.Substring(10, 3);
+                    string PACSeg = row.Substring(9, 3);
                     string PACParty = "";
                     if (PACSeg == "CUS")
                     { 
                         PACParty = "Customer";
                     }
-                    result[0] = new string[] { PACParty + "PackagingCoded", row.Substring(41, 25) };
-                    return result;
+                    result[0] = new string[] { PACParty + "PackagingCoded", row.Substring(40, 25) };
+                    break;
                 case "QTY":
-                    string QTYSeg = row.Substring(10, 3);
+                    string QTYSeg = row.Substring(9, 3);
                     string QTYParty = "";
                     switch (QTYSeg)
                     {
@@ -274,16 +286,19 @@ namespace EDI_Orders
                             QTYParty = "PickList";
                             break;
                         case "REC":
-                            QTYParty = "Recieved";
+                            QTYParty = "";
                             break;
                         case "TLO":
                             QTYParty = "TotalLoaded";
                             break;
                     }
-                    result[0] = new string[] { QTYParty + "Quantity", row.Substring(13, 15) };
-                    return result;
+                    if (QTYParty != "")
+                    {
+                        result[0] = new string[] { QTYParty + "Quantity", row.Substring(12, 15) };
+                    }
+                    break;
                 case "TRA":
-                    string TRASeg = row.Substring(10, 3);
+                    string TRASeg = row.Substring(19, 3);
                     string TRAParty = "";
                     switch (TRASeg)
                     {
@@ -306,10 +321,10 @@ namespace EDI_Orders
                             TRAParty = "UID";
                             break;
                     }
-                    result[0] = new string[] { TRAParty + "TrackingCode", row.Substring(13, 35) };
-                    return result;
+                    result[0] = new string[] { TRAParty + "TrackingCode", row.Substring(12, 35) };
+                    break;
                 case "LOC":
-                    string LOCSeg = row.Substring(10, 3);
+                    string LOCSeg = row.Substring(9, 3);
                     string LOCParty = "";
                     switch (LOCSeg)
                     {
@@ -320,28 +335,43 @@ namespace EDI_Orders
                             LOCParty = "WorkPostZone";
                             break;
                     }
-                    result[0] = new string[] { LOCParty + "Location", row.Substring(13, 25) };
-                    return result;
+                    result[0] = new string[] { LOCParty + "Location", row.Substring(12, 25) };
+                    break;
                 case "SBD":
-                    result[0] = new string[] { "TotalQuantity", row.Substring(48, 15) };
-                    result[1] = new string[] { "BlockedQuantity", row.Substring(63, 15) };
-                    result[2] = new string[] { "InOrderQuantity", row.Substring(78, 15) };
-                    result[3] = new string[] { "ReservedQuantity", row.Substring(93, 15) };
-                    result[4] = new string[] { "PickedQuantity", row.Substring(108, 15) };
-                    result[5] = new string[] { "AvilibleQuantity", row.Substring(123, 15) };
-                    return result;
+                    result[0] = new string[] { "TotalQuantity", row.Substring(47, 15) };
+                    result[1] = new string[] { "BlockedQuantity", row.Substring(62, 15) };
+                    result[2] = new string[] { "InOrderQuantity", row.Substring(77, 15) };
+                    result[3] = new string[] { "ReservedQuantity", row.Substring(92, 15) };
+                    result[4] = new string[] { "PickedQuantity", row.Substring(107, 15) };
+                    result[5] = new string[] { "AvilibleQuantity", row.Substring(122, 15) };
+                    break;
                 case "SMD":
-                    result[0] = new string[] { "StockMovementType", row.Substring(10, 3) };
-                    result[1] = new string[] { "TypeOfOperation", row.Substring(13, 3) };
-                    result[2] = new string[] { "Reason", row.Substring(34, 20) };
-                    result[0] = new string[] { "DateOfMovement", row.Substring(124, 35) };
-                    return result;
+                    result[0] = new string[] { "StockMovementType", row.Substring(9, 3) };
+                    result[1] = new string[] { "TypeOfOperation", row.Substring(12, 3) };
+                    result[2] = new string[] { "Reason", row.Substring(33, 20) };
+                    result[0] = new string[] { "DateOfMovement", row.Substring(123, 35) };
+                    break;
                 case "MEA":
-                    result[0] = new string[] { "TotalGrossWeight", row.Substring(13, 12) };
-                    result[1] = new string[] { "MeasurementUnit", row.Substring(49, 25) };
-                    return result;
+                    result[0] = new string[] { "TotalGrossWeight", row.Substring(12, 12) };
+                    result[1] = new string[] { "MeasurementUnit", row.Substring(48, 25) };
+                    break;
             }
-            return null;
+            int counter = 0;
+            for (int x = 0; x < 15; x++)
+            {
+                if (result[x] != null)
+                {
+                    counter++;
+                }
+            }
+            string[][] vals = new string[counter][];
+            int count = 0;
+            for(int y = 0; y < counter; y++)
+            {
+                vals[count] = result[count];
+                count++;
+            }
+            return vals;
         }
         #endregion
     }
