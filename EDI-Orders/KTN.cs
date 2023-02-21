@@ -23,13 +23,13 @@ namespace EDI_Orders
             switch (Decision)
             {
                 case "STKMVT":
-                    SP = "";
+                    SP = "OSP_Insert_Stock_Movement";
                     break;
                 case "RECCON":
-                    SP = "";
+                    SP = "OSP_Insert_Reccon";
                     break;
                 case "PPLCON":
-                    SP = "";
+                    SP = "OSP_Insert_Pplcon";
                     break;
             }
 

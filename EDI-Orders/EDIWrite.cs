@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.IO;
@@ -387,7 +388,7 @@ namespace EDI_Orders
                 text = dateTime.ToString("yyyyMMdd");
                 streamWriter.WriteLine("000008DTMLOA" + text.PadRight(35, ' ') + "102");     //Currently hardcoded as we do not have an eqevilant field
 
-                string ID = row["DelPostalName"].ToString().Substring(0, 10);
+                string ID = row["DelPostalName"].ToString().PadRight(20, ' ').Substring(0, 10);
                 text = ID;
                 text = text.PadRight(20, ' ');
                 text = text + row["DelPostalName"].ToString();
@@ -400,16 +401,29 @@ namespace EDI_Orders
                 text = text.PadRight(280, ' ');
                 text = text + row["DelCountryCode"].ToString();
                 text = text.PadRight(290, ' ');
-                text = text + "";//row[""].ToString(); //Phone Number
-                text = text.PadRight(340, ' ');
-                text = text + "";// row[""].ToString(); //Destination Contact
-                text = text.PadRight(443, ' ');
-                text = text + row["DelEmail"].ToString();
-                text = text.PadRight(493, ' ');
-                text = text + "";//row[""].ToString();  //Del Name 2
-                text = text.PadRight(766, ' ');
-                text = text + "";// row[""].ToString();   //Del Address 2
-                text = text.PadRight(916, ' ');
+                if ((row["DelPostalName"].ToString() == "DTC Customer") || (row["DelPostalName"].ToString() == "Ecommerce"))
+                {
+                    SqlConnection conDTC = new SqlConnection();
+                    conDTC.ConnectionString = ConfigurationManager.ConnectionStrings["DTC"].ConnectionString;
+                    DataTable GDPRData = SharedFunctions.QueryDB(conDTC, "OSP_GET_GDPR_DATA", row["DelPostCode"].ToString(), row["OrderReference"].ToString());
+                    DataRow GDPR = GDPRData.Rows[0];
+                    text = text + GDPR["TelephoneNo"].ToString(); //Phone Number
+                    text = text.PadRight(340, ' ');
+                    text = text + ""; // GDPR[""].ToString(); //Destination Contact
+                    text = text.PadRight(443, ' ');
+                    text = text + GDPR["EmailAddress"].ToString();
+                    text = text.PadRight(493, ' ');
+                    text = text + GDPR["PostalName"].ToString();  //Del Name 2
+                    text = text.PadRight(766, ' ');
+                    text = text + ""; //row[""].ToString();   //Del Address 2
+                    text = text.PadRight(916, ' ');
+                }
+                else
+                {
+                    text = text.PadRight(443, ' ');
+                    text = text + row["DelEmail"].ToString();
+                    text = text.PadRight(493, ' ');
+                }
                 streamWriter.WriteLine("000009NADDES" + text.PadRight(996, ' ') + "");
                 text = "";
 
@@ -611,7 +625,7 @@ namespace EDI_Orders
                 streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "CFGCONFIG1             YNEW         ");
                 counter++;
 
-                streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "PADPCS                     Y Y    Y");
+                streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "PADPCS                      Y Y    Y");
                 counter++;
 
                 streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "QTYSU 1                 ");
@@ -632,9 +646,12 @@ namespace EDI_Orders
                 //streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "MEADT " + text.PadRight(36, ' ') + "CMT");
                 //counter++;
 
-                text = row["BoxQuantity"].ToString().PadRight(15, ' ');
-                streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "QTYSU " + text.PadRight(18, ' '));
-                counter++;
+                if (row["BoxQuantity"].ToString() != "0")
+                {
+                    text = row["BoxQuantity"].ToString().PadRight(15, ' ');
+                    streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "QTYSU " + text.PadRight(18, ' '));
+                    counter++;
+                }
             }
             streamWriter.Close();
             var lineCount = File.ReadLines(file).Count();

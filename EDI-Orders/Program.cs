@@ -32,6 +32,10 @@ namespace EDI_Orders
         {
             SqlConnection conOE = new SqlConnection();
             conOE.ConnectionString = ConfigurationManager.ConnectionStrings["OERADEV"].ConnectionString;
+            SqlConnection conDev = new SqlConnection();
+            conDev.ConnectionString = ConfigurationManager.ConnectionStrings["OERADEVORBIS"].ConnectionString;
+            SqlConnection conLive = new SqlConnection();
+            conLive.ConnectionString = ConfigurationManager.ConnectionStrings["OERA"].ConnectionString;
 
             /**
              * These are the current files that can be used for testing
@@ -424,18 +428,15 @@ namespace EDI_Orders
                         EDIWrite.WriteOrder(conKTN);
                         break;
                     case "Products":
-                        SqlConnection conLive = new SqlConnection();
-                        conLive.ConnectionString = ConfigurationManager.ConnectionStrings["OERA"].ConnectionString;
                         EDIWrite.WriteProductList(conLive, "100994002");
                         break;
                     case "PO":
-                        SqlConnection conDev = new SqlConnection();
-                        conDev.ConnectionString = ConfigurationManager.ConnectionStrings["OERADEVORBIS"].ConnectionString;
-                        EDIWrite.WriteASNFile(conDev, "0000020985");
+                        EDIWrite.WriteASNFile(conDev, "0000021703");
                         break;
-                    case "T":
-                        file = FileManipulation.readEDIFile("C://Bespoke/EDI/ORDER-0000262257.txt");
-                        SharedFunctions.EDIDecision(file);
+                    #endregion
+                    #region KTN Read
+                    case "KTN":
+                        KTN.ProcessKTN("C://Bespoke/EDI/KTNSamples/",conDev);
                         break;
                     #endregion
                     default:

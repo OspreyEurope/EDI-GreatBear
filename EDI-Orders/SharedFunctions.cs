@@ -333,7 +333,7 @@ namespace EDI_Orders
         /**
          * This function runs the stored procedure to query the database for the information needed to write the edi file
          */
-        public static DataTable QueryDB(SqlConnection con, string SP, string id = null)
+        public static DataTable QueryDB(SqlConnection con, string SP, string id = null, string id2 = null)
         {
             con.Open();
             SqlCommand dataQuery = new SqlCommand(SP, con);
@@ -341,6 +341,10 @@ namespace EDI_Orders
             if (id != null)
             {
                 dataQuery.Parameters.AddWithValue("@id", id);
+            }
+            if (id2 != null)
+            {
+                dataQuery.Parameters.AddWithValue("@id2", id2);
             }
             DataTable data = new DataTable();
             dataQuery.ExecuteNonQuery();
