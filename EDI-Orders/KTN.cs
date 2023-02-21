@@ -9,6 +9,7 @@ using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 
 namespace EDI_Orders
 {
@@ -16,10 +17,11 @@ namespace EDI_Orders
     {
         public static void ProcessKTN (string file,SqlConnection con)
         {
-            con.Open();
+            
             string SP = "";
             string OrderType = File.ReadAllLines(file)[0];
             string Decision = OrderType.Substring(29,20);
+            Console.WriteLine(Decision);
             switch (Decision)
             {
                 case "STKMVT              ":
@@ -32,15 +34,15 @@ namespace EDI_Orders
                     SP = "OSP_Insert_Pplcon";
                     break;
             }
-            if (Decision != "STKMVT")
+            if (Decision != "STKMVT              ")
             {
+                con.Open();
                 Console.WriteLine(SP);
                 SqlCommand storedProcedure = new SqlCommand(SP, con);
                 storedProcedure.CommandType = CommandType.StoredProcedure;
                 int lineCount = File.ReadLines(file).Count();
                 //Add Try catch on this block to check it can be read and is not corrupted to prevent a crash sooner rather than later
                 string[] lines = File.ReadAllLines(file);
-                Console.WriteLine(file);
                 for (int i = 0; i < lineCount; i++)
                 {
                     string[][] t = ReadKTN(lines[i]);
@@ -62,11 +64,78 @@ namespace EDI_Orders
             }
             else
             {
-                //string[][] result = new string[15][];
-                //result[0] = new string[] { "MessageType", row.Substring(29, 20) };
-                //result[1] = new string[] { "Warehouse", row.Substring(59, 10) };
-                //result[2] = new string[] { "DateReceived", row.Substring(201, 35) };
-                //result[3] = new string[] { "OriginalFileName", row.Substring(239, 50) };
+                con.Open();
+                /**
+                 * Write the header table values
+                 */
+                SqlCommand storedProcedure = new SqlCommand(SP, con);
+                storedProcedure.CommandType = CommandType.StoredProcedure;
+                int lineCount = File.ReadLines(file).Count();
+                //Add Try catch on this block to check it can be read and is not corrupted to prevent a crash sooner rather than later
+                string[] lines = File.ReadAllLines(file);
+                string row = lines[0];
+                string[][] result = new string[15][];
+                string ID = row.Substring(9, 20);
+                result[6] = new string[] { "ID", ID};
+                result[0] = new string[] { "MessageType", row.Substring(29, 20) };
+                result[1] = new string[] { "Warehouse", row.Substring(59, 10) };
+                result[2] = new string[] { "DateReceived", row.Substring(201, 35) };
+                result[3] = new string[] { "OriginalFileName", row.Substring(239, 50) };
+                row = lines[1];
+                result[4] = new string[] { "FileAction", row.Substring(12, 35) };
+                row = lines[2];
+                result[5] = new string[] { "DatePeriod", row.Substring(12, 35) };
+
+                int counter = 0;
+                for (int x = 0; x < 15; x++)
+                {
+                    if (result[x] != null)
+                    {
+                        counter++;
+                    }
+                }
+                string[][] vals = new string[counter][];
+                int count = 0;
+                for (int y = 0; y < counter; y++)
+                {
+                    vals[count] = result[count];
+                    count++;
+                }
+
+                for (int i = 0; i < vals.Length; i++)
+                {
+                    storedProcedure.Parameters.AddWithValue(vals[i][0], vals[i][1]);
+                }
+
+                storedProcedure.ExecuteNonQuery();
+                storedProcedure.Parameters.Clear();
+                con.Close();
+
+                con.Open();
+                storedProcedure = new SqlCommand("OSP_Inseert_Items_For_STKMVT", con);
+                storedProcedure.CommandType = CommandType.StoredProcedure;
+                /**
+                 * Write the line items to a seperate table
+                 */
+                lineCount = File.ReadLines(file).Count();
+                for (int i = 3; i < (lineCount - 1); i++)
+                {
+                    string[][] t = ReadKTN(lines[i]);
+                    if (t != null)
+                    {
+                        for (int j = 0; j < t.Length; j++)
+                        {
+                            storedProcedure.Parameters.AddWithValue(t[j][0], t[j][1]);
+                        }
+                        if (i % 2 == 0)
+                        {
+                            storedProcedure.Parameters.AddWithValue("ID", ID);
+                            storedProcedure.ExecuteNonQuery();
+                            storedProcedure.Parameters.Clear();
+                        }
+                    }
+                }
+                con.Close();
             }
         }
 
@@ -93,7 +162,7 @@ namespace EDI_Orders
                     result[3] = new string[] { "OriginalFileName", row.Substring(239, 50) };
                     break;
                 case "FAC":
-                    result[0] = new string[] { "FileAction", row.Substring(12, 35) }; Console.WriteLine(result[0][1]);
+                    result[0] = new string[] { "FileAction", row.Substring(12, 35) };
                     break;
                 case "TDT":
                     result[0] = new string[] { "OrderType", row.Substring(92, 10) };
@@ -354,7 +423,7 @@ namespace EDI_Orders
                     result[2] = new string[] { "InOrderQuantity", row.Substring(77, 15) };
                     result[3] = new string[] { "ReservedQuantity", row.Substring(92, 15) };
                     result[4] = new string[] { "PickedQuantity", row.Substring(107, 15) };
-                    result[5] = new string[] { "AvilibleQuantity", row.Substring(122, 15) };
+                    result[5] = new string[] { "AvalibleQuantity", row.Substring(122, 15) };
                     break;
                 case "SMD":
                     result[0] = new string[] { "StockMovementType", row.Substring(9, 3) };

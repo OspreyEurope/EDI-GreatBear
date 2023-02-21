@@ -400,7 +400,7 @@ namespace EDI_Orders
                 text = text + row["DelCity"].ToString();
                 text = text.PadRight(280, ' ');
                 text = text + row["DelCountryCode"].ToString();
-                text = text.PadRight(290, ' ');
+                text = text.PadRight(370, ' ');
                 if ((row["DelPostalName"].ToString() == "DTC Customer") || (row["DelPostalName"].ToString() == "Ecommerce"))
                 {
                     SqlConnection conDTC = new SqlConnection();
@@ -408,15 +408,15 @@ namespace EDI_Orders
                     DataTable GDPRData = SharedFunctions.QueryDB(conDTC, "OSP_GET_GDPR_DATA", row["DelPostCode"].ToString(), row["OrderReference"].ToString());
                     DataRow GDPR = GDPRData.Rows[0];
                     text = text + GDPR["TelephoneNo"].ToString(); //Phone Number
-                    text = text.PadRight(340, ' ');
-                    text = text + ""; // GDPR[""].ToString(); //Destination Contact
-                    text = text.PadRight(443, ' ');
+                    text = text.PadRight(420, ' ');
                     text = text + GDPR["EmailAddress"].ToString();
-                    text = text.PadRight(493, ' ');
+                    text = text.PadRight(523, ' ');
+                    text = text + ""; // GDPR[""].ToString(); //Destination Contact
+                    text = text.PadRight(573, ' ');
                     text = text + GDPR["PostalName"].ToString();  //Del Name 2
-                    text = text.PadRight(766, ' ');
+                    text = text.PadRight(846, ' ');
                     text = text + ""; //row[""].ToString();   //Del Address 2
-                    text = text.PadRight(916, ' ');
+                    text = text.PadRight(996, ' ');
                 }
                 else
                 {
