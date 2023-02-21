@@ -32,31 +32,42 @@ namespace EDI_Orders
                     SP = "OSP_Insert_Pplcon";
                     break;
             }
-            Console.WriteLine(SP);
-            SqlCommand storedProcedure = new SqlCommand(SP, con);
-            storedProcedure.CommandType = CommandType.StoredProcedure;
-            int lineCount = File.ReadLines(file).Count();
-            //Add Try catch on this block to check it can be read and is not corrupted to prevent a crash sooner rather than later
-            string[] lines = File.ReadAllLines(file);
-            Console.WriteLine(file);
-            for (int i = 0; i < lineCount; i++)
+            if (Decision != "STKMVT")
             {
-                string[][] t = ReadKTN(lines[i]);
-                if (t != null)
+                Console.WriteLine(SP);
+                SqlCommand storedProcedure = new SqlCommand(SP, con);
+                storedProcedure.CommandType = CommandType.StoredProcedure;
+                int lineCount = File.ReadLines(file).Count();
+                //Add Try catch on this block to check it can be read and is not corrupted to prevent a crash sooner rather than later
+                string[] lines = File.ReadAllLines(file);
+                Console.WriteLine(file);
+                for (int i = 0; i < lineCount; i++)
                 {
-                    for (int j = 0; j < t.Length; j++)
+                    string[][] t = ReadKTN(lines[i]);
+                    if (t != null)
                     {
-                        storedProcedure.Parameters.AddWithValue(t[j][0], t[j][1]);
-                        Console.WriteLine(t[j][0]);
-                        Console.WriteLine(t[j][1]);
+                        for (int j = 0; j < t.Length; j++)
+                        {
+                            storedProcedure.Parameters.AddWithValue(t[j][0], t[j][1]);
+                            Console.WriteLine(t[j][0]);
+                            Console.WriteLine(t[j][1]);
+                        }
                     }
                 }
+                Console.WriteLine(storedProcedure.Parameters.Count);
+                storedProcedure.ExecuteNonQuery();
+                storedProcedure.Parameters.Clear();
+                con.Close();
+                Console.WriteLine("Message Entered Successfully.");
             }
-            Console.WriteLine(storedProcedure.Parameters.Count);
-            storedProcedure.ExecuteNonQuery();
-            storedProcedure.Parameters.Clear();
-            con.Close();
-            Console.WriteLine("Message Entered Successfully.");
+            else
+            {
+                //string[][] result = new string[15][];
+                //result[0] = new string[] { "MessageType", row.Substring(29, 20) };
+                //result[1] = new string[] { "Warehouse", row.Substring(59, 10) };
+                //result[2] = new string[] { "DateReceived", row.Substring(201, 35) };
+                //result[3] = new string[] { "OriginalFileName", row.Substring(239, 50) };
+            }
         }
 
         #region Read Line For KTN
@@ -352,8 +363,31 @@ namespace EDI_Orders
                     result[0] = new string[] { "DateOfMovement", row.Substring(123, 35) };
                     break;
                 case "MEA":
-                    result[0] = new string[] { "TotalGrossWeight", row.Substring(12, 12) };
-                    result[1] = new string[] { "MeasurementUnit", row.Substring(48, 25) };
+                    string MEASeg = row.Substring(9, 3);
+                    string MEAParty = "";
+                    switch (MEASeg)
+                    {
+                        case "GRW":
+                            MEAParty = "GrossWeight";
+                            break;
+                        case "TW ":
+                            MEAParty = "";
+                            break;
+                        case "NW ":
+                            MEAParty = "";
+                            break;
+                        case "TS ":
+                            MEAParty = "";
+                            break;
+                        case "ABJ":
+                            MEAParty = "";
+                            break;
+                    }
+                    if (MEAParty != "")
+                    {
+                        result[0] = new string[] { "Total" + MEAParty, row.Substring(12, 12) };
+                        result[1] = new string[] { "MeasurementUnit", row.Substring(48, 25) };
+                    }
                     break;
             }
             int counter = 0;

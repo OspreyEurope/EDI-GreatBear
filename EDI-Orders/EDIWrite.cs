@@ -489,32 +489,33 @@ namespace EDI_Orders
 
             int counter = 3;
 
+            string text = "NORMAL";                                            //Currently hardcoded as we do not have an eqevilant field
+            text = text.PadRight((80 - text.Length), ' ');
+            streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "RFFTYP" + text + "");
+
+            text = "";
+            counter++;
+
+            text = data.Rows[0]["PurchaseOrderNumber"].ToString();
+            text = text.PadRight((80 - text.Length), ' ');
+            streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "RFFCR " + text + "");
+            text = "";
+            counter++;
+
+            text = data.Rows[0]["OrderRequestedDate"].ToString();
+            DateTime dateTime = DateTime.ParseExact(text, "dd/MM/yyyy hh:mm:ss", null);
+            text = dateTime.ToString("yyyyMMdd");
+            streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "DTMPLA" + text.PadRight(35, ' ') + "102");   //43 as it cuts off the time section however it is still counted using string.length
+            text = "";
+            counter++;
+
+            streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "NADSUPKTN".PadRight(923, ' '));
+            counter++;
+
             for (int i = 0; i < data.Rows.Count; i++)
             {
                 DataRow row = data.Rows[i];
 
-                string text = "NORMAL";                                            //Currently hardcoded as we do not have an eqevilant field
-                text = text.PadRight((80 - text.Length), ' ');
-                streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "RFFTYP" + text + "");
-                
-                text = "";
-                counter++;
-
-                text = row["PurchaseOrderNumber"].ToString();
-                text = text.PadRight((80 - text.Length), ' ');
-                streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "RFFCR " + text + "");
-                text = "";
-                counter++;
-
-                text = row["OrderRequestedDate"].ToString();
-                DateTime dateTime = DateTime.ParseExact(text, "dd/MM/yyyy hh:mm:ss", null);
-                text = dateTime.ToString("yyyyMMdd");
-                streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "DTMPLA" + text.PadRight(35, ' ') + "102");   //43 as it cuts off the time section however it is still counted using string.length
-                text = "";
-                counter++;
-
-                streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "NADSUPKTN".PadRight(923, ' '));
-                counter++;
                 text = (i+1).ToString();
                 text = text.PadRight(30, ' ');
                 text = text + row["StockItemCode"].ToString();
@@ -631,9 +632,6 @@ namespace EDI_Orders
                 streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "QTYSU 1                 ");
                 counter++;
 
-                streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "PADBOX                             ");
-                counter++;
-
                 //text = row["BoxWidth"].ToString().PadRight(12, ' ');
                 //streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "MEAWD " + text.PadRight(36, ' ') + "CMT");
                 //counter++;
@@ -648,6 +646,9 @@ namespace EDI_Orders
 
                 if (row["BoxQuantity"].ToString() != "0")
                 {
+                    streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "PADBOX                             ");
+                    counter++;
+
                     text = row["BoxQuantity"].ToString().PadRight(15, ' ');
                     streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "QTYSU " + text.PadRight(18, ' '));
                     counter++;
