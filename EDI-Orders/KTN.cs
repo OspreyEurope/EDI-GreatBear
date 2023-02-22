@@ -24,6 +24,7 @@ namespace EDI_Orders
             Console.WriteLine(Decision);
             switch (Decision)
             {
+                #region STKMVT
                 case "STKMVT              ":
                     SP = "OSP_Insert_Stock_Movement";
                     con.Open();
@@ -89,7 +90,7 @@ namespace EDI_Orders
                             {
                                 storedProcedure.Parameters.AddWithValue(t[j][0], t[j][1]);
                             }
-                            if (i % 2 == 0)
+                            if (lines[i+1].Substring(6, 3) == "LIN")
                             {
                                 storedProcedure.Parameters.AddWithValue("ID", ID);
                                 storedProcedure.ExecuteNonQuery();
@@ -97,8 +98,13 @@ namespace EDI_Orders
                             }
                         }
                     }
+                    storedProcedure.Parameters.AddWithValue("ID", ID);
+                    storedProcedure.ExecuteNonQuery();
+                    storedProcedure.Parameters.Clear();
                     con.Close();
                     break;
+#endregion
+                #region RECCON
                 case "RECCON              ":
                     SP = "OSP_Insert_Reccon";
                     con.Open();
@@ -192,9 +198,12 @@ namespace EDI_Orders
                     }
                     con.Close();
                     break;
+                #endregion
+                #region PPLCON
                 case "PPLCON              ":
                     SP = "OSP_Insert_Pplcon";
                     break;
+                    #endregion
             }
             if (Decision == "PPLCON              ")
             {
@@ -513,10 +522,10 @@ namespace EDI_Orders
                     result[5] = new string[] { "AvalibleQuantity", row.Substring(122, 15) };
                     break;
                 case "SMD":
-                    result[0] = new string[] { "StockMovementType", row.Substring(9, 3) };
-                    result[1] = new string[] { "TypeOfOperation", row.Substring(12, 3) };
-                    result[2] = new string[] { "Reason", row.Substring(33, 20) };
-                    result[0] = new string[] { "DateOfMovement", row.Substring(123, 35) };
+                    //result[0] = new string[] { "StockMovementType", row.Substring(9, 3) };
+                    //result[1] = new string[] { "TypeOfOperation", row.Substring(12, 3) };
+                    //result[2] = new string[] { "Reason", row.Substring(33, 20) };
+                    //result[3] = new string[] { "DateOfMovement", row.Substring(123, 35) };
                     break;
                 case "MEA":
                     string MEASeg = row.Substring(9, 3);
