@@ -26,15 +26,177 @@ namespace EDI_Orders
             {
                 case "STKMVT              ":
                     SP = "OSP_Insert_Stock_Movement";
+                    con.Open();
+                    /**
+                     * Write the header table values
+                     */
+                    SqlCommand storedProcedure = new SqlCommand(SP, con);
+                    storedProcedure.CommandType = CommandType.StoredProcedure;
+                    int lineCount = File.ReadLines(file).Count();
+                    //Add Try catch on this block to check it can be read and is not corrupted to prevent a crash sooner rather than later
+                    string[] lines = File.ReadAllLines(file);
+                    string row = lines[0];
+                    string[][] result = new string[15][];
+                    string ID = row.Substring(9, 20);
+                    result[6] = new string[] { "ID", ID };
+                    result[0] = new string[] { "MessageType", row.Substring(29, 20) };
+                    result[1] = new string[] { "Warehouse", row.Substring(59, 10) };
+                    result[2] = new string[] { "DateReceived", row.Substring(201, 35) };
+                    result[3] = new string[] { "OriginalFileName", row.Substring(239, 50) };
+                    row = lines[1];
+                    result[4] = new string[] { "FileAction", row.Substring(12, 35) };
+                    row = lines[2];
+                    result[5] = new string[] { "DatePeriod", row.Substring(12, 35) };
+
+                    int counter = 0;
+                    for (int x = 0; x < 15; x++)
+                    {
+                        if (result[x] != null)
+                        {
+                            counter++;
+                        }
+                    }
+                    string[][] vals = new string[counter][];
+                    int count = 0;
+                    for (int y = 0; y < counter; y++)
+                    {
+                        vals[count] = result[count];
+                        count++;
+                    }
+
+                    for (int i = 0; i < vals.Length; i++)
+                    {
+                        storedProcedure.Parameters.AddWithValue(vals[i][0], vals[i][1]);
+                    }
+
+                    storedProcedure.ExecuteNonQuery();
+                    storedProcedure.Parameters.Clear();
+                    con.Close();
+
+                    con.Open();
+                    storedProcedure = new SqlCommand("OSP_Inseert_Items_For_STKMVT", con);
+                    storedProcedure.CommandType = CommandType.StoredProcedure;
+                    /**
+                     * Write the line items to a seperate table
+                     */
+                    lineCount = File.ReadLines(file).Count();
+                    for (int i = 3; i < (lineCount - 1); i++)
+                    {
+                        string[][] t = ReadKTN(lines[i]);
+                        if (t != null)
+                        {
+                            for (int j = 0; j < t.Length; j++)
+                            {
+                                storedProcedure.Parameters.AddWithValue(t[j][0], t[j][1]);
+                            }
+                            if (i % 2 == 0)
+                            {
+                                storedProcedure.Parameters.AddWithValue("ID", ID);
+                                storedProcedure.ExecuteNonQuery();
+                                storedProcedure.Parameters.Clear();
+                            }
+                        }
+                    }
+                    con.Close();
                     break;
                 case "RECCON              ":
                     SP = "OSP_Insert_Reccon";
+                    con.Open();
+                    /**
+                     * Write the header table values
+                     */
+                    storedProcedure = new SqlCommand(SP, con);
+                    storedProcedure.CommandType = CommandType.StoredProcedure;
+                    lineCount = File.ReadLines(file).Count();
+                    //Add Try catch on this block to check it can be read and is not corrupted to prevent a crash sooner rather than later
+                    lines = File.ReadAllLines(file);
+                    row = lines[0];
+                    result = new string[18][];
+                    ID = row.Substring(9, 20);
+                    result[5] = new string[] { "ID", ID };
+                    result[0] = new string[] { "MessageType", row.Substring(29, 20) };
+                    result[1] = new string[] { "Warehouse", row.Substring(59, 10) };
+                    result[2] = new string[] { "DateReceived", row.Substring(201, 35) };
+                    result[3] = new string[] { "OriginalFileName", row.Substring(239, 50) };
+                    row = lines[1];
+                    result[4] = new string[] { "FileAction", row.Substring(12, 35) };
+                    row = lines[2];
+                    result[6] = new string[] { "TransportInbound", row.Substring(12,80) };
+                    row = lines[3];
+                    result[7] = new string[] { "CustomerReferenceInbound", row.Substring(12, 80) };
+                    row = lines[4];
+                    result[8] = new string[] { "InboundDeliveryType", row.Substring(12, 80) };
+                    row = lines[5];
+                    result[9] = new string[] { "CustomerReferenceTransport", row.Substring(12, 80) };
+                    row = lines[6];
+                    result[9] = new string[] { "TransporterName", row.Substring(32, 80) };
+                    result[10] = new string[] { "TransporterAddress", row.Substring(112, 80) };
+                    result[11] = new string[] { "TransporterCountry", row.Substring(302, 80) };
+                    result[12] = new string[] { "TransporterLicensePlate", row.Substring(759, 20) };
+                    result[13] = new string[] { "TransporterContact", row.Substring(486, 50) };
+                    row = lines[7];
+                    result[14] = new string[] { "SupplierName", row.Substring(32, 80) };
+                    result[15] = new string[] { "SupplierAddress", row.Substring(112, 80) };
+                    result[16] = new string[] { "SupplierCountry", row.Substring(302, 80) };
+                    result[17] = new string[] { "SupplierContact", row.Substring(486, 50) };
+                    row = lines[8];
+                    result[18] = new string[] { "ArrivedDate", row.Substring(12, 35) };
+                    counter = 0;
+                    for (int x = 0; x < 15; x++)
+                    {
+                        if (result[x] != null)
+                        {
+                            counter++;
+                        }
+                    }
+                    vals = new string[counter][];
+                    count = 0;
+                    for (int y = 0; y < counter; y++)
+                    {
+                        vals[count] = result[count];
+                        count++;
+                    }
+
+                    for (int i = 0; i < vals.Length; i++)
+                    {
+                        storedProcedure.Parameters.AddWithValue(vals[i][0], vals[i][1]);
+                    }
+
+                    storedProcedure.ExecuteNonQuery();
+                    storedProcedure.Parameters.Clear();
+                    con.Close();
+
+                    con.Open();
+                    storedProcedure = new SqlCommand("OSP_Inseert_Items_For_RECCON", con);
+                    storedProcedure.CommandType = CommandType.StoredProcedure;
+                    /**
+                     * Write the line items to a seperate table
+                     */
+                    lineCount = File.ReadLines(file).Count();
+                    for (int i = 3; i < (lineCount - 1); i++)
+                    {
+                        string[][] t = ReadKTN(lines[i]);
+                        if (t != null)
+                        {
+                            for (int j = 0; j < t.Length; j++)
+                            {
+                                storedProcedure.Parameters.AddWithValue(t[j][0], t[j][1]);
+                            }
+                            if (i % 2 == 0)
+                            {
+                                storedProcedure.Parameters.AddWithValue("ID", ID);
+                                storedProcedure.ExecuteNonQuery();
+                                storedProcedure.Parameters.Clear();
+                            }
+                        }
+                    }
+                    con.Close();
                     break;
                 case "PPLCON              ":
                     SP = "OSP_Insert_Pplcon";
                     break;
             }
-            if (Decision != "STKMVT              ")
+            if (Decision == "PPLCON              ")
             {
                 con.Open();
                 Console.WriteLine(SP);
@@ -61,81 +223,6 @@ namespace EDI_Orders
                 storedProcedure.Parameters.Clear();
                 con.Close();
                 Console.WriteLine("Message Entered Successfully.");
-            }
-            else
-            {
-                con.Open();
-                /**
-                 * Write the header table values
-                 */
-                SqlCommand storedProcedure = new SqlCommand(SP, con);
-                storedProcedure.CommandType = CommandType.StoredProcedure;
-                int lineCount = File.ReadLines(file).Count();
-                //Add Try catch on this block to check it can be read and is not corrupted to prevent a crash sooner rather than later
-                string[] lines = File.ReadAllLines(file);
-                string row = lines[0];
-                string[][] result = new string[15][];
-                string ID = row.Substring(9, 20);
-                result[6] = new string[] { "ID", ID};
-                result[0] = new string[] { "MessageType", row.Substring(29, 20) };
-                result[1] = new string[] { "Warehouse", row.Substring(59, 10) };
-                result[2] = new string[] { "DateReceived", row.Substring(201, 35) };
-                result[3] = new string[] { "OriginalFileName", row.Substring(239, 50) };
-                row = lines[1];
-                result[4] = new string[] { "FileAction", row.Substring(12, 35) };
-                row = lines[2];
-                result[5] = new string[] { "DatePeriod", row.Substring(12, 35) };
-
-                int counter = 0;
-                for (int x = 0; x < 15; x++)
-                {
-                    if (result[x] != null)
-                    {
-                        counter++;
-                    }
-                }
-                string[][] vals = new string[counter][];
-                int count = 0;
-                for (int y = 0; y < counter; y++)
-                {
-                    vals[count] = result[count];
-                    count++;
-                }
-
-                for (int i = 0; i < vals.Length; i++)
-                {
-                    storedProcedure.Parameters.AddWithValue(vals[i][0], vals[i][1]);
-                }
-
-                storedProcedure.ExecuteNonQuery();
-                storedProcedure.Parameters.Clear();
-                con.Close();
-
-                con.Open();
-                storedProcedure = new SqlCommand("OSP_Inseert_Items_For_STKMVT", con);
-                storedProcedure.CommandType = CommandType.StoredProcedure;
-                /**
-                 * Write the line items to a seperate table
-                 */
-                lineCount = File.ReadLines(file).Count();
-                for (int i = 3; i < (lineCount - 1); i++)
-                {
-                    string[][] t = ReadKTN(lines[i]);
-                    if (t != null)
-                    {
-                        for (int j = 0; j < t.Length; j++)
-                        {
-                            storedProcedure.Parameters.AddWithValue(t[j][0], t[j][1]);
-                        }
-                        if (i % 2 == 0)
-                        {
-                            storedProcedure.Parameters.AddWithValue("ID", ID);
-                            storedProcedure.ExecuteNonQuery();
-                            storedProcedure.Parameters.Clear();
-                        }
-                    }
-                }
-                con.Close();
             }
         }
 
