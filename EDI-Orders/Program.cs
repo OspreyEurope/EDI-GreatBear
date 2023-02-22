@@ -436,8 +436,8 @@ namespace EDI_Orders
                     #endregion
                     #region KTN Read
                     case "KTN":
-                        KTN.ProcessKTN("C://Bespoke/EDI/KTNSamples/STKADJ00000005.txt", conDev);
-                        //KTN.ProcessKTN("C://Bespoke/EDI/KTNSamples/RECCON00000003.txt", conDev);
+                        KTN.ProcessKTN("C://Bespoke/EDI/KTNSamples/STKADJ00000005.txt", conDev);           //Seems to work
+                        //KTN.ProcessKTN("C://Bespoke/EDI/KTNSamples/RECCON00000003.txt", conDev);         Seems to work
                         //KTN.ProcessKTN("C://Bespoke/EDI/KTNSamples/PPLCON00000018.txt", conDev);          To be done
                         //KTN.ProcessKTN("C://Bespoke/EDI/KTNSamples/PPLCON00000017.txt", conDev);           To be done
                         //KTN.ProcessKTN("C://Bespoke/EDI/KTNSamples/PPLCON00000012.txt", conDev);        To be done

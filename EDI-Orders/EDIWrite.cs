@@ -408,21 +408,21 @@ namespace EDI_Orders
                     DataTable GDPRData = SharedFunctions.QueryDB(conDTC, "OSP_GET_GDPR_DATA", row["DelPostCode"].ToString(), row["OrderReference"].ToString());
                     DataRow GDPR = GDPRData.Rows[0];
                     text = text + GDPR["TelephoneNo"].ToString(); //Phone Number
-                    text = text.PadRight(420, ' ');
-                    text = text + GDPR["EmailAddress"].ToString();
+                    text = text.PadRight(473, ' ');
+                    text = text + GDPR["PostalName"].ToString(); //Destination Contact
                     text = text.PadRight(523, ' ');
-                    text = text + ""; // GDPR[""].ToString(); //Destination Contact
+                    text = text + GDPR["EmailAddress"].ToString();
                     text = text.PadRight(573, ' ');
-                    text = text + GDPR["PostalName"].ToString();  //Del Name 2
+                    text = text + ""; // GDPR[""].ToString();  //Del Name 2
                     text = text.PadRight(846, ' ');
                     text = text + ""; //row[""].ToString();   //Del Address 2
                     text = text.PadRight(996, ' ');
                 }
                 else
                 {
-                    text = text.PadRight(443, ' ');
+                    text = text.PadRight(523, ' ');
                     text = text + row["DelEmail"].ToString();
-                    text = text.PadRight(493, ' ');
+                    text = text.PadRight(573, ' ');
                 }
                 streamWriter.WriteLine("000009NADDES" + text.PadRight(996, ' ') + "");
                 text = "";
