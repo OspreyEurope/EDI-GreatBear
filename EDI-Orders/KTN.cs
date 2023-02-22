@@ -111,7 +111,7 @@ namespace EDI_Orders
                     //Add Try catch on this block to check it can be read and is not corrupted to prevent a crash sooner rather than later
                     lines = File.ReadAllLines(file);
                     row = lines[0];
-                    result = new string[18][];
+                    result = new string[20][];
                     ID = row.Substring(9, 20);
                     result[5] = new string[] { "ID", ID };
                     result[0] = new string[] { "MessageType", row.Substring(29, 20) };
@@ -134,12 +134,12 @@ namespace EDI_Orders
                     result[11] = new string[] { "TransporterCountry", row.Substring(302, 80) };
                     result[12] = new string[] { "TransporterLicensePlate", row.Substring(759, 20) };
                     result[13] = new string[] { "TransporterContact", row.Substring(486, 50) };
-                    row = lines[7];
+                    row = lines[8];
                     result[14] = new string[] { "SupplierName", row.Substring(32, 80) };
                     result[15] = new string[] { "SupplierAddress", row.Substring(112, 80) };
                     result[16] = new string[] { "SupplierCountry", row.Substring(302, 80) };
                     result[17] = new string[] { "SupplierContact", row.Substring(486, 50) };
-                    row = lines[8];
+                    row = lines[9];
                     result[18] = new string[] { "ArrivedDate", row.Substring(12, 35) };
                     counter = 0;
                     for (int x = 0; x < 15; x++)
@@ -167,13 +167,13 @@ namespace EDI_Orders
                     con.Close();
 
                     con.Open();
-                    storedProcedure = new SqlCommand("OSP_Inseert_Items_For_RECCON", con);
+                    storedProcedure = new SqlCommand("OSP_Insert_Items_For_RECCON", con);
                     storedProcedure.CommandType = CommandType.StoredProcedure;
                     /**
                      * Write the line items to a seperate table
                      */
                     lineCount = File.ReadLines(file).Count();
-                    for (int i = 3; i < (lineCount - 1); i++)
+                    for (int i = 10; i < (lineCount - 1); i++)
                     {
                         string[][] t = ReadKTN(lines[i]);
                         if (t != null)
@@ -182,7 +182,7 @@ namespace EDI_Orders
                             {
                                 storedProcedure.Parameters.AddWithValue(t[j][0], t[j][1]);
                             }
-                            if (i % 2 == 0)
+                            if (i % 11 == 0)
                             {
                                 storedProcedure.Parameters.AddWithValue("ID", ID);
                                 storedProcedure.ExecuteNonQuery();
@@ -452,8 +452,8 @@ namespace EDI_Orders
                         case "PAC":
                             QTYParty = "PickList";
                             break;
-                        case "REC":
-                            QTYParty = "";
+                        case "TRE":
+                            QTYParty = "Recieved";
                             break;
                         case "TLO":
                             QTYParty = "TotalLoaded";
