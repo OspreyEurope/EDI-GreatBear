@@ -42,7 +42,6 @@ namespace EDI_Orders
                     if (!header.Equals("") && !header.Equals("orderEnd") && !header.Equals("priceDetails") && !header.Equals("X12OrderEnd"))
                     {
                         result = SharedFunctions.getData(order[x]);
-                        Console.WriteLine(header);
                         prevHeader = header;
                         storedProcedure.Parameters.AddWithValue(header, result);
                         if (header.Equals("@CustomerID"))
@@ -90,8 +89,6 @@ namespace EDI_Orders
                         case "priceDetails":
                             if ((storedProcedure.Parameters.Count) >= 6 && (storedProcedure.Parameters.Count < 12))
                             {
-                                Console.WriteLine(header);
-                                Console.WriteLine(prevHeader);
                                 if (!storedProcedure.Parameters.Contains("@DeliveryAddress"))
                                 {
                                     storedProcedure.Parameters.AddWithValue("@DeliveryAddress", DelAddrressBackup);
@@ -101,15 +98,12 @@ namespace EDI_Orders
                                     storedProcedure.Parameters.AddWithValue("@RequestedDate", RequestedDateBackup);
                                 }
 
-                                Console.WriteLine(storedProcedure.Parameters.Count);
                                 storedProcedure.ExecuteNonQuery();
                                 storedProcedure.Parameters.Clear();
                                 //Run through the temp list and add extra new parameters that are needed
-                                Console.WriteLine(temps.Count);
                                 for (int y = 0; y < temps.Count; y++)
                                 {
                                     storedProcedure.Parameters.AddWithValue(temps[y][0].ToString(), temps[y][1]);
-                                    Console.WriteLine(temps[y][0]);
                                 }
                             }
                             else
@@ -130,7 +124,6 @@ namespace EDI_Orders
 
                             if ((storedProcedure.Parameters.Count > 6) && (storedProcedure.Parameters.Count < 9))
                             {
-                                Console.WriteLine(storedProcedure.Parameters.Count);
                                 storedProcedure.ExecuteNonQuery();
                                 storedProcedure.Parameters.Clear();
                                 Console.WriteLine("Order entered.");

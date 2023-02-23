@@ -225,10 +225,6 @@ namespace EDI_Orders
                     };
                     break;
                 case "N":
-                    for (int y = 1; y < values.Length; y++)
-                    {
-                        Console.WriteLine(values[y]);
-                    }
                     break;
                 case "QTY":
                     return values[1];

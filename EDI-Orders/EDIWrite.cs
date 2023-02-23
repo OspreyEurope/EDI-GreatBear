@@ -23,7 +23,6 @@ namespace EDI_Orders
         public static void WriteEDIFact (SqlConnection con)
         {
             DataTable data = SharedFunctions.QueryDB(con, "OSP_Write_Header_EDI");
-            Console.WriteLine(data.Rows.Count);
             int counter = 0;
             /**
              * Retrives the data from the database and then writes it line by line into a file.
@@ -38,7 +37,6 @@ namespace EDI_Orders
                              .ToArray();
                 string file = "C:\\Bespoke\\EDI\\OutputFiles\\" + row["OrderNumber"] + ".txt";
                 StreamWriter streamWriter = new StreamWriter(file);
-                Console.WriteLine(row["OrderNumber"]);
                 streamWriter.WriteLine("UNA:5056302200001+.?'");
                 string text = "";
                 string tempLine = "";
@@ -84,7 +82,6 @@ namespace EDI_Orders
                         }
                         else if (prevHeader == "CUX")
                         {
-                            Console.WriteLine("HI");
                             WriteEDIFactProducts(con, streamWriter, row["OrderNumber"].ToString());
                             streamWriter.WriteLine(header + ":" + text + "'");
                         }
@@ -201,7 +198,6 @@ namespace EDI_Orders
         public static void WriteASN(SqlConnection con, string id)
         {
             DataTable data = SharedFunctions.QueryDB(con, "OSP_GET_PO_DATA", id);
-            Console.WriteLine(data.Rows.Count);
             int counter = 0;
             /**
              * Retrives the data from the database and then writes it line by line into a file.
@@ -352,7 +348,6 @@ namespace EDI_Orders
         public static void WriteOrder (SqlConnection con)
         {
             DataTable data = SharedFunctions.QueryDB(con, "OSP_Write_Header_EDI");
-            Console.WriteLine(data.Rows.Count);
             int counter = 13;
 
             for (int i = 0; i < data.Rows.Count; i++)
@@ -365,7 +360,6 @@ namespace EDI_Orders
                 string fileName = row["OrderNumber"].ToString() + ".txt";
                 fileName = fileName.PadRight((35 - fileName.Length), ' ');
                 StreamWriter streamWriter = new StreamWriter(file);
-                Console.WriteLine(row["OrderNumber"]);
                 streamWriter.WriteLine("000001UNH00000001            ORDER               R4        KTN                                          ORDER                                                                      OSPREY     KTN        " + DateTime.Now.ToString("yyyyMMddTHHmmss").PadRight(35, ' ') + "204" + fileName.PadRight(50, ' ') + "");
 
                 string text = "";
@@ -494,7 +488,6 @@ namespace EDI_Orders
         public static void WriteASNFile (SqlConnection con, string id)
         {
             DataTable data = SharedFunctions.QueryDB(con, "OSP_GET_PO_DATA", id);
-            Console.WriteLine(data.Rows.Count);
             /**
              * Retrives the data from the database and then writes it line by line into a file.
              */
@@ -596,7 +589,6 @@ namespace EDI_Orders
         public static void WriteProductList(SqlConnection con, string id)
         {
             DataTable data = SharedFunctions.QueryDB(con, "OSP_Get_Product_List", id);
-            Console.WriteLine(data.Rows.Count);
             /**
              * Retrives the data from the database and then writes it line by line into a file.
              */

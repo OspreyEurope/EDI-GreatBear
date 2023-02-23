@@ -34,7 +34,6 @@ namespace EDI_Orders
                 order[countLine] = seperateData.Where((c => !string.IsNullOrEmpty(c))).ToArray();
                 countLine++;
             }
-            Console.WriteLine(order[1][0]);
             return order;
         }
         #endregion

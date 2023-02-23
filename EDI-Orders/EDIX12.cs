@@ -35,10 +35,8 @@ namespace EDI_Orders
                     header = SharedFunctions.HeaderChecks(header, storedProcedure, order[x]);
                     if (!header.Equals("") && !header.Equals("OrderEnd") && !header.Equals("priceDetails") && !header.Equals("X12OrderEnd"))
                     {
-                        Console.WriteLine(header);
                         result =  SharedFunctions.getData(order[x]);
                         prevHeader = header;
-                        Console.WriteLine(result);
                         storedProcedure.Parameters.AddWithValue(header, result);
                     }
 
@@ -54,7 +52,6 @@ namespace EDI_Orders
                             temps.Add(tempData);
                             break;
                         case "OrderEnd":
-                            Console.WriteLine(storedProcedure.Parameters.Count);
                             storedProcedure.ExecuteNonQuery();
                             storedProcedure.Parameters.Clear();
                             Console.WriteLine("Order entered.");

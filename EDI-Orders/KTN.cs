@@ -16,7 +16,6 @@ namespace EDI_Orders
             string SP = "";
             string OrderType = File.ReadAllLines(file)[0];
             string Decision = OrderType.Substring(29,20);
-            Console.WriteLine(Decision);
 
             /**
              * This switch case is used to decide which file has been recieved and as a result how to handle the file.
@@ -331,7 +330,6 @@ namespace EDI_Orders
                                     storedProcedure.Parameters.AddWithValue("DateShipped", DateShipped);
                                     storedProcedure.Parameters.AddWithValue("KTNOutBoundCode", KTNOutBound);
                                     storedProcedure.Parameters.AddWithValue("Transporter", Transporter);
-                                    Console.WriteLine(storedProcedure.Parameters.Count);
                                     storedProcedure.ExecuteNonQuery();
                                     storedProcedure.Parameters.Clear();
                                 }
