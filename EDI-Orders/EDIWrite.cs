@@ -617,16 +617,21 @@ namespace EDI_Orders
                 text = "";
                 counter++;
 
-                text = row["PartNumber"].ToString();
+                text = row["PartNumber"].ToString();  //Barcode
+                text = text.PadRight(35, ' ');
+                streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "TRAEAN" + text + "");
+                text = "";
+                counter++;
+
+                text = row["BoxUPCCode"].ToString();  //Barcode
                 text = text.PadRight(35, ' ');
                 streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "TRABC " + text + "");
-                text = "";
                 counter++;
 
                 streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "CFGCONFIG1             YNEW         ");
                 counter++;
 
-                streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "PADPCS                      Y Y    Y");
+                streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "PADPCS                      Y Y   Y");
                 counter++;
 
                 streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "QTYSU 1                 ");

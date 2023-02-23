@@ -441,13 +441,15 @@ namespace EDI_Orders
                         //KTN.ProcessKTN("C://Bespoke/EDI/KTNSamples/STKADJ00000009.txt", conDev);           //Seems to work
                         //KTN.ProcessKTN("C://Bespoke/EDI/KTNSamples/STKADJ00000010.txt", conDev);           //Seems to work
                         //KTN.ProcessKTN("C://Bespoke/EDI/KTNSamples/STKADJ00000011.txt", conDev);           //Seems to work
+                        
                         //KTN.ProcessKTN("C://Bespoke/EDI/KTNSamples/RECCON00000003.txt", conDev);         //Seems to work
                         //KTN.ProcessKTN("C://Bespoke/EDI/KTNSamples/RECCON00000005.txt", conDev);         //Seems to work
                         //KTN.ProcessKTN("C://Bespoke/EDI/KTNSamples/RECCON00000006.txt", conDev);         //Seems to work
+                        
                         //KTN.ProcessKTN("C://Bespoke/EDI/KTNSamples/PPLCON00000018.txt", conDev);          //To be done
                         //KTN.ProcessKTN("C://Bespoke/EDI/KTNSamples/PPLCON00000017.txt", conDev);           //To be done
                         //KTN.ProcessKTN("C://Bespoke/EDI/KTNSamples/PPLCON00000012.txt", conDev);        //To be done
-                        //KTN.ProcessKTN("C://Bespoke/EDI/KTNSamples/PPLCON00000011.txt", conDev);          //To be done
+                        KTN.ProcessKTN("C://Bespoke/EDI/KTNSamples/PPLCON00000011.txt", conDev);          //To be done
                         break;
                     #endregion
                     default:

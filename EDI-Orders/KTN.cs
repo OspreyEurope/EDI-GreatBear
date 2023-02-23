@@ -103,7 +103,7 @@ namespace EDI_Orders
                     storedProcedure.Parameters.Clear();
                     con.Close();
                     break;
-#endregion
+                #endregion
                 #region RECCON
                 case "RECCON              ":
                     SP = "OSP_Insert_Reccon";
@@ -202,36 +202,98 @@ namespace EDI_Orders
                 #region PPLCON
                 case "PPLCON              ":
                     SP = "OSP_Insert_Pplcon";
-                    break;
-                    #endregion
-            }
-            if (Decision == "PPLCON              ")
-            {
-                con.Open();
-                Console.WriteLine(SP);
-                SqlCommand storedProcedure = new SqlCommand(SP, con);
-                storedProcedure.CommandType = CommandType.StoredProcedure;
-                int lineCount = File.ReadLines(file).Count();
-                //Add Try catch on this block to check it can be read and is not corrupted to prevent a crash sooner rather than later
-                string[] lines = File.ReadAllLines(file);
-                for (int i = 0; i < lineCount; i++)
-                {
-                    string[][] t = ReadKTN(lines[i]);
-                    if (t != null)
+                    var headers = SharedFunctions.QueryDB(con, "OSP_GetHeaders", "PPLCON");
+                    con.Open();
+                    /**
+                     * Write the header table values
+                     */
+                    storedProcedure = new SqlCommand(SP, con);
+                    storedProcedure.CommandType = CommandType.StoredProcedure;
+                    lineCount = File.ReadLines(file).Count();
+                    lines = File.ReadAllLines(file);
+                    result = new string[15][];
+                    ID = "";
+                    string MessageType = "";
+                    string Warehouse = "";
+                    string DateReceived = "";
+                    string OriginalFileName = "";
+                    string FileAction = "";
+                    string DateShipped = "";
+                    string KTNOutBound = "";
+                    string Transporter = "";
+                    int p = 0;
+
+                    lineCount = File.ReadLines(file).Count();
+                    for (int i = 0; i < (lineCount - 1); i++)
                     {
-                        for (int j = 0; j < t.Length; j++)
+                        string[][] t = ReadKTN(lines[i]);
+                        if (t != null)
                         {
-                            storedProcedure.Parameters.AddWithValue(t[j][0], t[j][1]);
-                            Console.WriteLine(t[j][0]);
-                            Console.WriteLine(t[j][1]);
+                            if (lines[i].Substring(6, 3) == "UNH")
+                            {
+                                row = lines[i];
+                                ID = row.Substring(9, 20);
+                                MessageType = row.Substring(29, 20);
+                                Warehouse = row.Substring(59, 10);
+                                DateReceived = row.Substring(201, 35);
+                                OriginalFileName = row.Substring(239, 50);
+                            }
+                            else if (lines[i].Substring(6, 3) == "ALI")
+                            {
+
+                            }
+                            else if (lines[i].Substring(6, 3) == "FAC")
+                            {
+                                row = lines[i];
+                                FileAction = row.Substring(12, 35);
+                            }
+                            else if (lines[i].Substring(6, 6) == "DTMDEL")
+                            {
+                                row = lines[i];
+                                DateShipped = row.Substring(12, 35);
+                            }
+                            else if (lines[i].Substring(6, 6) == "RFFOUT")
+                            {
+                                row = lines[i];
+                                DateShipped = row.Substring(12, 80);
+                            }
+                            else if (lines[i].Substring(6, 6) == "NADTRO")
+                            {
+                                row = lines[i];
+                                DateShipped = row.Substring(9, 3);
+                            }
+                            else
+                            {
+                                for (int j = 0; j < t.Length; j++)
+                                {
+                                    if (headers.AsEnumerable().Where(c => c.Field<string>("Header").Equals(t[i][0])).Count() > 0)
+                                    {
+                                        storedProcedure.Parameters.AddWithValue(t[j][0], t[j][1]);
+                                        //Console.WriteLine(t[j][0]);
+                                    }
+                                }
+                                if (lines[i + 1].Substring(6, 3) == "LIN" && p > 0)
+                                {
+                                    storedProcedure.Parameters.AddWithValue("ID", ID);
+                                    storedProcedure.Parameters.AddWithValue("MessageType", MessageType);
+                                    storedProcedure.Parameters.AddWithValue("Warehouse", Warehouse);
+                                    storedProcedure.Parameters.AddWithValue("DateReceived", DateReceived);
+                                    storedProcedure.Parameters.AddWithValue("OriginalFileName", OriginalFileName);
+                                    storedProcedure.Parameters.AddWithValue("FileAction", FileAction);
+                                    storedProcedure.Parameters.AddWithValue("DateShipped", DateShipped);
+                                    storedProcedure.Parameters.AddWithValue("KTNOutBoundCode", KTNOutBound);
+                                    storedProcedure.Parameters.AddWithValue("Transporter", Transporter);
+                                    Console.WriteLine(storedProcedure.Parameters.Count);
+                                    storedProcedure.ExecuteNonQuery();
+                                    storedProcedure.Parameters.Clear();
+                                }
+                                p++;
+                            }
                         }
                     }
-                }
-                Console.WriteLine(storedProcedure.Parameters.Count);
-                storedProcedure.ExecuteNonQuery();
-                storedProcedure.Parameters.Clear();
-                con.Close();
-                Console.WriteLine("Message Entered Successfully.");
+                    con.Close();
+                    break;
+                    #endregion
             }
         }
 
@@ -551,7 +613,7 @@ namespace EDI_Orders
                     if (MEAParty != "")
                     {
                         result[0] = new string[] { "Total" + MEAParty, row.Substring(12, 12) };
-                        result[1] = new string[] { "MeasurementUnit", row.Substring(48, 25) };
+                        result[1] = new string[] { "MeasurementUnit", row.Substring(48, 3) };
                     }
                     break;
             }
