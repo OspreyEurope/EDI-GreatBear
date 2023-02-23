@@ -1,20 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Data;
 using System.IO;
 using System.Linq;
-using System.Runtime.Remoting.Messaging;
-using System.Security.Policy;
-using System.Text;
-using System.Threading.Tasks;
-using System.Diagnostics;
-using System.Runtime.InteropServices;
+
 
 namespace EDI_Orders
 {
     internal class KTN
     {
+        #region ProcessKTN
         public static void ProcessKTN (string file,SqlConnection con)
         {
             
@@ -22,8 +17,18 @@ namespace EDI_Orders
             string OrderType = File.ReadAllLines(file)[0];
             string Decision = OrderType.Substring(29,20);
             Console.WriteLine(Decision);
+
+            /**
+             * This switch case is used to decide which file has been recieved and as a result how to handle the file.
+             * This may be improved however revist due to time constraints.
+             * STKMVT and RECCON can be merged to be handled as a '2 table' method and then PLCON as a '1 table' method and then used again in future.
+             */
             switch (Decision)
             {
+                /**
+                 * Use the STKMVT and RECCON approach if you are splitting the file into a header ad lines approach,
+                 * This way writes the item and item details into a seperate table to the header details to avoid repeating unneccessary data.
+                 */
                 #region STKMVT
                 case "STKMVT              ":
                     SP = "OSP_Insert_Stock_Movement";
@@ -49,6 +54,10 @@ namespace EDI_Orders
                     row = lines[2];
                     result[5] = new string[] { "DatePeriod", row.Substring(12, 35) };
 
+                    /**
+                    * This section cycles through the array and adds the values to the stored procedure.
+                    * It then inserts the data into the headers table in the database.
+                    */
                     int counter = 0;
                     for (int x = 0; x < 15; x++)
                     {
@@ -74,6 +83,11 @@ namespace EDI_Orders
                     storedProcedure.Parameters.Clear();
                     con.Close();
 
+                    /**
+                     * This is the start of the stored procedure to add the items to their table.
+                     * It runs through a loop that reads from where the items start and then adds the values to the stored procedure,
+                     * It finds the header value and the data value by using the method 'ReadKTN' due to the style of file.
+                     */
                     con.Open();
                     storedProcedure = new SqlCommand("OSP_Inseert_Items_For_STKMVT", con);
                     storedProcedure.CommandType = CommandType.StoredProcedure;
@@ -90,6 +104,9 @@ namespace EDI_Orders
                             {
                                 storedProcedure.Parameters.AddWithValue(t[j][0], t[j][1]);
                             }
+                            /**
+                             * Ths dictates when the write is used and then clears the parameters to be used again after.
+                             */
                             if (lines[i+1].Substring(6, 3) == "LIN")
                             {
                                 storedProcedure.Parameters.AddWithValue("ID", ID);
@@ -147,6 +164,11 @@ namespace EDI_Orders
                     result[17] = new string[] { "SupplierContact", row.Substring(486, 50) };
                     row = lines[9];
                     result[18] = new string[] { "ArrivedDate", row.Substring(12, 35) };
+                    
+                    /**
+                     * This section cycles through the array and adds the values to the stored procedure.
+                     * It then inserts the data into the headers table in the database.
+                     */
                     counter = 0;
                     for (int x = 0; x < 15; x++)
                     {
@@ -172,6 +194,11 @@ namespace EDI_Orders
                     storedProcedure.Parameters.Clear();
                     con.Close();
 
+                    /**
+                     * This is the start of the stored procedure to add the items to their table.
+                     * It runs through a loop that reads from where the items start and then adds the values to the stored procedure,
+                     * It finds the header value and the data value by using the method 'ReadKTN' due to the style of file.
+                     */
                     con.Open();
                     storedProcedure = new SqlCommand("OSP_Insert_Items_For_RECCON", con);
                     storedProcedure.CommandType = CommandType.StoredProcedure;
@@ -188,7 +215,10 @@ namespace EDI_Orders
                             {
                                 storedProcedure.Parameters.AddWithValue(t[j][0], t[j][1]);
                             }
-                            if (i % 11 == 0)
+                            /**
+                             * Ths dictates when the write is used and then clears the parameters to be used again after.
+                             */
+                            if (lines[i + 1].Substring(6, 3) == "LIN")
                             {
                                 storedProcedure.Parameters.AddWithValue("ID", ID);
                                 storedProcedure.ExecuteNonQuery();
@@ -199,14 +229,20 @@ namespace EDI_Orders
                     con.Close();
                     break;
                 #endregion
+                    /**
+                     * Use the PPLCON approach if all data is being put in the same table,
+                     * This means if the item details and the header details are all being compiled and not seperated out.
+                     */
                 #region PPLCON
                 case "PPLCON              ":
+                    /**
+                     * Reads the header values from the database,
+                     * Assigns the correct stored procedure for the file,
+                     * Creates the variables needed to temporarily store the data needed for each row of the database.
+                     */
                     SP = "OSP_Insert_Pplcon";
                     var headers = SharedFunctions.QueryDB(con, "OSP_GetHeaders", "PPLCON");
                     con.Open();
-                    /**
-                     * Write the header table values
-                     */
                     storedProcedure = new SqlCommand(SP, con);
                     storedProcedure.CommandType = CommandType.StoredProcedure;
                     lineCount = File.ReadLines(file).Count();
@@ -223,12 +259,18 @@ namespace EDI_Orders
                     string Transporter = "";
                     int p = 0;
 
+                    /**
+                     * This gets the length of the file and then cycles through the file reading each line.
+                     */
                     lineCount = File.ReadLines(file).Count();
                     for (int i = 0; i < (lineCount - 1); i++)
                     {
                         string[][] t = ReadKTN(lines[i]);
                         if (t != null)
                         {
+                            /**
+                             * This section of if statments is used to build the header data that is only present once but is repeated in the database.
+                             */
                             if (lines[i].Substring(6, 3) == "UNH")
                             {
                                 row = lines[i];
@@ -272,6 +314,12 @@ namespace EDI_Orders
                                         //Console.WriteLine(t[j][0]);
                                     }
                                 }
+
+                                /**
+                                 * This is when the data is isnerted, this only happens when the data is to be repeated.
+                                 * It adds all the header style information previously gathered and adds it to the stored procedure.
+                                 * It then clears the values ready for the next section of data.
+                                 */
                                 if (lines[i + 1].Substring(6, 3) == "LIN" && p > 0)
                                 {
                                     storedProcedure.Parameters.AddWithValue("ID", ID);
@@ -287,6 +335,9 @@ namespace EDI_Orders
                                     storedProcedure.ExecuteNonQuery();
                                     storedProcedure.Parameters.Clear();
                                 }
+                                /**
+                                * This section allows the program to know if it is the first repeating section and only writes if it has all values needed.
+                                */
                                 p++;
                             }
                         }
@@ -296,6 +347,7 @@ namespace EDI_Orders
                     #endregion
             }
         }
+        #endregion
 
         #region Read Line For KTN
         public static string[][] ReadKTN(string row)
@@ -617,6 +669,13 @@ namespace EDI_Orders
                     }
                     break;
             }
+
+            /**
+             * Initially result is predefined as 15 long, this is due to the static nature of a 2D array when created.
+             * This bit of code then reads how long the result should be,
+             * cycles through result, adds the values to a new array of the length that result should be.
+             * Then it returns that new array. If this is not done then there is index issues when adding parameters to the stored procedures.
+             */
             int counter = 0;
             for (int x = 0; x < 15; x++)
             {
