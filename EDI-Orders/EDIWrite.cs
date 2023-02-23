@@ -276,6 +276,12 @@ namespace EDI_Orders
 
 
         #region Write Products KTN Format
+        /**
+        * For now it is hardcoded for KTN due to the way EDI formats are.
+        * The use of Padright/padleft is to ad spaces, due to the KTN format they require set cahrcter positions and set charcter lengths,
+        * these pads ensure that the information is lined up correctly an it is readable by KTN.
+        * The counter with pad left using 0 is the line number, again this is required in KTN's format.
+        */
         public static int WriteProductsKTN (SqlConnection con, StreamWriter sw, string orderNo,int counter)
         {
             DataTable data = SharedFunctions.QueryDB(con, "OSP_Write_Products_EDI", orderNo);
@@ -337,6 +343,12 @@ namespace EDI_Orders
         #endregion
 
         #region Write Order For KTN
+        /**
+        * For now it is hardcoded for KTN due to the way EDI formats are.
+        * The use of Padright/padleft is to ad spaces, due to the KTN format they require set cahrcter positions and set charcter lengths,
+        * these pads ensure that the information is lined up correctly an it is readable by KTN.
+        * The counter with pad left using 0 is the line number, again this is required in KTN's format.
+        */
         public static void WriteOrder (SqlConnection con)
         {
             DataTable data = SharedFunctions.QueryDB(con, "OSP_Write_Header_EDI");
@@ -473,6 +485,12 @@ namespace EDI_Orders
         #endregion
 
         #region Write ASN For KTN
+        /**
+        * For now it is hardcoded for KTN due to the way EDI formats are.
+        * The use of Padright/padleft is to ad spaces, due to the KTN format they require set cahrcter positions and set charcter lengths,
+        * these pads ensure that the information is lined up correctly an it is readable by KTN.
+        * The counter with pad left using 0 is the line number, again this is required in KTN's format.
+        */
         public static void WriteASNFile (SqlConnection con, string id)
         {
             DataTable data = SharedFunctions.QueryDB(con, "OSP_GET_PO_DATA", id);
@@ -570,9 +588,10 @@ namespace EDI_Orders
 
         #region Write Product List For KTN
         /**
-         * Recreated write product list in the discussed fashion, using spaces to keep the segment lengths consistent regardless of data passed.
-         * Check new file produced with KTN.
          * For now it is hardcoded for KTN due to the way EDI formats are.
+         * The use of Padright/padleft is to ad spaces, due to the KTN format they require set cahrcter positions and set charcter lengths,
+         * these pads ensure that the information is lined up correctly an it is readable by KTN.
+         * The counter with pad left using 0 is the line number, again this is required in KTN's format.
          */
         public static void WriteProductList(SqlConnection con, string id)
         {
