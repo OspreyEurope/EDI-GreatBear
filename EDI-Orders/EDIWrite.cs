@@ -622,7 +622,7 @@ namespace EDI_Orders
                 text = "";
                 counter++;
 
-                text = row["ProductGroup"].ToString();
+                text = row["Category"].ToString();
                 text = text.PadRight(70, ' ');
                 streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "GRIITG" + text + "");
                 text = "";
