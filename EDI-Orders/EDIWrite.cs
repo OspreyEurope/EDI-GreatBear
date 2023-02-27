@@ -634,7 +634,7 @@ namespace EDI_Orders
                 text = "";
                 counter++;
 
-                text = row["BoxUPCCode"].ToString();  //Barcode
+                text = row["BoxUPCCode"].ToString();  //Barcode for the ox
                 text = text.PadRight(35, ' ');
                 streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "TRABC " + text + "");
                 counter++;

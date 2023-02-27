@@ -279,6 +279,11 @@ namespace EDI_Orders
                                 DateReceived = row.Substring(201, 35);
                                 OriginalFileName = row.Substring(239, 50);
                             }
+                            else if (lines[i].Substring(6, 3) == "LIN")
+                            {
+                                storedProcedure.Parameters.AddWithValue("ItemNumber", lines[i].Substring(39, 25));
+                                storedProcedure.Parameters.AddWithValue("ItemDescrtiption", lines[i].Substring(64, 80));
+                            }
                             else if (lines[i].Substring(6, 3) == "ALI")
                             {
 
@@ -296,12 +301,12 @@ namespace EDI_Orders
                             else if (lines[i].Substring(6, 6) == "RFFOUT")
                             {
                                 row = lines[i];
-                                DateShipped = row.Substring(12, 80);
+                                KTNOutBound = row.Substring(12, 80);
                             }
                             else if (lines[i].Substring(6, 6) == "NADTRO")
                             {
                                 row = lines[i];
-                                DateShipped = row.Substring(9, 3);
+                                Transporter = row.Substring(9, 3);
                             }
                             else
                             {
@@ -310,7 +315,6 @@ namespace EDI_Orders
                                     if (headers.AsEnumerable().Where(c => c.Field<string>("Header").Equals(t[i][0])).Count() > 0)
                                     {
                                         storedProcedure.Parameters.AddWithValue(t[j][0], t[j][1]);
-                                        //Console.WriteLine(t[j][0]);
                                     }
                                 }
 
@@ -319,7 +323,7 @@ namespace EDI_Orders
                                  * It adds all the header style information previously gathered and adds it to the stored procedure.
                                  * It then clears the values ready for the next section of data.
                                  */
-                                if (lines[i + 1].Substring(6, 3) == "LIN" && p > 0)
+                                if ((lines[i + 1].Substring(6, 3) == "LIN" && p > 0) || lines[i + 1].Substring(6, 3) == "UNT")
                                 {
                                     storedProcedure.Parameters.AddWithValue("ID", ID);
                                     storedProcedure.Parameters.AddWithValue("MessageType", MessageType);
