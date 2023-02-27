@@ -431,7 +431,7 @@ namespace EDI_Orders
                         EDIWrite.WriteProductList(conLive, "100994002");
                         break;
                     case "PO":
-                        EDIWrite.WriteASNFile(conDev, "0000021666");
+                        EDIWrite.WriteASNFile(conDev, "0000021672");
                         break;
                     #endregion
                     #region KTN Read
@@ -446,11 +446,12 @@ namespace EDI_Orders
                         //KTN.ProcessKTN("C://Bespoke/EDI/KTNSamples/RECCON00000005.txt", conDev);         //Seems to work
                         //KTN.ProcessKTN("C://Bespoke/EDI/KTNSamples/RECCON00000006.txt", conDev);         //Seems to work
                         //KTN.ProcessKTN("C://Bespoke/EDI/KTNSamples/RECCON00000007.txt", conDev);         //Seems to work
+                        KTN.ProcessKTN("C://Bespoke/EDI/KTNSamples/RECCON00000008.txt", conDev);         //Seems to work
 
-                        KTN.ProcessKTN("C://Bespoke/EDI/KTNSamples/PPLCON00000018.txt", conDev);         //Seems to work
-                        KTN.ProcessKTN("C://Bespoke/EDI/KTNSamples/PPLCON00000017.txt", conDev);         //Seems to work
-                        KTN.ProcessKTN("C://Bespoke/EDI/KTNSamples/PPLCON00000012.txt", conDev);         //Seems to work
-                        KTN.ProcessKTN("C://Bespoke/EDI/KTNSamples/PPLCON00000011.txt", conDev);         //Seems to work
+                        //KTN.ProcessKTN("C://Bespoke/EDI/KTNSamples/PPLCON00000018.txt", conDev);         //Seems to work
+                        //KTN.ProcessKTN("C://Bespoke/EDI/KTNSamples/PPLCON00000017.txt", conDev);         //Seems to work
+                        //KTN.ProcessKTN("C://Bespoke/EDI/KTNSamples/PPLCON00000012.txt", conDev);         //Seems to work
+                        //KTN.ProcessKTN("C://Bespoke/EDI/KTNSamples/PPLCON00000011.txt", conDev);         //Seems to work
                         break;
                     #endregion
                     default:
