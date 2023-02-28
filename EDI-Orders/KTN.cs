@@ -106,7 +106,7 @@ namespace EDI_Orders
                             /**
                              * Ths dictates when the write is used and then clears the parameters to be used again after.
                              */
-                            if (lines[i+1].Substring(6, 3) == "LIN")
+                            if (lines[i + 1].Substring(6, 3) == "LIN" || lines[i + 1].Substring(6, 3) == "UNT")
                             {
                                 storedProcedure.Parameters.AddWithValue("ID", ID);
                                 storedProcedure.ExecuteNonQuery();
@@ -217,7 +217,7 @@ namespace EDI_Orders
                             /**
                              * Ths dictates when the write is used and then clears the parameters to be used again after.
                              */
-                            if (lines[i + 1].Substring(6, 3) == "LIN")
+                            if (lines[i + 1].Substring(6, 3) == "LIN" || lines[i + 1].Substring(6, 3) == "UNT")
                             {
                                 storedProcedure.Parameters.AddWithValue("ID", ID);
                                 storedProcedure.ExecuteNonQuery();
@@ -582,6 +582,12 @@ namespace EDI_Orders
                             break;
                         case "TLO":
                             QTYParty = "TotalLoaded";
+                            break;
+                        case "TRB":
+                            QTYParty = "Blocked";
+                            break;
+                        case "TPA":
+                            QTYParty = "InOrder";
                             break;
                     }
                     if (QTYParty != "")
