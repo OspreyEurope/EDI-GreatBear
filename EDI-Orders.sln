@@ -7,8 +7,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EDI-Orders", "EDI-Orders\ED
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{7EEA3CAD-5F32-45EB-98F8-8ED0E5BC6DDC}"
 	ProjectSection(SolutionItems) = preProject
-		EDILookUp.cs = EDILookUp.cs
+		ASNMessages.txt = ASNMessages.txt
 		Build_Record_Attempt_One.txt = Build_Record_Attempt_One.txt
+		EDILookUp.cs = EDILookUp.cs
+		ITEMSMessage.txt = ITEMSMessage.txt
+		WriteOrder.txt = WriteOrder.txt
 	EndProjectSection
 EndProject
 Global

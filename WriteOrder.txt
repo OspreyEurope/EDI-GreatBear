@@ -1,0 +1,30 @@
+Orders are written in 2 sections.
+The file location that the order is written to is:
+- "C:\\Bespoke\\EDI\\OutputFiles\\" + row["OrderNumber"].ToString() + ".txt";
+- Line 359 File EDIWRite.cs
+- row["OrderNumber"].ToString() is the OrderNumber as many orders may be in the database ready to be sent.
+
+In order to write an order, you need to do run the following:
+- EDIWrite.WriteOrder(conKTN);
+
+This will then do 2 seperate sections of code.
+The inital is as follows:
+- Using SP "OSP_Write_Header_EDI" from DB "Ordbis_Interface" server "TH_DEVSQL01",
+- This SP will gather all of the relevant information for an order, this will include
+	- Locations,
+	- Dates,
+	- Contact Details,
+- This information does not need to be repeated hence is written as a header segment.
+
+The next section to this file write is as follows:
+- WriteProductsKTN(con, streamWriter, row["OrderNumber"].ToString(), counter);
+	- The OrderNumber is required as this is what links each item to the relevant Order Header details,
+- This function querys the "Orders_To_KTN_Lines" table in the DB to retried the relevant order line information,
+- This continues to write the items for the order file before returning to the previous function for the footer.
+
+Changes to be made when made live include an update function.
+This is written on line 477 and jsut needs uncommenting,
+This function runs the update query from sahredfunctions to udpate the flag on the orders header table,
+This indiciates if the order has been processed or not.
+SP can is called "OSP_Update_StatusID_KTN_Orders" and found in "Orbis_Interface".
+This takes the order ID as the value to udpate

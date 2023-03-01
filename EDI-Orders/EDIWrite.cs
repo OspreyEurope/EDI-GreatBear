@@ -474,6 +474,7 @@ namespace EDI_Orders
                 streamWriter.Close();
                 var lineCount = File.ReadLines(file).Count();
                 File.AppendAllText(file, (lineCount+1).ToString().PadLeft(6, '0') + "UNT" + (lineCount + 1).ToString().PadRight(6, ' ') + "00000001            ");
+                //SharedFunctions.UpdateRecords(con, "OSP_Update_StatusID_KTN_Orders", row["OrderNumber"].ToString());
             }
         }
         #endregion

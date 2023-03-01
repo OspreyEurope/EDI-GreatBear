@@ -1,0 +1,19 @@
+ASN are writted as a POXXXXXX.txt file to the output files location.
+This location is currently localy hosted so will need to be redirected to a new file location:
+- "C:\\Bespoke\\EDI\\OutputFiles\\PO" + id + ".txt" 
+- Line 494 in EDIWrite.cs
+
+In the program, all that needs to be passed in order to write an ASN message is the following:
+- EDIWrite.WriteASNFile(conDev, X);
+- The value of X is the value of the Order Number from table "PurchaseOrdersToKTN" in DB "TH-DEVSQL01"
+
+Ths will then auto run the query that fetches all the order information from "PurchaseOrdersToKTN".
+It then writes the header style data once and cycles through he item based data as required if an order has more than 1 line to it.
+
+The stored procedures that are used in this are:
+- "OSP_GET_PO_DATA"
+	- "Orbis_Interface", "TH-DEVSQL01"
+
+The files and functions that are used in producing this file are:
+- "EDIWrite.cs", "WriteASNFile",
+- "SharedFunctions.cs", "QueryDB",

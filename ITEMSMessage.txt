@@ -1,0 +1,20 @@
+ASN are writted as a WareHouseID_Product_List.txt file to the output files location.
+This location is currently localy hosted so will need to be redirected to a new file location:
+- "C:\\Bespoke\\EDI\\OutputFiles\\" + id + "_Product_List.txt";
+- Line 595 in EDIWrite.cs
+
+In the Program, all that needs to be passed to write a product list for a product list message is as follows:
+- EDIWrite.WriteProductList(conLive, WarehouseID);
+- The WarehouseID is the numeric ID value
+
+Ths will then auto run the query that fetches all the order information from the relevant tables (Laid out below).
+From here all the products are written line by line with the relevant information.
+
+The stored procedures that are used in this are:
+- "OSP_GET_PRODUCT_LIST"
+	- "OERA", "TH-SQLE1901"
+		- dbo.StockItems, dbo.PRODUCT_MASTER_STOCK, dbo.PRODUCT_MASTER
+
+The files and functions that are used in producing this file are:
+- "EDIWrite.cs", "WriteProductList",
+- "SharedFunctions.cs", "QueryDB",
