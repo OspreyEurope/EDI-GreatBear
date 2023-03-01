@@ -395,7 +395,7 @@ namespace EDI_Orders
                 streamWriter.WriteLine("000008DTMLOA" + text.PadRight(35, ' ') + "102");     //Currently hardcoded as we do not have an eqevilant field
 
                 string ID = row["DelPostalName"].ToString().PadRight(20, ' ').Substring(0, 10);
-                text = ID;
+                text = ID;            //Can be swapped for GLNs
                 text = text.PadRight(20, ' ');
                 text = text + row["DelPostalName"].ToString();
                 text = text.PadRight(100, ' ');
@@ -430,11 +430,11 @@ namespace EDI_Orders
                     text = text + row["DelEmail"].ToString();
                     text = text.PadRight(573, ' ');
                 }
-                streamWriter.WriteLine("000009NADDES" + text.PadRight(996, ' ') + "");
+                streamWriter.WriteLine("000009NADDES" + text.PadRight(996, ' ') + "");             //Can be swapped for GLNs but will need swapping to ensure the correct lcoation
                 text = "";
 
                 ID = row["InvoicePostalAddress"].ToString().Substring(0, 10);
-                text = ID;
+                text = ID;            //Can be swapped for GLNs
                 text = text.PadRight(20, ' ');
                 text = text + row["InvoicePostalAddress"].ToString();
                 text = text.PadRight(100, ' ');
