@@ -319,7 +319,7 @@ namespace EDI_Orders
                                 }
 
                                 /**
-                                 * This is when the data is isnerted, this only happens when the data is to be repeated.
+                                 * This is when the data is inserted, this only happens when the data is to be repeated.
                                  * It adds all the header style information previously gathered and adds it to the stored procedure.
                                  * It then clears the values ready for the next section of data.
                                  */
