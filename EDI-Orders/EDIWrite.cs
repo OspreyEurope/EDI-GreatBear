@@ -553,11 +553,11 @@ namespace EDI_Orders
                 text = "";
                 counter++;
 
-                //text = row["LotCode"].ToString();
-                //text = text.PadRight((35 - text.Length), ' ');
-                //streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "TRALNO" + text + "");
-                //text = "";
-                //counter++;
+                text = row["LotCode"].ToString();
+                text = text.PadRight((35 - text.Length), ' ');
+                streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "TRALNO" + text + "");
+                text = "";
+                counter++;
 
                 //text = row["OrderRequestedDate"].ToString();
                 //dateTime = DateTime.ParseExact(text, "dd/MM/yyyy hh:mm:ss", null);
