@@ -433,6 +433,9 @@ namespace EDI_Orders
                     case "PO":
                         EDIWrite.WriteASNFile(conDev, "0000021672");
                         break;
+                    case "B":
+                        EDIWrite.WriteTruckDelsFile(conDev, "TRUCK100");
+                        break;
                     #endregion
                     #region KTN Read
                     case "KTN":

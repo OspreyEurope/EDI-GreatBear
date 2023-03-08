@@ -5,8 +5,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
-using System.Runtime.Remoting.Messaging;
-using static System.Net.Mime.MediaTypeNames;
+using System.Text;
 using File = System.IO.File;
 
 namespace EDI_Orders
@@ -36,7 +35,8 @@ namespace EDI_Orders
                              .Select(x => x.ColumnName)
                              .ToArray();
                 string file = "C:\\Bespoke\\EDI\\OutputFiles\\" + row["OrderNumber"] + ".txt";
-                StreamWriter streamWriter = new StreamWriter(file);
+                FileStream f = new FileStream(file, FileMode.Create);
+                StreamWriter streamWriter = new StreamWriter(f, Encoding.UTF8);
                 streamWriter.WriteLine("UNA:5056302200001+.?'");
                 string text = "";
                 string tempLine = "";
@@ -203,7 +203,8 @@ namespace EDI_Orders
              * Retrives the data from the database and then writes it line by line into a file.
              */
             string file = "C:\\Bespoke\\EDI\\OutputFiles\\PO" + id + ".txt";
-            StreamWriter streamWriter = new StreamWriter(file);
+            FileStream f = new FileStream(file, FileMode.Create);
+            StreamWriter streamWriter = new StreamWriter(f, Encoding.UTF8);
             streamWriter.WriteLine("UNH:5056302200001+.?'");
             string text = "";
             string header = "";
@@ -359,7 +360,8 @@ namespace EDI_Orders
                 string file = "C:\\Bespoke\\EDI\\OutputFiles\\" + row["OrderNumber"].ToString() + ".txt";
                 string fileName = row["OrderNumber"].ToString() + ".txt";
                 fileName = fileName.PadRight((35 - fileName.Length), ' ');
-                StreamWriter streamWriter = new StreamWriter(file);
+                FileStream f = new FileStream(file, FileMode.Create);
+                StreamWriter streamWriter = new StreamWriter(f, Encoding.UTF8);
                 streamWriter.WriteLine("000001UNH00000001            ORDER               R4        KTN                                          ORDER                                                                      OSPREY     KTN        " + DateTime.Now.ToString("yyyyMMddTHHmmss").PadRight(35, ' ') + "204" + fileName.PadRight(50, ' ') + "");
 
                 string text = "";
@@ -493,7 +495,8 @@ namespace EDI_Orders
              * Retrives the data from the database and then writes it line by line into a file.
              */
             string file = "C:\\Bespoke\\EDI\\OutputFiles\\PO" + id + ".txt";
-            StreamWriter streamWriter = new StreamWriter(file);
+            FileStream f = new FileStream(file, FileMode.Create);
+            StreamWriter streamWriter = new StreamWriter(f, Encoding.UTF8);
             string fileName = "PO" + id + ".txt";
             fileName = fileName.PadRight((35 - fileName.Length), ' ');
             streamWriter.WriteLine("000001UNH00000001            ASN                 R4        KTN                                           ASN                                                                       OSPREY     KTN       " + DateTime.Now.ToString("yyyyMMddTHHmmss") + "204" + fileName.PadRight((80 - fileName.Length), ' ') + "");
@@ -552,12 +555,12 @@ namespace EDI_Orders
                 //text = "";
                 //counter++;
 
-                text = row["OrderRequestedDate"].ToString();
-                dateTime = DateTime.ParseExact(text, "dd/MM/yyyy hh:mm:ss", null);
-                text = dateTime.ToString("yyyyMMdd").PadRight(35, ' '); //43 as it cuts off the time section however it is still counted using string.length
-                streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "DTMPLA" + text + "102");
-                text = "";
-                counter++;
+                //text = row["OrderRequestedDate"].ToString();
+                //dateTime = DateTime.ParseExact(text, "dd/MM/yyyy hh:mm:ss", null);
+                //text = dateTime.ToString("yyyyMMdd").PadRight(35, ' '); //43 as it cuts off the time section however it is still counted using string.length
+                //streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "DTMPLA" + text + "102");
+                //text = "";
+                //counter++;
 
                 text = row["UnitPrice"].ToString();
                 temp = text.Split('.');
@@ -594,7 +597,8 @@ namespace EDI_Orders
              * Retrives the data from the database and then writes it line by line into a file.
              */
             string file = "C:\\Bespoke\\EDI\\OutputFiles\\" + id + "_Product_List.txt";
-            StreamWriter streamWriter = new StreamWriter(file);
+            FileStream f = new FileStream(file, FileMode.Create);
+            StreamWriter streamWriter = new StreamWriter(f, Encoding.UTF8);
             string fileName = id + "_Product_List.txt";
             fileName = fileName.PadRight(35, ' ');
             streamWriter.WriteLine("000001UNH00000001            ITEMS               R4        KTN                                          ITEMS                                                                      OSPREY     KTN        " + DateTime.Now.ToString("yyyyMMddTHHmmss").PadRight(35, ' ') + "204" + fileName.PadRight(50, ' ') + "");
@@ -670,6 +674,105 @@ namespace EDI_Orders
                     streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "QTYSU " + text.PadRight(18, ' '));
                     counter++;
                 }
+            }
+            streamWriter.Close();
+            var lineCount = File.ReadLines(file).Count();
+            File.AppendAllText(file, counter.ToString().PadLeft(6, '0') + "UNT" + (lineCount + 1).ToString().PadRight(6, ' ') + "00000001            ");
+        }
+        #endregion
+
+        #region Truck dels warehouse to warehouse
+        /**
+         * Is hardcoded for DSV to KTN
+         */
+        public static void WriteTruckDelsFile(SqlConnection con, string id)
+        {
+            DataTable data = SharedFunctions.QueryDB(con, "OSP_GET_DSV_TO_KTN_MOVEMENT", id);
+            /**
+             * Retrives the data from the database and then writes it line by line into a file.
+             */
+            string file = "C:\\Bespoke\\EDI\\OutputFiles\\TRUCK" + id + ".txt";
+            FileStream f = new FileStream(file, FileMode.Create);
+            StreamWriter streamWriter = new StreamWriter(f, Encoding.UTF8);
+            string fileName = "PO" + id + ".txt";
+            fileName = fileName.PadRight((35 - fileName.Length), ' ');
+            streamWriter.WriteLine("000001UNH00000001            ASN                 R4        KTN                                           ASN                                                                       OSPREY     KTN       " + DateTime.Now.ToString("yyyyMMddTHHmmss") + "204" + fileName.PadRight((80 - fileName.Length), ' ') + "");
+            streamWriter.WriteLine("000002FACC");
+
+            int counter = 3;
+
+            string text = "Move";                                            //Currently hardcoded as we do not have an eqevilant field
+            text = text.PadRight((80 - text.Length), ' ');
+            streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "RFFTYP" + text + "");
+
+            text = "";
+            counter++;
+
+            text = data.Rows[0]["DTK_TruckNo"].ToString();
+            text = text.PadRight((80 - text.Length), ' ');
+            streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "RFFCR " + text + "");
+            text = "";
+            counter++;
+
+            text = DateTime.Now.ToString();
+            DateTime dateTime = DateTime.ParseExact(text, "dd/MM/yyyy hh:mm:ss", null);
+            text = dateTime.ToString("yyyyMMdd");
+            streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "DTMPLA" + text.PadRight(35, ' ') + "102");   //43 as it cuts off the time section however it is still counted using string.length
+            text = "";
+            counter++;
+
+            streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "NADSUPDSV".PadRight(923, ' '));
+            counter++;
+
+            for (int i = 0; i < data.Rows.Count; i++)
+            {
+                DataRow row = data.Rows[i];
+
+                text = (i + 1).ToString();
+                text = text.PadRight(30, ' ');
+                text = text + row["DTK_SKU"].ToString();
+                text = text.PadRight(55, ' ');
+                text = text + "";
+                text = text.PadRight(135, ' ');
+                streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "LIN" + text.PadRight(175, ' ') + "");
+                text = "";
+                counter++;
+
+                text = row["DTK_Item_Qty"].ToString();
+                var temp = text.Split('.');
+                text = temp[0];
+                text = text.PadRight((15 - text.Length), ' ');
+                streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "QTYEXP" + text + "");
+                text = "";
+                counter++;
+
+                //text = row["LotCode"].ToString();
+                //text = text.PadRight((35 - text.Length), ' ');
+                //streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "TRALNO" + text + "");
+                //text = "";
+                //counter++;
+
+                text = DateTime.Now.ToString();
+                dateTime = DateTime.ParseExact(text, "dd/MM/yyyy hh:mm:ss", null);
+                text = dateTime.ToString("yyyyMMdd").PadRight(35, ' '); //43 as it cuts off the time section however it is still counted using string.length
+                streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "DTMPLA" + text + "102");
+                text = "";
+                counter++;
+
+                //text = row["UnitPrice"].ToString();
+                //temp = text.Split('.');
+                //text = "";
+                //foreach (string s in temp)
+                //{
+                //    text = text + s;
+                //}
+                //text = text.Substring(0, text.Length - 3);
+                //text = text.PadRight(18, ' ');
+                //text = text + row["Currency"].ToString();
+                //text = text.PadRight(3, ' ');
+                //streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "MOA116" + text + "");
+                //text = "";
+                //counter++;
             }
             streamWriter.Close();
             var lineCount = File.ReadLines(file).Count();
