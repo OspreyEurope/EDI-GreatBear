@@ -434,7 +434,7 @@ namespace EDI_Orders
                         EDIWrite.WriteASNFile(conDev, "0000021672");
                         break;
                     case "B":
-                        EDIWrite.WriteTruckDelsFile(conDev, "TRUCK100");
+                        EDIWrite.WriteTruckDelsFile(conDev, "TRUCK103");
                         break;
                     #endregion
                     #region KTN Read

@@ -36,7 +36,8 @@ namespace EDI_Orders
                              .ToArray();
                 string file = "C:\\Bespoke\\EDI\\OutputFiles\\" + row["OrderNumber"] + ".txt";
                 FileStream f = new FileStream(file, FileMode.Create);
-                StreamWriter streamWriter = new StreamWriter(f, Encoding.UTF8);
+                Encoding utf8WithoutBom = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false);
+                StreamWriter streamWriter = new StreamWriter(f, utf8WithoutBom);
                 streamWriter.WriteLine("UNA:5056302200001+.?'");
                 string text = "";
                 string tempLine = "";
@@ -204,7 +205,8 @@ namespace EDI_Orders
              */
             string file = "C:\\Bespoke\\EDI\\OutputFiles\\PO" + id + ".txt";
             FileStream f = new FileStream(file, FileMode.Create);
-            StreamWriter streamWriter = new StreamWriter(f, Encoding.UTF8);
+            Encoding utf8WithoutBom = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false);
+            StreamWriter streamWriter = new StreamWriter(f, utf8WithoutBom);
             streamWriter.WriteLine("UNH:5056302200001+.?'");
             string text = "";
             string header = "";
@@ -361,7 +363,8 @@ namespace EDI_Orders
                 string fileName = row["OrderNumber"].ToString() + ".txt";
                 fileName = fileName.PadRight((35 - fileName.Length), ' ');
                 FileStream f = new FileStream(file, FileMode.Create);
-                StreamWriter streamWriter = new StreamWriter(f, Encoding.UTF8);
+                Encoding utf8WithoutBom = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false);
+                StreamWriter streamWriter = new StreamWriter(f, utf8WithoutBom);
                 streamWriter.WriteLine("000001UNH00000001            ORDER               R4        KTN                                          ORDER                                                                      OSPREY     KTN        " + DateTime.Now.ToString("yyyyMMddTHHmmss").PadRight(35, ' ') + "204" + fileName.PadRight(50, ' ') + "");
 
                 string text = "";
@@ -496,7 +499,8 @@ namespace EDI_Orders
              */
             string file = "C:\\Bespoke\\EDI\\OutputFiles\\PO" + id + ".txt";
             FileStream f = new FileStream(file, FileMode.Create);
-            StreamWriter streamWriter = new StreamWriter(f, Encoding.UTF8);
+            Encoding utf8WithoutBom = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false);
+            StreamWriter streamWriter = new StreamWriter(f, utf8WithoutBom);
             string fileName = "PO" + id + ".txt";
             fileName = fileName.PadRight((35 - fileName.Length), ' ');
             streamWriter.WriteLine("000001UNH00000001            ASN                 R4        KTN                                           ASN                                                                       OSPREY     KTN       " + DateTime.Now.ToString("yyyyMMddTHHmmss") + "204" + fileName.PadRight((80 - fileName.Length), ' ') + "");
@@ -598,7 +602,8 @@ namespace EDI_Orders
              */
             string file = "C:\\Bespoke\\EDI\\OutputFiles\\" + id + "_Product_List.txt";
             FileStream f = new FileStream(file, FileMode.Create);
-            StreamWriter streamWriter = new StreamWriter(f, Encoding.UTF8);
+            Encoding utf8WithoutBom = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false);
+            StreamWriter streamWriter = new StreamWriter(f, utf8WithoutBom);
             string fileName = id + "_Product_List.txt";
             fileName = fileName.PadRight(35, ' ');
             streamWriter.WriteLine("000001UNH00000001            ITEMS               R4        KTN                                          ITEMS                                                                      OSPREY     KTN        " + DateTime.Now.ToString("yyyyMMddTHHmmss").PadRight(35, ' ') + "204" + fileName.PadRight(50, ' ') + "");
@@ -693,7 +698,8 @@ namespace EDI_Orders
              */
             string file = "C:\\Bespoke\\EDI\\OutputFiles\\TRUCK" + id + ".txt";
             FileStream f = new FileStream(file, FileMode.Create);
-            StreamWriter streamWriter = new StreamWriter(f, Encoding.UTF8);
+            Encoding utf8WithoutBom = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false);
+            StreamWriter streamWriter = new StreamWriter(f, utf8WithoutBom);
             string fileName = "PO" + id + ".txt";
             fileName = fileName.PadRight((35 - fileName.Length), ' ');
             streamWriter.WriteLine("000001UNH00000001            ASN                 R4        KTN                                           ASN                                                                       OSPREY     KTN       " + DateTime.Now.ToString("yyyyMMddTHHmmss") + "204" + fileName.PadRight((80 - fileName.Length), ' ') + "");
@@ -777,6 +783,8 @@ namespace EDI_Orders
             streamWriter.Close();
             var lineCount = File.ReadLines(file).Count();
             File.AppendAllText(file, counter.ToString().PadLeft(6, '0') + "UNT" + (lineCount + 1).ToString().PadRight(6, ' ') + "00000001            ");
+
+            
         }
         #endregion
     }
