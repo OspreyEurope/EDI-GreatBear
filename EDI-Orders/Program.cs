@@ -36,15 +36,16 @@ namespace EDI_Orders
             conDev.ConnectionString = ConfigurationManager.ConnectionStrings["OERADEVORBIS"].ConnectionString;
             SqlConnection conLive = new SqlConnection();
             conLive.ConnectionString = ConfigurationManager.ConnectionStrings["OERA"].ConnectionString;
-
+            SqlConnection conKTN = new SqlConnection();
+            conKTN.ConnectionString = ConfigurationManager.ConnectionStrings["Orbis_Interface"].ConnectionString;
+            
             /**
              * These are the current files that can be used for testing
              */
             //string choice = Console.ReadLine();  //Infinite loop
             while (true)
             {
-                SqlConnection conKTN = new SqlConnection();
-                conKTN.ConnectionString = ConfigurationManager.ConnectionStrings["Orbis_Interface"].ConnectionString;
+                
                 string choice = Console.ReadLine();
                 switch (choice)
                 {
@@ -424,37 +425,22 @@ namespace EDI_Orders
                         break;
                     #endregion
                     #region Testing Wite File
-                    case "A":
+                    case "WriteOrders":
                         EDIWrite.WriteOrder(conKTN);
                         break;
-                    case "Products":
+                    case "WriteProductList":
                         EDIWrite.WriteProductList(conLive, "100994002");
                         break;
-                    case "PO":
+                    case "WritePurchaseOrder":
                         EDIWrite.WriteASNFile(conDev, "0000021672");
                         break;
-                    case "B":
-                        EDIWrite.WriteTruckDelsFile(conDev, "TRUCK103");
+                    case "TruckDels":
+                        EDIWrite.WriteTruckDelsFile(conDev, "TRUCK102-1");
                         break;
                     #endregion
                     #region KTN Read
                     case "KTN":
-                        //KTN.ProcessKTN("C://Bespoke/EDI/KTNSamples/STKADJ00000005.txt", conDev);         //Seems to work
-                        //KTN.ProcessKTN("C://Bespoke/EDI/KTNSamples/STKADJ00000008.txt", conDev);         //Seems to work
-                        //KTN.ProcessKTN("C://Bespoke/EDI/KTNSamples/STKADJ00000009.txt", conDev);         //Seems to work
-                        //KTN.ProcessKTN("C://Bespoke/EDI/KTNSamples/STKADJ00000010.txt", conDev);         //Seems to work
-                        //KTN.ProcessKTN("C://Bespoke/EDI/KTNSamples/STKADJ00000011.txt", conDev);         //Seems to work
-
-                        KTN.ProcessKTN("C://Bespoke/EDI/KTNSamples/RECCON00000003.txt", conDev);         //Seems to work
-                        KTN.ProcessKTN("C://Bespoke/EDI/KTNSamples/RECCON00000005.txt", conDev);         //Seems to work
-                        KTN.ProcessKTN("C://Bespoke/EDI/KTNSamples/RECCON00000006.txt", conDev);         //Seems to work
-                        KTN.ProcessKTN("C://Bespoke/EDI/KTNSamples/RECCON00000007.txt", conDev);         //Seems to work
-                        KTN.ProcessKTN("C://Bespoke/EDI/KTNSamples/RECCON00000008.txt", conDev);         //Seems to work
-
-                        //KTN.ProcessKTN("C://Bespoke/EDI/KTNSamples/PPLCON00000018.txt", conDev);         //Seems to work
-                        //KTN.ProcessKTN("C://Bespoke/EDI/KTNSamples/PPLCON00000017.txt", conDev);         //Seems to work
-                        //KTN.ProcessKTN("C://Bespoke/EDI/KTNSamples/PPLCON00000012.txt", conDev);         //Seems to work
-                        //KTN.ProcessKTN("C://Bespoke/EDI/KTNSamples/PPLCON00000011.txt", conDev);         //Seems to work
+                        SharedFunctions.FileCheck(choice);
                         break;
                     #endregion
                     default:

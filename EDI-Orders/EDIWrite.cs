@@ -720,8 +720,8 @@ namespace EDI_Orders
             text = "";
             counter++;
 
-            text = DateTime.Now.ToString();
-            DateTime dateTime = DateTime.ParseExact(text, "dd/MM/yyyy hh:mm:ss", null);
+            text = DateTime.Now.ToShortDateString();
+            DateTime dateTime = DateTime.ParseExact(text, "dd/MM/yyyy", null);    // hh:mm:ss
             text = dateTime.ToString("yyyyMMdd");
             streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "DTMPLA" + text.PadRight(35, ' ') + "102");   //43 as it cuts off the time section however it is still counted using string.length
             text = "";
@@ -758,8 +758,8 @@ namespace EDI_Orders
                 //text = "";
                 //counter++;
 
-                text = DateTime.Now.ToString();
-                dateTime = DateTime.ParseExact(text, "dd/MM/yyyy hh:mm:ss", null);
+                text = DateTime.Now.ToShortDateString();
+                dateTime = DateTime.ParseExact(text, "dd/MM/yyyy", null);
                 text = dateTime.ToString("yyyyMMdd").PadRight(35, ' '); //43 as it cuts off the time section however it is still counted using string.length
                 streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "DTMPLA" + text + "102");
                 text = "";

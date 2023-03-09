@@ -2,6 +2,7 @@
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
+using System.IO;
 using System.Linq;
 
 namespace EDI_Orders
@@ -363,6 +364,38 @@ namespace EDI_Orders
             DataTable data = new DataTable();
             dataQuery.Fill(data);
             con.Close();
+        }
+        #endregion
+
+        #region Folder Checker
+        /**
+         * This function takes whichever vender the message is coming from adn will handle the information as required.
+         * This will read the correct file location, gather an array of files and then process all the gathered files.
+         */
+        public static void FileCheck (string A)
+        {
+            SqlConnection conKTN = new SqlConnection();
+            conKTN.ConnectionString = ConfigurationManager.ConnectionStrings["Orbis_Interface"].ConnectionString;
+            SqlConnection conOE = new SqlConnection();
+            conOE.ConnectionString = ConfigurationManager.ConnectionStrings["OERADEV"].ConnectionString;
+            SqlConnection conDev = new SqlConnection();
+            conDev.ConnectionString = ConfigurationManager.ConnectionStrings["OERADEVORBIS"].ConnectionString;
+            SqlConnection conLive = new SqlConnection();
+            conLive.ConnectionString = ConfigurationManager.ConnectionStrings["OERA"].ConnectionString;
+            switch (A)
+            {
+                case "KTN":
+                    string[] files = Directory.GetFiles(ConfigurationManager.AppSettings["KTNHolding"]); //Temp for testing
+                    foreach (var file in files)
+                    {
+                        Console.WriteLine(file);
+                        KTN.ProcessKTN(file, conDev);
+                        string name = Path.GetFileName(file);
+                        File.Move(file, ConfigurationManager.AppSettings["KTNProcessed"] + "/" + name);
+                        Console.WriteLine(file + " Was Processed Successfully.");
+                    }
+                    break;
+            }
         }
         #endregion
     }
