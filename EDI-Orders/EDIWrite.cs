@@ -580,6 +580,8 @@ namespace EDI_Orders
                 streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "MOA116" + text + "");
                 text = "";
                 counter++;
+
+                //SharedFunctions.QueryDB(con, "OSP_Update_StatusID_WH_PO", data.Rows[0]["PurchaseOrderNumber"].ToString());
             }
             streamWriter.Close();
             var lineCount = File.ReadLines(file).Count();
