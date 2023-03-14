@@ -4,6 +4,8 @@ using System.Data;
 using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
+using static System.Net.WebRequestMethods;
+using File = System.IO.File;
 
 namespace EDI_Orders
 {
@@ -386,13 +388,53 @@ namespace EDI_Orders
             {
                 case "KTN":
                     string[] files = Directory.GetFiles(ConfigurationManager.AppSettings["KTNHolding"]); //Temp for testing
+                    
                     foreach (var file in files)
                     {
-                        Console.WriteLine(file);
-                        KTN.ProcessKTN(file, conDev);
                         string name = Path.GetFileName(file);
-                        File.Move(file, ConfigurationManager.AppSettings["KTNProcessed"] + "/" + name);
-                        Console.WriteLine(file + " Was Processed Successfully.");
+                        try
+                        {
+                            Console.WriteLine(file);
+                            KTN.ProcessKTN(file, conDev);
+                            File.Move(file, ConfigurationManager.AppSettings["KTNProcessed"] + "/" + name);
+                            Console.WriteLine(file + " Was Processed Successfully.");
+                        }
+                        catch (Exception ex)
+                        {
+                            
+                            Console.WriteLine("File Quanrintined: " + name);
+                        }
+                    }
+                    break;
+                    //Testing, Moves the file back
+                case "R":
+                    files = Directory.GetFiles(ConfigurationManager.AppSettings["KTNProcessed"]); //Temp for testing
+                    foreach (var file in files)
+                    {
+                        string name = Path.GetFileName(file);
+                        try
+                        {
+                            File.Move(file, ConfigurationManager.AppSettings["KTNHolding"] + "/" + name);
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine(ex.Message);
+                            Console.WriteLine("Files replace Crashed" + name);
+                        }
+                    }
+                    files = Directory.GetFiles(ConfigurationManager.AppSettings["KTNQuarintine"]); //Temp for testing
+                    foreach (var file in files)
+                    {
+                        string name = Path.GetFileName(file);
+                        try
+                        {
+                            File.Move(file, ConfigurationManager.AppSettings["KTNHolding"] + "/" + name);
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine(ex.Message);
+                            Console.WriteLine("Files replace Crashed" + name);
+                        }
                     }
                     break;
             }

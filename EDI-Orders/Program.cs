@@ -442,6 +442,9 @@ namespace EDI_Orders
                     case "KTN":
                         SharedFunctions.FileCheck(choice);
                         break;
+                    case "R":
+                        SharedFunctions.FileCheck(choice);
+                        break;
                     #endregion
                     default:
                         Console.WriteLine("Please input a number between 1 and 60.");
