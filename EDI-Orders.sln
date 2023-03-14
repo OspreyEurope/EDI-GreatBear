@@ -11,6 +11,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Build_Record_Attempt_One.txt = Build_Record_Attempt_One.txt
 		EDILookUp.cs = EDILookUp.cs
 		ITEMSMessage.txt = ITEMSMessage.txt
+		TODO.txt = TODO.txt
 		WriteOrder.txt = WriteOrder.txt
 	EndProjectSection
 EndProject

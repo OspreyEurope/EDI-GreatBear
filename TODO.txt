@@ -1,0 +1,9 @@
+TODO:
+Remove the commenting out for the update statusID field on both orders and ASN for KTN
+- This is in WriteEDI.cs and then the KTN functions,
+
+Add Try catches to the standard EDI style Code,
+
+Match the Great Bear EDI fields to table headers,
+
+Alter the program main file to work for everything based on waht is passed.

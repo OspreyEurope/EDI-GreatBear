@@ -113,9 +113,7 @@ namespace EDI_Orders
                                  */
                                 if (lines[i + 1].Substring(6, 3) == "LIN" || lines[i + 1].Substring(6, 3) == "UNT")
                                 {
-                                    Console.WriteLine(storedProcedure.Parameters.Count);
                                     storedProcedure.Parameters.AddWithValue("ID", ID);
-                                    Console.WriteLine(i);
                                     storedProcedure.ExecuteNonQuery();
                                     storedProcedure.Parameters.Clear();
                                 }
