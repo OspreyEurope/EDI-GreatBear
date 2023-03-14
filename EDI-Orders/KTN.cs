@@ -99,7 +99,7 @@ namespace EDI_Orders
                          * Write the line items to a seperate table
                          */
                         lineCount = File.ReadLines(file).Count();
-                        for (int i = 3; i < (lineCount - 1); i++)
+                        for (int i = 3; i < (lineCount - 2); i++)
                         {
                             string[][] t = ReadKTN(lines[i]);
                             if (t != null)
@@ -113,7 +113,9 @@ namespace EDI_Orders
                                  */
                                 if (lines[i + 1].Substring(6, 3) == "LIN" || lines[i + 1].Substring(6, 3) == "UNT")
                                 {
+                                    Console.WriteLine(storedProcedure.Parameters.Count);
                                     storedProcedure.Parameters.AddWithValue("ID", ID);
+                                    Console.WriteLine(i);
                                     storedProcedure.ExecuteNonQuery();
                                     storedProcedure.Parameters.Clear();
                                 }
@@ -360,8 +362,6 @@ namespace EDI_Orders
                 string name = Path.GetFileName(file);
                 File.Move(file, ConfigurationManager.AppSettings["KTNQuarintine"] + "/" + name);
                 Console.WriteLine(ex.Message);
-                Console.WriteLine();
-                Console.WriteLine(ex.StackTrace);
                 Console.WriteLine();
                 Console.WriteLine();
                 Console.WriteLine();
