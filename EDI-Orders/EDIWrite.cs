@@ -348,9 +348,9 @@ namespace EDI_Orders
         * these pads ensure that the information is lined up correctly an it is readable by KTN.
         * The counter with pad left using 0 is the line number, again this is required in KTN's format.
         */
-        public static void WriteOrder (SqlConnection con)
+        public static void WriteOrder (SqlConnection con, string id)
         {
-            DataTable data = SharedFunctions.QueryDB(con, "OSP_Write_Header_EDI");
+            DataTable data = SharedFunctions.QueryDB(con, "OSP_Write_Header_EDI", id);
             int counter = 13;
 
             for (int i = 0; i < data.Rows.Count; i++)

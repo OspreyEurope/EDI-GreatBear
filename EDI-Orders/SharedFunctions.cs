@@ -399,9 +399,8 @@ namespace EDI_Orders
                             File.Move(file, ConfigurationManager.AppSettings["KTNProcessed"] + "/" + name);
                             Console.WriteLine(file + " Was Processed Successfully.");
                         }
-                        catch (Exception ex)
+                        catch
                         {
-                            
                             Console.WriteLine("File Quanrintined: " + name);
                         }
                     }

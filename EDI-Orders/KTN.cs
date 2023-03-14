@@ -261,6 +261,7 @@ namespace EDI_Orders
                         string DateShipped = "";
                         string KTNOutBound = "";
                         string Transporter = "";
+                        string OrderNumber = "";
                         int p = 0;
 
                         /**
@@ -308,6 +309,11 @@ namespace EDI_Orders
                                     row = lines[i];
                                     KTNOutBound = row.Substring(12, 80);
                                 }
+                                else if (lines[i].Substring(6, 6) == "RFFCR2")
+                                {
+                                    row = lines[i];
+                                    OrderNumber = row.Substring(12, 80);
+                                }
                                 else if (lines[i].Substring(6, 6) == "NADTRO")
                                 {
                                     row = lines[i];
@@ -339,6 +345,7 @@ namespace EDI_Orders
                                         storedProcedure.Parameters.AddWithValue("DateShipped", DateShipped);
                                         storedProcedure.Parameters.AddWithValue("KTNOutBoundCode", KTNOutBound);
                                         storedProcedure.Parameters.AddWithValue("Transporter", Transporter);
+                                        storedProcedure.Parameters.AddWithValue("OrderNumber", OrderNumber);
                                         storedProcedure.ExecuteNonQuery();
                                         storedProcedure.Parameters.Clear();
                                     }
