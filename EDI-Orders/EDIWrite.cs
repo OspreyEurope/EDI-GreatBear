@@ -352,6 +352,7 @@ namespace EDI_Orders
         {
             DataTable data = SharedFunctions.QueryDB(con, "OSP_Write_Header_EDI", id);
             int counter = 13;
+            bool flag = false;
 
             for (int i = 0; i < data.Rows.Count; i++)
             {
@@ -432,6 +433,7 @@ namespace EDI_Orders
                     text = text.PadRight(846, ' ');
                     text = text + ""; //row[""].ToString();   //Del Address 2
                     text = text.PadRight(996, ' ');
+                    flag = true;
                 }
                 else
                 {
@@ -483,6 +485,11 @@ namespace EDI_Orders
                 streamWriter.Close();
                 var lineCount = File.ReadLines(file).Count();
                 File.AppendAllText(file, (lineCount+1).ToString().PadLeft(6, '0') + "UNT" + (lineCount + 1).ToString().PadRight(6, ' ') + "00000001            ");
+                if (flag)
+                {
+                    File.Move(file, "C:\\Bespoke\\EDI\\OutputFiles\\WEB" + row["OrderNumber"].ToString() + ".txt");
+                }
+                flag = false;
                 //SharedFunctions.UpdateRecords(con, "OSP_Update_StatusID_KTN_Orders", row["OrderNumber"].ToString());
             }
         }
