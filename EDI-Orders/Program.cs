@@ -425,8 +425,8 @@ namespace EDI_Orders
                         break;
                     #endregion
                     #region Testing Wite File
-                    case "WriteOrders":
-                        EDIWrite.WriteOrder(conKTN, "0000262352");
+                    case "WriteOrder":
+                        EDIWrite.WriteOrder(conKTN, "0000397069");
                         break;
                     case "WriteProductList":
                         EDIWrite.WriteProductList(conLive, "100994002");

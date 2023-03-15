@@ -380,7 +380,7 @@ namespace EDI_Orders
                 streamWriter.WriteLine("000004RFFCR1" + text + "");
                 text = "";
 
-                text = row["OrderNumber"].ToString();                                      //Oracle Delivery Number
+                text = row["OrderNumber"].ToString() + row["WHOrderNumber"].ToString();                                      //Oracle Delivery Number
                 text = text.PadRight(80, ' ');
                 streamWriter.WriteLine("000005RFFCR2" + text + "");
 
@@ -399,7 +399,11 @@ namespace EDI_Orders
                 text = dateTime.ToString("yyyyMMdd");
                 streamWriter.WriteLine("000008DTMLOA" + text.PadRight(35, ' ') + "102");     //Currently hardcoded as we do not have an eqevilant field
 
-                string ID = row["DelPostalName"].ToString().PadRight(20, ' ').Substring(0, 10);
+                string ID = row["CustomerAccountRef"].ToString();
+                if (ID == "")
+                {
+                    ID = row["DelPostalName"].ToString().Substring(0, 10).PadRight(20, ' ');             //AccountRef
+                }
                 text = ID;            //Can be swapped for GLNs
                 text = text.PadRight(20, ' ');
                 text = text + row["DelPostalName"].ToString();
@@ -637,6 +641,24 @@ namespace EDI_Orders
                 text = row["Category"].ToString();
                 text = text.PadRight(70, ' ');
                 streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "GRIITG" + text + "");
+                text = "";
+                counter++;
+
+                text = row["CountryOrigin"].ToString();     //Country Of origin field to be added
+                text = text.PadRight(50, ' ');
+                streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "TRACOU" + text + "");
+                text = "";
+                counter++;
+
+                text = row["Colour"].ToString();      //This is the color field being added
+                text = text.PadRight(113, ' ');
+                streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "CHACOL" + text + "");
+                text = "";
+                counter++;
+
+                text = row["StyleCode"].ToString();      //This is the color field being added
+                text = text.PadRight(113, ' ');
+                streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "CHADES" + text + "");
                 text = "";
                 counter++;
 
