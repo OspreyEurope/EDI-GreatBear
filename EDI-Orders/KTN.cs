@@ -7,6 +7,7 @@ using System.Xml.Linq;
 using System.Configuration;
 using Aspose.Pdf.Drawing;
 using Path = System.IO.Path;
+using Aspose.Pdf;
 
 namespace EDI_Orders
 {
@@ -19,6 +20,7 @@ namespace EDI_Orders
             string SP = "";
             string OrderType = File.ReadAllLines(file)[0];
             string Decision = OrderType.Substring(29,20);
+            string type = "";
 
             /**
              * This switch case is used to decide which file has been recieved and as a result how to handle the file.
@@ -35,6 +37,7 @@ namespace EDI_Orders
                      */
                     #region STKMVT
                     case "STKMVT              ":
+                        type = "STKMVT";
                         SP = "OSP_Insert_Stock_Movement";
                         con.Open();
                         /**
@@ -127,6 +130,7 @@ namespace EDI_Orders
                     #endregion
                     #region RECCON
                     case "RECCON              ":
+                        type = "RECCON";
                         SP = "OSP_Insert_Reccon";
                         con.Open();
                         /**
@@ -244,8 +248,12 @@ namespace EDI_Orders
                          * Assigns the correct stored procedure for the file,
                          * Creates the variables needed to temporarily store the data needed for each row of the database.
                          */
+                        type = "PPLCON";
                         SP = "OSP_Insert_Pplcon";
                         var headers = SharedFunctions.QueryDB(con, "OSP_GetHeaders", "PPLCON");
+
+                        Console.WriteLine(headers.Rows.Count);
+
                         con.Open();
                         storedProcedure = new SqlCommand(SP, con);
                         storedProcedure.CommandType = CommandType.StoredProcedure;
@@ -262,6 +270,8 @@ namespace EDI_Orders
                         string KTNOutBound = "";
                         string Transporter = "";
                         string OrderNumber = "";
+                        string ItemNumber = "";
+                        string ItemDescrtiption = "";
                         int p = 0;
 
                         /**
@@ -287,12 +297,8 @@ namespace EDI_Orders
                                 }
                                 else if (lines[i].Substring(6, 3) == "LIN")
                                 {
-                                    storedProcedure.Parameters.AddWithValue("ItemNumber", lines[i].Substring(39, 25));
-                                    storedProcedure.Parameters.AddWithValue("ItemDescrtiption", lines[i].Substring(64, 80));
-                                }
-                                else if (lines[i].Substring(6, 3) == "ALI")
-                                {
-
+                                    ItemNumber = lines[i].Substring(39, 25);
+                                    ItemDescrtiption = lines[i].Substring(64, 80);
                                 }
                                 else if (lines[i].Substring(6, 3) == "FAC")
                                 {
@@ -323,20 +329,22 @@ namespace EDI_Orders
                                 {
                                     for (int j = 0; j < t.Length; j++)
                                     {
-                                        if (headers.AsEnumerable().Where(c => c.Field<string>("Header").Equals(t[i][0])).Count() > 0)
+                                        if (headers.AsEnumerable().Any(a => t[j][0].ToString() == a.Field<string>("Header")))
                                         {
                                             storedProcedure.Parameters.AddWithValue(t[j][0], t[j][1]);
                                         }
                                     }
-
+                                    
                                     /**
                                      * This is when the data is inserted, this only happens when the data is to be repeated.
                                      * It adds all the header style information previously gathered and adds it to the stored procedure.
                                      * It then clears the values ready for the next section of data.
                                      */
-                                    if ((lines[i + 1].Substring(6, 3) == "LIN" && p > 0) || lines[i + 1].Substring(6, 3) == "UNT")
+                                    if ((lines[i + 1].Substring(6, 3) == "LIN" && p > 0) || (lines[i + 1].Substring(6, 3) == "UNT" && storedProcedure.Parameters.Count > 0))
                                     {
                                         storedProcedure.Parameters.AddWithValue("ID", ID);
+                                        //storedProcedure.Parameters.AddWithValue("ItemNumber",ItemNumber);
+                                        //storedProcedure.Parameters.AddWithValue("ItemDescrtiption", ItemDescrtiption);
                                         storedProcedure.Parameters.AddWithValue("MessageType", MessageType);
                                         storedProcedure.Parameters.AddWithValue("Warehouse", Warehouse);
                                         storedProcedure.Parameters.AddWithValue("DateReceived", DateReceived);
@@ -346,8 +354,9 @@ namespace EDI_Orders
                                         storedProcedure.Parameters.AddWithValue("KTNOutBoundCode", KTNOutBound);
                                         storedProcedure.Parameters.AddWithValue("Transporter", Transporter);
                                         storedProcedure.Parameters.AddWithValue("OrderNumber", OrderNumber);
+                                        Console.WriteLine(storedProcedure.Parameters.Count);
                                         storedProcedure.ExecuteNonQuery();
-                                        storedProcedure.Parameters.Clear();
+                                        storedProcedure.Parameters.Clear();;
                                     }
                                     /**
                                     * This section allows the program to know if it is the first repeating section and only writes if it has all values needed.
@@ -356,6 +365,7 @@ namespace EDI_Orders
                                 }
                             }
                         }
+                        Console.WriteLine("IDK WHY TF IT AINT WORKING");
                         con.Close();
                         break;
                         #endregion
@@ -365,9 +375,9 @@ namespace EDI_Orders
             {
                 con.Close();
                 string name = Path.GetFileName(file);
-                File.Move(file, ConfigurationManager.AppSettings["KTNQuarintine"] + "/" + name);
-                Console.WriteLine(ex.Message);
-                Console.WriteLine();
+                File.Move(file, ConfigurationManager.AppSettings["KTN"+ type + "Quarantined"] + "/" + name);
+                Console.WriteLine("There was an issue: " + ex.Message);
+                Console.WriteLine( );
                 Console.WriteLine();
                 Console.WriteLine();
             }

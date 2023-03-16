@@ -458,11 +458,17 @@ namespace EDI_Orders
                         //EDIWrite.WriteASNFile(conDev, "0000023034");
                         break;
                     case "TruckDels":
-                        EDIWrite.WriteTruckDelsFile(conDev, "TRUCK118");
+                        EDIWrite.WriteTruckDelsFile(conDev, "TRUCK118-2");
                         break;
                     #endregion
                     #region KTN Read
-                    case "KTN":
+                    case "STKMVT":
+                        SharedFunctions.FileCheck(choice);
+                        break;
+                    case "PPLCON":
+                        SharedFunctions.FileCheck(choice);
+                        break;
+                    case "RECCON":
                         SharedFunctions.FileCheck(choice);
                         break;
                     case "R":

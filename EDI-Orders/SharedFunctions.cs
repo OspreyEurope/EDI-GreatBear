@@ -386,9 +386,8 @@ namespace EDI_Orders
             conLive.ConnectionString = ConfigurationManager.ConnectionStrings["OERA"].ConnectionString;
             switch (A)
             {
-                case "KTN":
-                    string[] files = Directory.GetFiles(ConfigurationManager.AppSettings["KTNHolding"]); //Temp for testing
-                    
+                case "STKMVT":
+                    string[] files = Directory.GetFiles(ConfigurationManager.AppSettings["KTNSTKMVTHolding"]); //Temp for testing
                     foreach (var file in files)
                     {
                         string name = Path.GetFileName(file);
@@ -403,7 +402,7 @@ namespace EDI_Orders
                             {
                                 Console.WriteLine(file);
                                 KTN.ProcessKTN(file, conDev);
-                                File.Move(file, ConfigurationManager.AppSettings["KTNProcessed"] + "/" + name);
+                                File.Move(file, ConfigurationManager.AppSettings["KTNSTKMVTProcessed"] + "/" + name);
                                 Console.WriteLine(file + " Was Processed Successfully.");
                             }
                         }
@@ -413,7 +412,66 @@ namespace EDI_Orders
                         }
                     }
                     break;
-                    //Testing, Moves the file back
+
+                case "PPLCON":
+                    files = Directory.GetFiles(ConfigurationManager.AppSettings["KTNPPLCONHolding"]); //Temp for testing
+
+                    foreach (var file in files)
+                    {
+                        string name = Path.GetFileName(file);
+                        try
+                        {
+                            if (file.Substring(3, 0) == "WEB")
+                            {
+                                File.Move(file, ConfigurationManager.AppSettings["GDPRProcessed"] + "/" + name);
+                                Console.WriteLine(file + " Was Processed and moved to EU network Successfully.");
+                            }
+                            else
+                            {
+                                Console.WriteLine(file);
+                                KTN.ProcessKTN(file, conDev);
+                                File.Move(file, ConfigurationManager.AppSettings["KTNPPLCONProcessed"] + "/" + name);
+                                Console.WriteLine(file + " Was Processed Successfully.");
+                            }
+                        }
+                        catch
+                        {
+                            Console.WriteLine("File Quanrintined: " + name);
+                        }
+                    }
+                    break;
+
+                case "RECCON":
+                    files = Directory.GetFiles(ConfigurationManager.AppSettings["KTNRECCONHolding"]); //Temp for testing
+
+                    foreach (var file in files)
+                    {
+                        string name = Path.GetFileName(file);
+                        try
+                        {
+                            if (file.Substring(3, 0) == "WEB")
+                            {
+                                File.Move(file, ConfigurationManager.AppSettings["GDPRProcessed"] + "/" + name);
+                                Console.WriteLine(file + " Was Processed and moved to EU network Successfully.");
+                            }
+                            else
+                            {
+                                Console.WriteLine(file);
+                                KTN.ProcessKTN(file, conDev);
+                                File.Move(file, ConfigurationManager.AppSettings["KTNRECCONProcessed"] + "/" + name);
+                                Console.WriteLine(file + " Was Processed Successfully.");
+                            }
+                        }
+                        catch
+                        {
+                            Console.WriteLine("File Quanrintined: " + name);
+                        }
+                    }
+                    break;
+
+
+
+                //Testing, Moves the file back
                 case "R":
                     files = Directory.GetFiles(ConfigurationManager.AppSettings["KTNProcessed"]); //Temp for testing
                     foreach (var file in files)
