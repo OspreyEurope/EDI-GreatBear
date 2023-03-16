@@ -394,10 +394,18 @@ namespace EDI_Orders
                         string name = Path.GetFileName(file);
                         try
                         {
-                            Console.WriteLine(file);
-                            KTN.ProcessKTN(file, conDev);
-                            File.Move(file, ConfigurationManager.AppSettings["KTNProcessed"] + "/" + name);
-                            Console.WriteLine(file + " Was Processed Successfully.");
+                            if (file.Substring(3, 0) == "WEB")
+                            {
+                                File.Move(file, ConfigurationManager.AppSettings["GDPRProcessed"] + "/" + name);
+                                Console.WriteLine(file + " Was Processed and moved to EU network Successfully.");
+                            }
+                            else
+                            {
+                                Console.WriteLine(file);
+                                KTN.ProcessKTN(file, conDev);
+                                File.Move(file, ConfigurationManager.AppSettings["KTNProcessed"] + "/" + name);
+                                Console.WriteLine(file + " Was Processed Successfully.");
+                            }
                         }
                         catch
                         {
