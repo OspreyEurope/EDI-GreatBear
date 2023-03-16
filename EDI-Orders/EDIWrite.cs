@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using System.Xml.Linq;
 using File = System.IO.File;
 
 namespace EDI_Orders
@@ -497,7 +498,8 @@ namespace EDI_Orders
                     File.AppendAllText(file, (lineCount + 1).ToString().PadLeft(6, '0') + "UNT" + (lineCount + 1).ToString().PadRight(6, ' ') + "00000001            ");
                     if (flag)
                     {
-                        File.Move(file, "C:\\Bespoke\\EDI\\OutputFiles\\WEB" + row["OrderNumber"].ToString() + ".txt");
+                        string name = Path.GetFileName(file);
+                        File.Move(file, ConfigurationManager.AppSettings["GDPROrder"] + "/WEB" + name);
                     }
                     flag = false;
                     //SharedFunctions.UpdateRecords(con, "OSP_Update_StatusID_KTN_Orders", row["OrderNumber"].ToString());
