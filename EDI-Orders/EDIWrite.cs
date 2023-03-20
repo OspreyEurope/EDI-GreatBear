@@ -420,7 +420,7 @@ namespace EDI_Orders
                     text = text.PadRight(20, ' ');
                     text = text + row["DelPostalName"].ToString();
                     text = text.PadRight(100, ' ');
-                    text = text + row["DelAddressLine1"].ToString() + "," + row["DelAddressLine2"].ToString() + "," + row["DelAddressLine3"].ToString() + "," + row["DelAddressLine4"].ToString();
+                    text = text + row["DelAddressLine1"].ToString();
                     text = text.PadRight(180, ' ');
                     text = text + row["DelPostCode"].ToString();
                     text = text.PadRight(200, ' ');
@@ -440,10 +440,6 @@ namespace EDI_Orders
                         text = text.PadRight(523, ' ');
                         text = text + GDPR["EmailAddress"].ToString();
                         text = text.PadRight(573, ' ');
-                        text = text + ""; // GDPR[""].ToString();  //Del Name 2
-                        text = text.PadRight(846, ' ');
-                        text = text + ""; //row[""].ToString();   //Del Address 2
-                        text = text.PadRight(996, ' ');
                         flag = true;
                     }
                     else
@@ -452,6 +448,8 @@ namespace EDI_Orders
                         text = text + row["DelEmail"].ToString();
                         text = text.PadRight(573, ' ');
                     }
+                    text = text + row["DelAddressLine2"].ToString(); // GDPR[""].ToString();  //Del Name 2
+                    text = text.PadRight(846, ' ');
                     streamWriter.WriteLine("000009NADDES" + text.PadRight(996, ' ') + "");             //Can be swapped for GLNs but will need swapping to ensure the correct lcoation
                     text = "";
 
@@ -460,7 +458,7 @@ namespace EDI_Orders
                     text = text.PadRight(20, ' ');
                     text = text + row["InvoicePostalAddress"].ToString();
                     text = text.PadRight(100, ' ');
-                    text = text + row["InvoiceAddressLine1"].ToString() + "," + row["InvoiceAddressLine2"].ToString() + "," + row["InvoiceAddressLine3"].ToString() + "," + row["InvoiceAddressLine4"].ToString();
+                    text = text + row["InvoiceAddressLine1"].ToString();
                     text = text.PadRight(180, ' ');
                     text = text + row["InvoicePostCode"].ToString();
                     text = text.PadRight(200, ' ');
@@ -473,6 +471,8 @@ namespace EDI_Orders
                     text = text + row["CustomerVATCode"].ToString();
                     text = text.PadRight(743, ' ');
                     text = text + row["Currency"].ToString();
+                    text = text.PadRight(846, ' ');
+                    text = text + row["InvoiceAddressLine2"].ToString();
                     streamWriter.WriteLine("000010NADINV" + text.PadRight(996, ' ') + "");
                     text = "";
 
