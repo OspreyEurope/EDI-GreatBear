@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Aspose.Pdf.Operators;
+using System;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
@@ -406,9 +407,10 @@ namespace EDI_Orders
                                 Console.WriteLine(file + " Was Processed Successfully.");
                             }
                         }
-                        catch
+                        catch (Exception ex)
                         {
                             Console.WriteLine("File Quanrintined: " + name);
+                            Console.WriteLine(ex.Message);
                         }
                     }
                     break;
@@ -434,9 +436,10 @@ namespace EDI_Orders
                                 Console.WriteLine(file + " Was Processed Successfully.");
                             }
                         }
-                        catch
+                        catch (Exception ex)
                         {
                             Console.WriteLine("File Quanrintined: " + name);
+                            Console.WriteLine(ex.Message);
                         }
                     }
                     break;
@@ -458,13 +461,15 @@ namespace EDI_Orders
                             {
                                 Console.WriteLine(file);
                                 KTN.ProcessKTN(file, conDev);
+                                Console.WriteLine("Apples");
                                 File.Move(file, ConfigurationManager.AppSettings["KTNRECCONProcessed"] + "/" + name);
                                 Console.WriteLine(file + " Was Processed Successfully.");
                             }
                         }
-                        catch
+                        catch (Exception ex)
                         {
                             Console.WriteLine("File Quanrintined: " + name);
+                            Console.WriteLine(ex.Message);
                         }
                     }
                     break;

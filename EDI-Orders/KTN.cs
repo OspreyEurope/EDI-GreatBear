@@ -278,9 +278,10 @@ namespace EDI_Orders
                          * This gets the length of the file and then cycles through the file reading each line.
                          */
                         lineCount = File.ReadLines(file).Count();
-                        for (int i = 0; i < (lineCount - 1); i++)
+                        for (int i = 0; i < (lineCount - 2); i++)
                         {
                             string[][] t = ReadKTN(lines[i]);
+                            //Console.WriteLine(lines[i].Substring(0, 6));         //This will print the line number which is being processed, if there is a crash this is sueful to figure which is the line it is crashing on, this is usually the ALI line due to length issues
                             if (t != null)
                             {
                                 /**
@@ -305,22 +306,22 @@ namespace EDI_Orders
                                     row = lines[i];
                                     FileAction = row.Substring(12, 35);
                                 }
-                                else if (lines[i].Substring(6, 6) == "DTMDEL")
+                                else if (lines[i].PadRight(12).Substring(6, 6) == "DTMDEL")
                                 {
                                     row = lines[i];
                                     DateShipped = row.Substring(12, 35);
                                 }
-                                else if (lines[i].Substring(6, 6) == "RFFOUT")
+                                else if (lines[i].PadRight(12).Substring(6, 6) == "RFFOUT")
                                 {
                                     row = lines[i];
                                     KTNOutBound = row.Substring(12, 80);
                                 }
-                                else if (lines[i].Substring(6, 6) == "RFFCR2")
+                                else if (lines[i].PadRight(12).Substring(6, 6) == "RFFCR2")
                                 {
                                     row = lines[i];
                                     OrderNumber = row.Substring(12, 80);
                                 }
-                                else if (lines[i].Substring(6, 6) == "NADTRO")
+                                else if (lines[i].PadRight(12).Substring(6, 6) == "NADTRO")
                                 {
                                     row = lines[i];
                                     Transporter = row.Substring(9, 3);
@@ -334,7 +335,7 @@ namespace EDI_Orders
                                             storedProcedure.Parameters.AddWithValue(t[j][0], t[j][1]);
                                         }
                                     }
-                                    
+
                                     /**
                                      * This is when the data is inserted, this only happens when the data is to be repeated.
                                      * It adds all the header style information previously gathered and adds it to the stored procedure.
@@ -357,6 +358,7 @@ namespace EDI_Orders
                                         Console.WriteLine(storedProcedure.Parameters.Count);
                                         storedProcedure.ExecuteNonQuery();
                                         storedProcedure.Parameters.Clear();;
+                                        Console.WriteLine("Insert Ran");
                                     }
                                     /**
                                     * This section allows the program to know if it is the first repeating section and only writes if it has all values needed.
@@ -365,7 +367,6 @@ namespace EDI_Orders
                                 }
                             }
                         }
-                        Console.WriteLine("IDK WHY TF IT AINT WORKING");
                         con.Close();
                         break;
                         #endregion
