@@ -355,10 +355,8 @@ namespace EDI_Orders
                                         storedProcedure.Parameters.AddWithValue("KTNOutBoundCode", KTNOutBound);
                                         storedProcedure.Parameters.AddWithValue("Transporter", Transporter);
                                         storedProcedure.Parameters.AddWithValue("OrderNumber", OrderNumber);
-                                        Console.WriteLine(storedProcedure.Parameters.Count);
                                         storedProcedure.ExecuteNonQuery();
                                         storedProcedure.Parameters.Clear();;
-                                        Console.WriteLine("Insert Ran");
                                     }
                                     /**
                                     * This section allows the program to know if it is the first repeating section and only writes if it has all values needed.
