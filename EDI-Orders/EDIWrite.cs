@@ -396,7 +396,7 @@ namespace EDI_Orders
                     text = text.PadRight(80, ' ');
                     streamWriter.WriteLine("000005RFFCR2" + text + "");
 
-                    text = ""; //row[""].ToString();                                     //FCPN
+                    text = row["CustomerAccountRef"].ToString();                                     //FCPN
                     text = text.PadRight(80, ' ');
                     streamWriter.WriteLine("000006RFFCR3" + text + "");
                     text = "";
