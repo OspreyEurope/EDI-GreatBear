@@ -418,7 +418,7 @@ namespace EDI_Orders
                     }
                     text = ID;            //Can be swapped for GLNs
                     text = text.PadRight(20, ' ');
-                    text = text + row["DelPostalName"].ToString();
+                    text = text + row["DelPostalName"].ToString(); 
                     text = text.PadRight(100, ' ');
                     text = text + row["DelAddressLine1"].ToString();
                     text = text.PadRight(180, ' ');
@@ -583,11 +583,11 @@ namespace EDI_Orders
                     text = "";
                     counter++;
 
-                    text = row["LotCode"].ToString();
-                    text = text.PadRight((35 - text.Length), ' ');
-                    streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "TRALNO" + text + "");
-                    text = "";
-                    counter++;
+                    //text = row["LotCode"].ToString();
+                    //text = text.PadRight((35 - text.Length), ' ');
+                    //streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "TRALNO" + text + "");
+                    //text = "";
+                    //counter++;
 
                     //text = row["OrderRequestedDate"].ToString();
                     //dateTime = DateTime.ParseExact(text, "dd/MM/yyyy hh:mm:ss", null);

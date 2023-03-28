@@ -8,6 +8,10 @@ using System.Configuration;
 using Aspose.Pdf.Drawing;
 using Path = System.IO.Path;
 using Aspose.Pdf;
+using Aspose.Pdf.Operators;
+using static System.Net.WebRequestMethods;
+using File = System.IO.File;
+using System.Reflection;
 
 namespace EDI_Orders
 {
@@ -132,109 +136,39 @@ namespace EDI_Orders
                     case "RECCON              ":
                         type = "RECCON";
                         SP = "OSP_Insert_Reccon";
-                        con.Open();
-                        /**
-                         * Write the header table values
-                         */
                         storedProcedure = new SqlCommand(SP, con);
                         storedProcedure.CommandType = CommandType.StoredProcedure;
                         lineCount = File.ReadLines(file).Count();
-                        //Add Try catch on this block to check it can be read and is not corrupted to prevent a crash sooner rather than later
                         lines = File.ReadAllLines(file);
-                        row = lines[0];
-                        result = new string[20][];
-                        ID = row.Substring(9, 20);
-                        result[5] = new string[] { "ID", ID };
-                        result[0] = new string[] { "MessageType", row.Substring(29, 20) };
-                        result[1] = new string[] { "Warehouse", row.Substring(59, 10) };
-                        result[2] = new string[] { "DateReceived", row.Substring(201, 35) };
-                        result[3] = new string[] { "OriginalFileName", row.Substring(239, 50) };
-                        row = lines[1];
-                        result[4] = new string[] { "FileAction", row.Substring(12, 35) };
-                        row = lines[2];
-                        result[6] = new string[] { "TransportInbound", row.Substring(12, 80) };
-                        row = lines[3];
-                        result[7] = new string[] { "CustomerReferenceInbound", row.Substring(12, 80) };
-                        row = lines[4];
-                        result[8] = new string[] { "InboundDeliveryType", row.Substring(12, 80) };
-                        row = lines[5];
-                        result[9] = new string[] { "CustomerReferenceTransport", row.Substring(12, 80) };
-                        row = lines[6];
-                        result[9] = new string[] { "TransporterName", row.Substring(32, 80) };
-                        result[10] = new string[] { "TransporterAddress", row.Substring(112, 80) };
-                        result[11] = new string[] { "TransporterCountry", row.Substring(302, 80) };
-                        result[12] = new string[] { "TransporterLicensePlate", row.Substring(759, 20) };
-                        result[13] = new string[] { "TransporterContact", row.Substring(486, 50) };
-                        row = lines[8];
-                        result[14] = new string[] { "SupplierName", row.Substring(32, 80) };
-                        result[15] = new string[] { "SupplierAddress", row.Substring(112, 80) };
-                        result[16] = new string[] { "SupplierCountry", row.Substring(302, 80) };
-                        result[17] = new string[] { "SupplierContact", row.Substring(486, 50) };
-                        row = lines[9];
-                        result[18] = new string[] { "ArrivedDate", row.Substring(12, 35) };
-
-                        /**
-                         * This section cycles through the array and adds the values to the stored procedure.
-                         * It then inserts the data into the headers table in the database.
-                         */
-                        counter = 0;
-                        for (int x = 0; x < 15; x++)
+                        ID = lines[0].Substring(9, 20);
+                        int linePos = 0;
+                        while (linePos < lineCount)
                         {
-                            if (result[x] != null)
+                            row = lines[linePos];
+                            string segment = row.Substring(6, 3);
+                            Console.WriteLine("Line: " + linePos);
+                            Console.WriteLine(segment);
+                            switch (segment)
                             {
-                                counter++;
+                                case "FAC":
+                                    WriteRECCONHeader(con, storedProcedure,lines,linePos,file,SP);
+                                    break;
+                                case "LIN":
+                                    WriteRECCONItems(con,lines,linePos,ID);;
+                                    break;
+                                case "UNT":
+                                    Console.WriteLine("Made it to the end of the file");
+                                        break;
+                                default:
+                                    
+                                    break;
                             }
-                        }
-                        vals = new string[counter][];
-                        count = 0;
-                        for (int y = 0; y < counter; y++)
-                        {
-                            vals[count] = result[count];
-                            count++;
+                            linePos++;
                         }
 
-                        for (int i = 0; i < vals.Length; i++)
-                        {
-                            storedProcedure.Parameters.AddWithValue(vals[i][0], vals[i][1]);
-                        }
-
-                        storedProcedure.ExecuteNonQuery();
-                        storedProcedure.Parameters.Clear();
-                        con.Close();
-
-                        /**
-                         * This is the start of the stored procedure to add the items to their table.
-                         * It runs through a loop that reads from where the items start and then adds the values to the stored procedure,
-                         * It finds the header value and the data value by using the method 'ReadKTN' due to the style of file.
-                         */
-                        con.Open();
-                        storedProcedure = new SqlCommand("OSP_Insert_Items_For_RECCON", con);
-                        storedProcedure.CommandType = CommandType.StoredProcedure;
-                        /**
-                         * Write the line items to a seperate table
-                         */
                         lineCount = File.ReadLines(file).Count();
-                        for (int i = 10; i < (lineCount - 1); i++)
-                        {
-                            string[][] t = ReadKTN(lines[i]);
-                            if (t != null)
-                            {
-                                for (int j = 0; j < t.Length; j++)
-                                {
-                                    storedProcedure.Parameters.AddWithValue(t[j][0], t[j][1]);
-                                }
-                                /**
-                                 * Ths dictates when the write is used and then clears the parameters to be used again after.
-                                 */
-                                if (lines[i + 1].Substring(6, 3) == "LIN" || lines[i + 1].Substring(6, 3) == "UNT")
-                                {
-                                    storedProcedure.Parameters.AddWithValue("ID", ID);
-                                    storedProcedure.ExecuteNonQuery();
-                                    storedProcedure.Parameters.Clear();
-                                }
-                            }
-                        }
-                        con.Close();
+                        //here write the run through and write items section
+
                         break;
                     #endregion
                     /**
@@ -303,6 +237,7 @@ namespace EDI_Orders
                                 }
                                 else if (lines[i].Substring(6, 3) == "FAC")
                                 {
+
                                     row = lines[i];
                                     FileAction = row.Substring(12, 35);
                                 }
@@ -380,6 +315,124 @@ namespace EDI_Orders
                 Console.WriteLine();
                 Console.WriteLine();
             }
+        }
+        #endregion
+
+
+        #region Write RECCON Header
+        public static void WriteRECCONHeader (SqlConnection con, SqlCommand storedProcedure, string[] lines, int linePos, string file, string SP)
+        {
+            con.Open();
+            /**
+             * Write the header table values
+             */
+            storedProcedure = new SqlCommand(SP, con);
+            storedProcedure.CommandType = CommandType.StoredProcedure;
+            //Add Try catch on this block to check it can be read and is not corrupted to prevent a crash sooner rather than later
+            lines = File.ReadAllLines(file);
+            string row = lines[0];
+            string[][] result = new string[20][];
+            string ID = row.Substring(9, 20);
+            result[5] = new string[] { "ID", ID };
+            result[0] = new string[] { "MessageType", row.Substring(29, 20) };
+            result[1] = new string[] { "Warehouse", row.Substring(59, 10) };
+            result[2] = new string[] { "DateReceived", row.Substring(201, 35) };
+            result[3] = new string[] { "OriginalFileName", row.Substring(239, 50) };
+            row = lines[linePos];
+            result[4] = new string[] { "FileAction", row.Substring(12, 35) };
+            row = lines[linePos + 1];
+            result[6] = new string[] { "TransportInbound", row.Substring(12, 80) };
+            row = lines[linePos + 2];
+            result[7] = new string[] { "CustomerReferenceInbound", row.Substring(12, 80) };
+            row = lines[linePos + 3];
+            result[8] = new string[] { "InboundDeliveryType", row.Substring(12, 80) };
+            row = lines[linePos + 4];
+            result[9] = new string[] { "CustomerReferenceTransport", row.Substring(12, 80) };
+            row = lines[linePos + 5];
+            Console.WriteLine(linePos + 5);
+            result[9] = new string[] { "TransporterName", row.Substring(32, 80) };
+            result[10] = new string[] { "TransporterAddress", row.Substring(112, 80) };
+            result[11] = new string[] { "TransporterCountry", row.Substring(302, 80) };
+            result[12] = new string[] { "TransporterLicensePlate", row.Substring(759, 20) };
+            result[13] = new string[] { "TransporterContact", row.Substring(486, 50) };
+            row = lines[linePos + 6];
+            Console.WriteLine(linePos + 6);
+            result[14] = new string[] { "SupplierName", row.Substring(32, 80) };
+            result[15] = new string[] { "SupplierAddress", row.Substring(112, 80) };
+            result[16] = new string[] { "SupplierCountry", row.Substring(302, 80) };
+            //result[17] = new string[] { "SupplierContact", row.Substring(486, 50) };
+            row = lines[linePos + 7];
+            Console.WriteLine(linePos + 7);
+            result[18] = new string[] { "ArrivedDate", row.Substring(12, 35) };
+            Console.WriteLine("Not this part");
+            /**
+             * This section cycles through the array and adds the values to the stored procedure.
+             * It then inserts the data into the headers table in the database.
+             */
+            int counter = 0;
+            for (int x = 0; x < 15; x++)
+            {
+                if (result[x] != null)
+                {
+                    counter++;
+                }
+            }
+            string[][] vals = new string[counter][];
+            int count = 0;
+            for (int y = 0; y < counter; y++)
+            {
+                vals[count] = result[count];
+                count++;
+            }
+
+            for (int i = 0; i < vals.Length; i++)
+            {
+                storedProcedure.Parameters.AddWithValue(vals[i][0], vals[i][1]);
+            }
+
+            storedProcedure.ExecuteNonQuery();
+            storedProcedure.Parameters.Clear();
+            con.Close();
+        }
+        #endregion
+
+        #region Write Items for RECCON
+        public static void WriteRECCONItems (SqlConnection con, string[] lines, int lineCount, string ID)
+        {
+            /**
+                         * This is the start of the stored procedure to add the items to their table.
+                         * It runs through a loop that reads from where the items start and then adds the values to the stored procedure,
+                         * It finds the header value and the data value by using the method 'ReadKTN' due to the style of file.
+                         */
+            con.Open();
+            SqlCommand StoredProcedure2  = new SqlCommand("OSP_Insert_Items_For_RECCON", con);
+            StoredProcedure2.CommandType = CommandType.StoredProcedure;
+            /**
+             * Write the line items to a seperate table
+             */
+            int i = lineCount;
+            while (!((lines[i + 1].Substring(6, 3) == "FAC") || (lines[i + 1].Substring(6,3) == "UNT")))
+            { 
+                string[][] t = ReadKTN(lines[i]);
+                if (t != null)
+                {
+                    for (int j = 0; j < t.Length; j++)
+                    {
+                        StoredProcedure2.Parameters.AddWithValue(t[j][0], t[j][1]);
+                    }
+                    /**
+                     * Ths dictates when the write is used and then clears the parameters to be used again after.
+                     */
+                    if (lines[i + 1].Substring(6, 3) == "LIN" || lines[i + 1].Substring(6, 3) == "UNT" || lines[i + 1].Substring(6, 3) == "FAC")
+                    {
+                        StoredProcedure2.Parameters.AddWithValue("ID", ID);
+                        StoredProcedure2.ExecuteNonQuery();
+                        StoredProcedure2.Parameters.Clear();
+                    }
+                }
+                i++;
+            }
+            con.Close();
         }
         #endregion
 

@@ -463,36 +463,39 @@ namespace EDI_Orders
                         #endregion
                         #region Testing Wite File
                         case "WriteOrder":
-                            EDIWrite.WriteOrder(conKTN, "0000397069");
+                            EDIWrite.WriteOrder(conKTN, "0000460415");
+                            EDIWrite.WriteOrder(conKTN, "0000460411");
+                            EDIWrite.WriteOrder(conKTN, "0000460365");
+                            EDIWrite.WriteOrder(conKTN, "0000460388");
                             break;
                         case "WriteProductList":
                             EDIWrite.WriteProductList(conLive, "100994002");
                             break;
                         case "PO":
                             EDIWrite.WriteASNFile(conDev, "0000022969");
-                            //EDIWrite.WriteASNFile(conDev, "0000022973");
-                            //EDIWrite.WriteASNFile(conDev, "0000022974");
-                            //EDIWrite.WriteASNFile(conDev, "0000022975");
-                            //EDIWrite.WriteASNFile(conDev, "0000022990");
-                            //EDIWrite.WriteASNFile(conDev, "0000022991");
-                            //EDIWrite.WriteASNFile(conDev, "0000022994");
-                            //EDIWrite.WriteASNFile(conDev, "0000022995");
-                            //EDIWrite.WriteASNFile(conDev, "0000022996");
-                            //EDIWrite.WriteASNFile(conDev, "0000022997");
-                            //EDIWrite.WriteASNFile(conDev, "0000022998");
-                            //EDIWrite.WriteASNFile(conDev, "0000022999");
-                            //EDIWrite.WriteASNFile(conDev, "0000023000");
-                            //EDIWrite.WriteASNFile(conDev, "0000023001");
-                            //EDIWrite.WriteASNFile(conDev, "0000023002");
-                            //EDIWrite.WriteASNFile(conDev, "0000023008");
-                            //EDIWrite.WriteASNFile(conDev, "0000023009");
-                            //EDIWrite.WriteASNFile(conDev, "0000023023");
-                            //EDIWrite.WriteASNFile(conDev, "0000023029");
-                            //EDIWrite.WriteASNFile(conDev, "0000023030");
-                            //EDIWrite.WriteASNFile(conDev, "0000023031");
-                            //EDIWrite.WriteASNFile(conDev, "0000023032");
-                            //EDIWrite.WriteASNFile(conDev, "0000023033");
-                            //EDIWrite.WriteASNFile(conDev, "0000023034");
+                            EDIWrite.WriteASNFile(conDev, "0000022973");
+                            EDIWrite.WriteASNFile(conDev, "0000022974");
+                            EDIWrite.WriteASNFile(conDev, "0000022975");
+                            EDIWrite.WriteASNFile(conDev, "0000022990");
+                            EDIWrite.WriteASNFile(conDev, "0000022991");
+                            EDIWrite.WriteASNFile(conDev, "0000022994");
+                            EDIWrite.WriteASNFile(conDev, "0000022995");
+                            EDIWrite.WriteASNFile(conDev, "0000022996");
+                            EDIWrite.WriteASNFile(conDev, "0000022997");
+                            EDIWrite.WriteASNFile(conDev, "0000022998");
+                            EDIWrite.WriteASNFile(conDev, "0000022999");
+                            EDIWrite.WriteASNFile(conDev, "0000023000");
+                            EDIWrite.WriteASNFile(conDev, "0000023001");
+                            EDIWrite.WriteASNFile(conDev, "0000023002");
+                            EDIWrite.WriteASNFile(conDev, "0000023008");
+                            EDIWrite.WriteASNFile(conDev, "0000023009");
+                            EDIWrite.WriteASNFile(conDev, "0000023023");
+                            EDIWrite.WriteASNFile(conDev, "0000023029");
+                            EDIWrite.WriteASNFile(conDev, "0000023030");
+                            EDIWrite.WriteASNFile(conDev, "0000023031");
+                            EDIWrite.WriteASNFile(conDev, "0000023032");
+                            EDIWrite.WriteASNFile(conDev, "0000023033");
+                            EDIWrite.WriteASNFile(conDev, "0000023034");
                             break;
                         case "TruckDels":
                             EDIWrite.WriteTruckDelsFile(conDev, "TRUCK118-2");
