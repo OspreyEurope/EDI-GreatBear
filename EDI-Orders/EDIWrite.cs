@@ -551,6 +551,14 @@ namespace EDI_Orders
                 text = "";
                 counter++;
 
+                //Supplier document number
+                text = data.Rows[0]["SupplierDocumentNumber"].ToString();
+                text = text.PadRight((80 - text.Length), ' ');
+                streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "RFFSUP" + text + "");
+                text = "";
+                counter++;
+                //IDK if this is right or not yet
+
                 text = data.Rows[0]["OrderRequestedDate"].ToString();
                 DateTime dateTime = DateTime.ParseExact(text, "dd/MM/yyyy hh:mm:ss", null);
                 text = dateTime.ToString("yyyyMMdd");
