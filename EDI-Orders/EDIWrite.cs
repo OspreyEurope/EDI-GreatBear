@@ -382,7 +382,7 @@ namespace EDI_Orders
                     string text = "";
                     streamWriter.WriteLine("000002FACC  " + text.PadRight(35, ' ') + "");
 
-                    text = row["OrderType"].ToString();
+                    text = row["OrderImportType"].ToString();
                     text = text.PadRight(30, ' ');
                     streamWriter.WriteLine("000003TDT" + text.PadLeft(113, ' ') + "");
                     text = "";

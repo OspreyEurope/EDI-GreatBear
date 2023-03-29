@@ -472,8 +472,12 @@ namespace EDI_Orders
                             EDIWrite.WriteProductList(conLive, "100994002");
                             break;
                         case "PO":
-                            EDIWrite.WriteASNFile(conDev, "");
-                            EDIWrite.WriteASNFile(conDev, "");
+                            EDIWrite.WriteASNFile(conDev, "0000023460");
+                            EDIWrite.WriteASNFile(conDev, "0000023461");
+                            EDIWrite.WriteASNFile(conDev, "0000023462");
+                            EDIWrite.WriteASNFile(conDev, "0000023463");
+                            EDIWrite.WriteASNFile(conDev, "0000023464");
+                            EDIWrite.WriteASNFile(conDev, "0000023465");
                             break;
                         case "TruckDels":
                             EDIWrite.WriteTruckDelsFile(conDev, "TRUCK118-2");
