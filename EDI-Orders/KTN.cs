@@ -206,18 +206,23 @@ namespace EDI_Orders
                         string OrderNumber = "";
                         string ItemNumber = "";
                         string ItemDescrtiption = "";
+                        string PQty = "";
+                        string ConNumber = "";
+                        string TrackingNo2 = "";
+                        string BarcodeOnLabel = "";
+                        string Carrier = "";
                         int p = 0;
 
                         /**
                          * This gets the length of the file and then cycles through the file reading each line.
                          */
-                        lineCount = File.ReadLines(file).Count();
-                        for (int i = 0; i < (lineCount - 2); i++)
-                        {
+                        
+                        for (int i = 0; i < (lineCount - 1); i++)
+                        { 
                             string[][] t = ReadKTN(lines[i]);
                             //Console.WriteLine(lines[i].Substring(0, 6));         //This will print the line number which is being processed, if there is a crash this is sueful to figure which is the line it is crashing on, this is usually the ALI line due to length issues
                             if (t != null)
-                            {
+                            {  
                                 /**
                                  * This section of if statments is used to build the header data that is only present once but is repeated in the database.
                                  */
@@ -234,6 +239,11 @@ namespace EDI_Orders
                                 {
                                     ItemNumber = lines[i].Substring(39, 25);
                                     ItemDescrtiption = lines[i].Substring(64, 80);
+                                    p++;
+                                }
+                                else if (lines[i].Substring(6, 3) == "ALI")
+                                {
+                                    //This is an awkard line, this jsut needs to be here or it fails as this line is the only line in KTN that has a variable length
                                 }
                                 else if (lines[i].Substring(6, 3) == "FAC")
                                 {
@@ -241,46 +251,74 @@ namespace EDI_Orders
                                     row = lines[i];
                                     FileAction = row.Substring(12, 35);
                                 }
-                                else if (lines[i].PadRight(12).Substring(6, 6) == "DTMDEL")
+                                else if (lines[i].PadRight(13).Substring(6, 6) == "DTMDEL")
                                 {
                                     row = lines[i];
                                     DateShipped = row.Substring(12, 35);
                                 }
-                                else if (lines[i].PadRight(12).Substring(6, 6) == "RFFOUT")
+                                else if (lines[i].PadRight(13).Substring(6, 6) == "RFFOUT")
                                 {
                                     row = lines[i];
                                     KTNOutBound = row.Substring(12, 80);
                                 }
-                                else if (lines[i].PadRight(12).Substring(6, 6) == "RFFCR2")
+                                else if (lines[i].PadRight(13).Substring(6, 6) == "RFFCR2")
                                 {
                                     row = lines[i];
                                     OrderNumber = row.Substring(12, 80);
                                 }
-                                else if (lines[i].PadRight(12).Substring(6, 6) == "NADTRO")
+                                else if (lines[i].PadRight(13).Substring(6, 6) == "NADTRO")
                                 {
                                     row = lines[i];
                                     Transporter = row.Substring(9, 3);
                                 }
+                                else if (lines[i].PadRight(13).Substring(6, 6) == "QTYTPA")
+                                {
+                                    PQty = lines[i].Substring(12, 15);
+                                }
+                                else if (lines[i].PadRight(13).Substring(6, 6) == "QTYTLO")
+                                {
+                                    PQty = lines[i].Substring(12, 15);
+                                }
+                                else if (lines[i].PadRight(13).Substring(6, 6) == "TRATRN")
+                                {
+                                    ConNumber = lines[i].Substring(12, 15);
+                                }
+                                else if (lines[i].PadRight(13).Substring(6, 6) == "TRATR2")
+                                {
+                                    TrackingNo2 = lines[i].Substring(12, 15);
+                                }
+                                else if (lines[i].PadRight(13).Substring(6, 6) == "TRABAC")
+                                {
+                                    BarcodeOnLabel = lines[i].Substring(12, 15);
+                                }
+                                else if (lines[i].PadRight(13).Substring(6, 6) == "TRACTR")
+                                {
+                                    Carrier = lines[i].Substring(12, 15);
+                                }
                                 else
                                 {
-                                    for (int j = 0; j < t.Length; j++)
-                                    {
-                                        if (headers.AsEnumerable().Any(a => t[j][0].ToString() == a.Field<string>("Header")))
-                                        {
-                                            storedProcedure.Parameters.AddWithValue(t[j][0], t[j][1]);
-                                        }
-                                    }
+                                    
+                                }
+                                
+                                
+                                    //for (int j = 0; j < t.Length; j++)
+                                    //{
+                                    //    if (headers.AsEnumerable().Any(a => t[j][0].ToString() == a.Field<string>("Header")))
+                                    //    {
+                                    //        storedProcedure.Parameters.AddWithValue(t[j][0], t[j][1]);
+                                    //    }
+                                    //}
 
                                     /**
                                      * This is when the data is inserted, this only happens when the data is to be repeated.
                                      * It adds all the header style information previously gathered and adds it to the stored procedure.
                                      * It then clears the values ready for the next section of data.
                                      */
-                                    if ((lines[i + 1].Substring(6, 3) == "LIN" && p > 0) || (lines[i + 1].Substring(6, 3) == "UNT" && storedProcedure.Parameters.Count > 0))
+                                    if ((lines[i+1].Substring(6, 3) == "LIN" && p > 0) || lines[i+1].Substring(6, 3) == "UNT")
                                     {
                                         storedProcedure.Parameters.AddWithValue("ID", ID);
-                                        //storedProcedure.Parameters.AddWithValue("ItemNumber",ItemNumber);
-                                        //storedProcedure.Parameters.AddWithValue("ItemDescrtiption", ItemDescrtiption);
+                                        storedProcedure.Parameters.AddWithValue("ItemNumber",ItemNumber);
+                                        storedProcedure.Parameters.AddWithValue("ItemDescrtiption", ItemDescrtiption);
                                         storedProcedure.Parameters.AddWithValue("MessageType", MessageType);
                                         storedProcedure.Parameters.AddWithValue("Warehouse", Warehouse);
                                         storedProcedure.Parameters.AddWithValue("DateReceived", DateReceived);
@@ -290,14 +328,20 @@ namespace EDI_Orders
                                         storedProcedure.Parameters.AddWithValue("KTNOutBoundCode", KTNOutBound);
                                         storedProcedure.Parameters.AddWithValue("Transporter", Transporter);
                                         storedProcedure.Parameters.AddWithValue("OrderNumber", OrderNumber);
+                                        storedProcedure.Parameters.AddWithValue("PackedQuantity", PQty);
+                                        storedProcedure.Parameters.AddWithValue("ConNumber", ConNumber);
+                                        storedProcedure.Parameters.AddWithValue("TrackingNo2", TrackingNo2);
+                                        storedProcedure.Parameters.AddWithValue("BarcodeOnLabel", BarcodeOnLabel);
+                                        storedProcedure.Parameters.AddWithValue("CarrierTrackingNo", Carrier);
+
+
                                         storedProcedure.ExecuteNonQuery();
                                         storedProcedure.Parameters.Clear();;
                                     }
                                     /**
                                     * This section allows the program to know if it is the first repeating section and only writes if it has all values needed.
                                     */
-                                    p++;
-                                }
+                                
                             }
                         }
                         con.Close();
@@ -596,7 +640,7 @@ namespace EDI_Orders
                     result[0] = new string[] { FTXParty + "Comments", row.Substring(12, 120) };
                     break;
                 case "ALI":
-                    if (row.Length > 131)
+                    if (row.Length > 133)
                     {
                         result[0] = new string[] { "Cost", row.Substring(131, 12) };
                         result[1] = new string[] { "Crrency", row.Substring(143, 3) };
