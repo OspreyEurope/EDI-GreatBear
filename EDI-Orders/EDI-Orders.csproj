@@ -65,6 +65,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GreatBear.cs" />
     <Compile Include="EDIFact.cs" />
     <Compile Include="EDIWrite.cs" />
     <Compile Include="EDIX12.cs" />

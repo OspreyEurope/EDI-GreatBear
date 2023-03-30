@@ -14,6 +14,7 @@ namespace EDI_Orders
 {
     public class EDIWrite
     {
+        #region Geeric
         #region Writes EDI File in Fact format
         /**
          * This function writes the responce file, 
@@ -273,9 +274,10 @@ namespace EDI_Orders
             File.AppendAllText(file, "UNZ+" + (lineCount + 1) + "'");
         }
         #endregion
+        #endregion
 
 
-
+        #region KTN
         #region Write Products KTN Format
         /**
         * For now it is hardcoded for KTN due to the way EDI formats are.
@@ -417,17 +419,41 @@ namespace EDI_Orders
                         ID = row["DelPostalName"].ToString().Substring(0, 10).PadRight(20, ' ');             //AccountRef
                     }
                     text = ID;            //Can be swapped for GLNs
-                    text = text.PadRight(20, ' ');
-                    text = text + row["DelPostalName"].ToString(); 
-                    text = text.PadRight(100, ' ');
-                    text = text + row["DelAddressLine1"].ToString();
-                    text = text.PadRight(180, ' ');
-                    text = text + row["DelPostCode"].ToString();
-                    text = text.PadRight(200, ' ');
-                    text = text + row["DelCity"].ToString();
-                    text = text.PadRight(280, ' ');
-                    text = text + row["DelCountryCode"].ToString();
-                    text = text.PadRight(370, ' ');
+                    if ((row["DelPostalName"].ToString() == "DTC Customer") || (row["DelPostalName"].ToString() == "Ecommerce"))
+                    {
+                        SqlConnection conDTC = new SqlConnection();
+                        conDTC.ConnectionString = ConfigurationManager.ConnectionStrings["DTC"].ConnectionString;
+                        DataTable GDPRData = SharedFunctions.QueryDB(conDTC, "OSP_GET_GDPR_DATA", row["DelPostCode"].ToString(), row["OrderReference"].ToString());
+                        DataRow GDPR = GDPRData.Rows[0];
+
+
+                        text = text.PadRight(20, ' ');
+                        //text = text + GDPR["PostalName"].ToString();
+                        text = text + "John Smith";
+                        text = text.PadRight(100, ' ');
+                        text = text + GDPR["AddressLine1"].ToString();
+                        text = text.PadRight(180, ' ');
+                        text = text + row["DelPostCode"].ToString();
+                        text = text.PadRight(200, ' ');
+                        text = text + row["DelCity"].ToString();
+                        text = text.PadRight(280, ' ');
+                        text = text + row["DelCountryCode"].ToString();
+                        text = text.PadRight(370, ' ');
+                    }
+                    else
+                    {
+                        text = text.PadRight(20, ' ');
+                        text = text + row["DelPostalName"].ToString();
+                        text = text.PadRight(100, ' ');
+                        text = text + row["DelAddressLine1"].ToString();
+                        text = text.PadRight(180, ' ');
+                        text = text + row["DelPostCode"].ToString();
+                        text = text.PadRight(200, ' ');
+                        text = text + row["DelCity"].ToString();
+                        text = text.PadRight(280, ' ');
+                        text = text + row["DelCountryCode"].ToString();
+                        text = text.PadRight(370, ' ');
+                    }
                     if ((row["DelPostalName"].ToString() == "DTC Customer") || (row["DelPostalName"].ToString() == "Ecommerce"))
                     {
                         SqlConnection conDTC = new SqlConnection();
@@ -862,6 +888,30 @@ namespace EDI_Orders
             }
 
         }
+        #endregion
+        #endregion
+
+
+
+        #region Great Bear
+        #region Write Order Header
+        public static void WriteOrderGB (SqlConnection con, string id)
+        {
+
+        }
+        #endregion
+
+        #region Write Order Lines
+
+        #endregion
+
+        #region Write ASN
+
+        #endregion
+
+        #region Write Product List
+
+        #endregion
         #endregion
     }
 }
