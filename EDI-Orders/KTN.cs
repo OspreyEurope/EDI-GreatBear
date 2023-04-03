@@ -12,6 +12,7 @@ using Aspose.Pdf.Operators;
 using static System.Net.WebRequestMethods;
 using File = System.IO.File;
 using System.Reflection;
+using System.Diagnostics;
 
 namespace EDI_Orders
 {
@@ -281,19 +282,19 @@ namespace EDI_Orders
                                 }
                                 else if (lines[i].PadRight(13).Substring(6, 6) == "TRATRN")
                                 {
-                                    ConNumber = lines[i].Substring(12, 15);
+                                    ConNumber = lines[i].Substring(12, 35);
                                 }
                                 else if (lines[i].PadRight(13).Substring(6, 6) == "TRATR2")
                                 {
-                                    TrackingNo2 = lines[i].Substring(12, 15);
+                                    TrackingNo2 = lines[i].Substring(12, 35);
                                 }
                                 else if (lines[i].PadRight(13).Substring(6, 6) == "TRABAC")
                                 {
-                                    BarcodeOnLabel = lines[i].Substring(12, 15);
+                                    BarcodeOnLabel = lines[i].Substring(12, 35);
                                 }
                                 else if (lines[i].PadRight(13).Substring(6, 6) == "TRACTR")
                                 {
-                                    Carrier = lines[i].Substring(12, 15);
+                                    Carrier = lines[i].Substring(12, 35);
                                 }
                                 else
                                 {
@@ -392,21 +393,25 @@ namespace EDI_Orders
             result[8] = new string[] { "InboundDeliveryType", row.Substring(12, 80) };
             row = lines[linePos + 4];
             result[9] = new string[] { "CustomerReferenceTransport", row.Substring(12, 80) };
-            row = lines[linePos + 5];
-            Console.WriteLine(linePos + 5);
+            int y = 5;
+            if (!(row.Substring(7, 6) == "NADTRA"))
+            {
+                y++;
+            }
+            row = lines[linePos + y];
             result[9] = new string[] { "TransporterName", row.Substring(32, 80) };
             result[10] = new string[] { "TransporterAddress", row.Substring(112, 80) };
             result[11] = new string[] { "TransporterCountry", row.Substring(302, 80) };
             result[12] = new string[] { "TransporterLicensePlate", row.Substring(759, 20) };
             result[13] = new string[] { "TransporterContact", row.Substring(486, 50) };
-            row = lines[linePos + 6];
-            Console.WriteLine(linePos + 6);
+            y++;
+            row = lines[linePos + y];
             result[14] = new string[] { "SupplierName", row.Substring(32, 80) };
             result[15] = new string[] { "SupplierAddress", row.Substring(112, 80) };
             result[16] = new string[] { "SupplierCountry", row.Substring(302, 80) };
             //result[17] = new string[] { "SupplierContact", row.Substring(486, 50) };
-            row = lines[linePos + 7];
-            Console.WriteLine(linePos + 7);
+            y++;
+            row = lines[linePos + y];
             result[18] = new string[] { "ArrivedDate", row.Substring(12, 35) };
             Console.WriteLine("Not this part");
             /**
@@ -423,7 +428,7 @@ namespace EDI_Orders
             }
             string[][] vals = new string[counter][];
             int count = 0;
-            for (int y = 0; y < counter; y++)
+            for (int l = 0; l < counter; l++)
             {
                 vals[count] = result[count];
                 count++;

@@ -463,21 +463,21 @@ namespace EDI_Orders
                         #endregion
                         #region Testing Wite File
                         case "WriteOrder":
-                            EDIWrite.WriteOrder(conKTN, "0000460224");
-                            EDIWrite.WriteOrder(conKTN, "0000460161");
-                            EDIWrite.WriteOrder(conKTN, "0000459947");
-                            EDIWrite.WriteOrder(conKTN, "0000460610");
+                            EDIWrite.WriteOrder(conKTN, "0000459127");
+                            EDIWrite.WriteOrder(conKTN, "0000459043");
+                            EDIWrite.WriteOrder(conKTN, "0000459022");
+                            EDIWrite.WriteOrder(conKTN, "0000458982");
                             break;
                         case "WriteProductList":
                             EDIWrite.WriteProductList(conLive, "100994002");
                             break;
                         case "PO":
-                            EDIWrite.WriteASNFile(conDev, "0000023460");
-                            EDIWrite.WriteASNFile(conDev, "0000023461");
-                            EDIWrite.WriteASNFile(conDev, "0000023462");
-                            EDIWrite.WriteASNFile(conDev, "0000023463");
-                            EDIWrite.WriteASNFile(conDev, "0000023464");
-                            EDIWrite.WriteASNFile(conDev, "0000023465");
+                            EDIWrite.WriteASNFile(conDev, "0000023520");
+                            EDIWrite.WriteASNFile(conDev, "0000023521");
+                            //EDIWrite.WriteASNFile(conDev, "0000023462");
+                            //EDIWrite.WriteASNFile(conDev, "0000023463");
+                            //EDIWrite.WriteASNFile(conDev, "0000023464");
+                            //EDIWrite.WriteASNFile(conDev, "0000023465");
                             break;
                         case "TruckDels":
                             EDIWrite.WriteTruckDelsFile(conDev, "TRUCK118-2");
