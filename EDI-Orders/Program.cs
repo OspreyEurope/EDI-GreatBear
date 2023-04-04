@@ -39,7 +39,7 @@ namespace EDI_Orders
             SqlConnection conKTN = new SqlConnection();
             conKTN.ConnectionString = ConfigurationManager.ConnectionStrings["Orbis_Interface"].ConnectionString;
 
-            if (args.Length > 1)
+            if (args.Length >= 1)
             {
                 string choice = args[0];
                 switch (choice)
@@ -481,6 +481,9 @@ namespace EDI_Orders
                             break;
                         case "TruckDels":
                             EDIWrite.WriteTruckDelsFile(conDev, "TRUCK118-2");
+                            break;
+                        case "Returns":
+                            EDIWrite.WriteReturnResponce(conDev, "0000058894");
                             break;
                         #endregion
                         #region KTN Read

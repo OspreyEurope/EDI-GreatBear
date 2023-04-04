@@ -373,7 +373,7 @@ namespace EDI_Orders
                     /**
                      * * Retrives the data from the database and then writes it line by line into a file.
                      */
-                    string file = "C:\\Bespoke\\EDI\\OutputFiles\\" + row["OrderNumber"].ToString() + ".txt";
+                    string file = ConfigurationManager.AppSettings["Test"] + "/" + row["OrderNumber"].ToString() + ".txt";
                     string fileName = row["OrderNumber"].ToString() + ".txt";
                     fileName = fileName.PadRight((35 - fileName.Length), ' ');
                     FileStream f = new FileStream(file, FileMode.Create);
@@ -401,6 +401,11 @@ namespace EDI_Orders
                     text = row["CustomerAccountRef"].ToString();                                     //FCPN
                     text = text.PadRight(80, ' ');
                     streamWriter.WriteLine("000006RFFCR3" + text + "");
+                    text = "";
+
+                    text = row["OrderReference"].ToString();                                     //FCPN
+                    text = text.PadRight(80, ' ');
+                    streamWriter.WriteLine("000006RFFCR4" + text + "");
                     text = "";
 
                     text = row["OrderDate"].ToString();
@@ -553,7 +558,7 @@ namespace EDI_Orders
                 /**
                  * Retrives the data from the database and then writes it line by line into a file.
                  */
-                string file = "C:\\Bespoke\\EDI\\OutputFiles\\PO" + id + ".txt";
+                string file = ConfigurationManager.AppSettings["PKTNASN"] + "/PO" + id + ".txt";
                 FileStream f = new FileStream(file, FileMode.Create);
                 Encoding utf8WithoutBom = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false);
                 StreamWriter streamWriter = new StreamWriter(f, utf8WithoutBom);
@@ -673,7 +678,7 @@ namespace EDI_Orders
                 /**
                  * Retrives the data from the database and then writes it line by line into a file.
                  */
-                string file = "C:\\Bespoke\\EDI\\OutputFiles\\" + id + "_Product_List.txt";
+                string file = ConfigurationManager.AppSettings["Test"] +"/"+ id + "_Product_List.txt";
                 FileStream f = new FileStream(file, FileMode.Create);
                 Encoding utf8WithoutBom = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false);
                 StreamWriter streamWriter = new StreamWriter(f, utf8WithoutBom);
@@ -794,7 +799,7 @@ namespace EDI_Orders
                 /**
                  * Retrives the data from the database and then writes it line by line into a file.
                  */
-                string file = "C:\\Bespoke\\EDI\\OutputFiles\\TRUCK" + id + ".txt";
+                string file = ConfigurationManager.AppSettings["SKTNOrders"] + "TRUCK" + id + ".txt";
                 FileStream f = new FileStream(file, FileMode.Create);
                 Encoding utf8WithoutBom = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false);
                 StreamWriter streamWriter = new StreamWriter(f, utf8WithoutBom);
@@ -887,6 +892,126 @@ namespace EDI_Orders
                 Console.WriteLine("Warehouse to warehouse Failed to process, error message is: " + ex.Message);
             }
 
+        }
+        #endregion
+
+        #region Returns to KTN
+        public static void WriteReturnResponce(SqlConnection con, string id)
+        {
+            try
+            {
+                DataTable data = SharedFunctions.QueryDB(con, "OSP_GET_RETURN_DATA", id);
+                /**
+                 * Retrives the data from the database and then writes it line by line into a file.
+                 */
+                string file = ConfigurationManager.AppSettings["Test"] + "/RETURN" + id + ".txt";
+                FileStream f = new FileStream(file, FileMode.Create);
+                Encoding utf8WithoutBom = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false);
+                StreamWriter streamWriter = new StreamWriter(f, utf8WithoutBom);
+                string fileName = "PO" + id + ".txt";
+                fileName = fileName.PadRight((35 - fileName.Length), ' ');
+                streamWriter.WriteLine("000001UNH00000001            ASN                 R4        KTN                                           ASN                                                                       OSPREY     KTN       " + DateTime.Now.ToString("yyyyMMddTHHmmss") + "204" + fileName.PadRight((80 - fileName.Length), ' ') + "");
+                streamWriter.WriteLine("000002FACC");
+
+                int counter = 3;
+
+                string text = "RETURN";                                            //Currently hardcoded as we do not have an eqevilant field
+                text = text.PadRight((80 - text.Length), ' ');
+                streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "RFFTYP" + text + "");
+
+                text = "";
+                counter++;
+
+                text = data.Rows[0]["ReturnOrderNumber"].ToString();
+                text = text.PadRight((80 - text.Length), ' ');
+                streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "RFFCR " + text + "");
+                text = "";
+                counter++;
+
+                text = data.Rows[0]["EDIReturnRef"].ToString();
+                text = text.PadRight((80 - text.Length), ' ');
+                streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "RFFCR2" + text + "");
+                text = "";
+                counter++;
+
+                //Supplier document number
+                text = data.Rows[0]["CustomerDocumentNumber"].ToString();
+                text = text.PadRight((80 - text.Length), ' ');
+                streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "RFFSUP" + text + "");
+                text = "";
+                counter++;
+                //IDK if this is right or not yet
+
+                text = data.Rows[0]["ReturnRequestedDate"].ToString();
+                DateTime dateTime = DateTime.ParseExact(text, "dd/MM/yyyy hh:mm:ss", null);
+                text = dateTime.ToString("yyyyMMdd");
+                streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "DTMPLA" + text.PadRight(35, ' ') + "102");   //43 as it cuts off the time section however it is still counted using string.length
+                text = "";
+                counter++;
+
+                streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "NADSUPKTN".PadRight(923, ' '));
+                counter++;
+
+                for (int i = 0; i < data.Rows.Count; i++)
+                {
+                    DataRow row = data.Rows[i];
+
+                    text = (i + 1).ToString();
+                    text = text.PadRight(30, ' ');
+                    text = text + row["StockItemCode"].ToString();
+                    text = text.PadRight(55, ' ');
+                    text = text + row["ProductDescription"].ToString();
+                    text = text.PadRight(135, ' ');
+                    streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "LIN" + text.PadRight(175, ' ') + "");
+                    text = "";
+                    counter++;
+
+                    text = row["Quantity"].ToString();
+                    var temp = text.Split('.');
+                    text = temp[0];
+                    text = text.PadRight((15 - text.Length), ' ');
+                    streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "QTYEXP" + text + "");
+                    text = "";
+                    counter++;
+
+                    //text = row["LotCode"].ToString();
+                    //text = text.PadRight((35 - text.Length), ' ');
+                    //streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "TRALNO" + text + "");
+                    //text = "";
+                    //counter++;
+
+                    //text = row["OrderRequestedDate"].ToString();
+                    //dateTime = DateTime.ParseExact(text, "dd/MM/yyyy hh:mm:ss", null);
+                    //text = dateTime.ToString("yyyyMMdd").PadRight(35, ' '); //43 as it cuts off the time section however it is still counted using string.length
+                    //streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "DTMPLA" + text + "102");
+                    //text = "";
+                    //counter++;
+
+                    text = row["UnitPrice"].ToString();
+                    temp = text.Split('.');
+                    text = "";
+                    foreach (string s in temp)
+                    {
+                        text = text + s;
+                    }
+                    text = text.Substring(0, text.Length - 3);
+                    text = text.PadRight(18, ' ');
+                    text = text + row["Currency"].ToString();
+                    text = text.PadRight(3, ' ');
+                    streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "MOA116" + text + "");
+                    text = "";
+                    counter++;
+
+                    //SharedFunctions.QueryDB(con, "OSP_Update_StatusID_WH_PO", data.Rows[0]["PurchaseOrderNumber"].ToString());
+                }
+                streamWriter.Close();
+                var lineCount = File.ReadLines(file).Count();
+                File.AppendAllText(file, counter.ToString().PadLeft(6, '0') + "UNT" + (lineCount + 1).ToString().PadRight(6, ' ') + "00000001            ");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("PO Failed to process, error message is: " + ex.Message);
+            }
         }
         #endregion
         #endregion
