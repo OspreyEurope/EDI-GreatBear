@@ -778,10 +778,11 @@ namespace EDI_Orders
                     result[5] = new string[] { "AvalibleQuantity", row.Substring(122, 15) };
                     break;
                 case "SMD":
-                    //result[0] = new string[] { "StockMovementType", row.Substring(9, 3) };
-                    //result[1] = new string[] { "TypeOfOperation", row.Substring(12, 3) };
-                    //result[2] = new string[] { "Reason", row.Substring(33, 20) };
-                    //result[3] = new string[] { "DateOfMovement", row.Substring(123, 35) };
+                    result[0] = new string[] { "StockMovementType", row.Substring(9, 3) };
+                    result[4] = new string[] { "Quantity", row.Substring(15, 16) };
+                    result[1] = new string[] { "TypeOfOperation", row.Substring(12, 3) };
+                    result[2] = new string[] { "Reason", row.Substring(33, 20) };
+                    result[3] = new string[] { "DateOfMovement", row.Substring(123, 35) };
                     break;
                 case "MEA":
                     string MEASeg = row.Substring(9, 3);

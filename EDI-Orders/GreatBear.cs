@@ -27,6 +27,12 @@ namespace EDI_Orders
                 case "945":    //Assembly Order Message
 
                     break;
+                case "947":     //Stock adjust and status checks
+
+                    break;
+                case "997":     //Functional acknowledgment message
+
+                    break;
 
             }
         }
