@@ -463,10 +463,10 @@ namespace EDI_Orders
                         #endregion
                         #region Testing Wite File
                         case "WriteOrder":
-                            EDIWrite.WriteOrder(conKTN, "0000459127");
-                            EDIWrite.WriteOrder(conKTN, "0000459043");
-                            EDIWrite.WriteOrder(conKTN, "0000459022");
-                            EDIWrite.WriteOrder(conKTN, "0000458982");
+                            //EDIWrite.WriteOrder(conKTN, "0000398063");
+                            EDIWrite.WriteOrder(conKTN, "0000397226");
+                            //EDIWrite.WriteOrder(conKTN, "0000459022");
+                            //EDIWrite.WriteOrder(conKTN, "0000458982");
                             break;
                         case "WriteProductList":
                             EDIWrite.WriteProductList(conLive, "100994002");

@@ -143,6 +143,7 @@ namespace EDI_Orders
                         lines = File.ReadAllLines(file);
                         ID = lines[0].Substring(9, 20);
                         int linePos = 0;
+                        string temp = "";
                         while (linePos < lineCount)
                         {
                             row = lines[linePos];
@@ -152,10 +153,11 @@ namespace EDI_Orders
                             switch (segment)
                             {
                                 case "FAC":
-                                    WriteRECCONHeader(con, storedProcedure,lines,linePos,file,SP);
+                                    temp = WriteRECCONHeader(con, storedProcedure,lines,linePos,file,SP);
+                                    Console.WriteLine("Made It Out");
                                     break;
                                 case "LIN":
-                                    WriteRECCONItems(con,lines,linePos,ID);;
+                                    WriteRECCONItems(con,lines,linePos,temp);;
                                     break;
                                 case "UNT":
                                     Console.WriteLine("Made it to the end of the file");
@@ -167,7 +169,7 @@ namespace EDI_Orders
                             linePos++;
                         }
 
-                        lineCount = File.ReadLines(file).Count();
+                        //lineCount = File.ReadLines(file).Count();
                         //here write the run through and write items section
 
                         break;
@@ -223,10 +225,11 @@ namespace EDI_Orders
                             string[][] t = ReadKTN(lines[i]);
                             //Console.WriteLine(lines[i].Substring(0, 6));         //This will print the line number which is being processed, if there is a crash this is sueful to figure which is the line it is crashing on, this is usually the ALI line due to length issues
                             if (t != null)
-                            {  
+                            {
                                 /**
                                  * This section of if statments is used to build the header data that is only present once but is repeated in the database.
                                  */
+                                Console.WriteLine("Line: " + i);
                                 if (lines[i].Substring(6, 3) == "UNH")
                                 {
                                     row = lines[i];
@@ -315,30 +318,39 @@ namespace EDI_Orders
                                      * It adds all the header style information previously gathered and adds it to the stored procedure.
                                      * It then clears the values ready for the next section of data.
                                      */
-                                    if ((lines[i+1].Substring(6, 3) == "LIN" && p > 0) || lines[i+1].Substring(6, 3) == "UNT")
-                                    {
-                                        storedProcedure.Parameters.AddWithValue("ID", ID);
-                                        storedProcedure.Parameters.AddWithValue("ItemNumber",ItemNumber);
-                                        storedProcedure.Parameters.AddWithValue("ItemDescrtiption", ItemDescrtiption);
-                                        storedProcedure.Parameters.AddWithValue("MessageType", MessageType);
-                                        storedProcedure.Parameters.AddWithValue("Warehouse", Warehouse);
-                                        storedProcedure.Parameters.AddWithValue("DateReceived", DateReceived);
-                                        storedProcedure.Parameters.AddWithValue("OriginalFileName", OriginalFileName);
-                                        storedProcedure.Parameters.AddWithValue("FileAction", FileAction);
-                                        storedProcedure.Parameters.AddWithValue("DateShipped", DateShipped);
-                                        storedProcedure.Parameters.AddWithValue("KTNOutBoundCode", KTNOutBound);
-                                        storedProcedure.Parameters.AddWithValue("Transporter", Transporter);
-                                        storedProcedure.Parameters.AddWithValue("OrderNumber", OrderNumber);
-                                        storedProcedure.Parameters.AddWithValue("PackedQuantity", PQty);
-                                        storedProcedure.Parameters.AddWithValue("ConNumber", ConNumber);
-                                        storedProcedure.Parameters.AddWithValue("TrackingNo2", TrackingNo2);
-                                        storedProcedure.Parameters.AddWithValue("BarcodeOnLabel", BarcodeOnLabel);
-                                        storedProcedure.Parameters.AddWithValue("CarrierTrackingNo", Carrier);
+                                if ((lines[i+1].Substring(6, 3) == "LIN" && p > 0) || lines[i+1].Substring(6, 3) == "UNT")
+                                {
+                                    storedProcedure.Parameters.AddWithValue("ID", ID);
+                                    storedProcedure.Parameters.AddWithValue("ItemNumber",ItemNumber);
+                                    storedProcedure.Parameters.AddWithValue("ItemDescrtiption", ItemDescrtiption);
+                                    storedProcedure.Parameters.AddWithValue("MessageType", MessageType);
+                                    storedProcedure.Parameters.AddWithValue("Warehouse", Warehouse);
+                                    storedProcedure.Parameters.AddWithValue("DateReceived", DateReceived);
+                                    storedProcedure.Parameters.AddWithValue("OriginalFileName", OriginalFileName);
+                                    storedProcedure.Parameters.AddWithValue("FileAction", FileAction);
+                                    storedProcedure.Parameters.AddWithValue("DateShipped", DateShipped);
+                                    storedProcedure.Parameters.AddWithValue("KTNOutBoundCode", KTNOutBound);
+                                    storedProcedure.Parameters.AddWithValue("Transporter", Transporter);
+                                    storedProcedure.Parameters.AddWithValue("OrderNumber", OrderNumber);
+                                    storedProcedure.Parameters.AddWithValue("PackedQuantity", PQty);
+                                    storedProcedure.Parameters.AddWithValue("ConNumber", ConNumber);
+                                    storedProcedure.Parameters.AddWithValue("TrackingNo2", TrackingNo2);
+                                    storedProcedure.Parameters.AddWithValue("BarcodeOnLabel", BarcodeOnLabel);
+                                    storedProcedure.Parameters.AddWithValue("CarrierTrackingNo", Carrier);
 
 
-                                        storedProcedure.ExecuteNonQuery();
-                                        storedProcedure.Parameters.Clear();;
-                                    }
+                                    storedProcedure.ExecuteNonQuery();
+                                    storedProcedure.Parameters.Clear();
+                                    //string[][] data = new string[6][];
+                                    //data[0] = new string[] { "SalesOrderNumber", ID };
+                                    //data[1] = new string[] { "ConNumber", ConNumber };
+                                    //data[2] = new string[] { "QTYDispatched", PQty };
+                                    //data[3] = new string[] { "Transport", Transporter };
+                                    //data[4] = new string[] { "DateShipped", DateShipped };
+                                    //data[5] = new string[] { "FileNameDispatch1", file };
+                                    //Updatetracker(con, data);
+                                    //here is where the update takes place    
+                                }
                                     /**
                                     * This section allows the program to know if it is the first repeating section and only writes if it has all values needed.
                                     */
@@ -365,7 +377,7 @@ namespace EDI_Orders
 
 
         #region Write RECCON Header
-        public static void WriteRECCONHeader (SqlConnection con, SqlCommand storedProcedure, string[] lines, int linePos, string file, string SP)
+        public static string WriteRECCONHeader (SqlConnection con, SqlCommand storedProcedure, string[] lines, int linePos, string file, string SP)
         {
             con.Open();
             /**
@@ -394,7 +406,8 @@ namespace EDI_Orders
             row = lines[linePos + 4];
             result[9] = new string[] { "CustomerReferenceTransport", row.Substring(12, 80) };
             int y = 5;
-            if (!(row.Substring(7, 6) == "NADTRA"))
+            row = lines[linePos + 5];
+            if (row.Substring(6, 6) != "NADTRA")
             {
                 y++;
             }
@@ -413,7 +426,6 @@ namespace EDI_Orders
             y++;
             row = lines[linePos + y];
             result[18] = new string[] { "ArrivedDate", row.Substring(12, 35) };
-            Console.WriteLine("Not this part");
             /**
              * This section cycles through the array and adds the values to the stored procedure.
              * It then inserts the data into the headers table in the database.
@@ -442,6 +454,8 @@ namespace EDI_Orders
             storedProcedure.ExecuteNonQuery();
             storedProcedure.Parameters.Clear();
             con.Close();
+
+            return result[7][1];
         }
         #endregion
 
@@ -837,5 +851,20 @@ namespace EDI_Orders
             return vals;
         }
         #endregion
+
+        public static void Updatetracker (SqlConnection con, string[][] vals)
+        {
+            con.Open();
+            SqlCommand storedProcedure = new SqlCommand("OSP_UPDATE_TRACKER", con);
+            storedProcedure.CommandType = CommandType.StoredProcedure;
+
+            for (int i = 0; i < vals.Length; i++)
+            {
+                storedProcedure.Parameters.AddWithValue(vals[i][0], vals[i][1]);
+            }
+            storedProcedure.ExecuteNonQuery();
+            storedProcedure.Parameters.Clear();
+            con.Close();
+        }
     }
 }

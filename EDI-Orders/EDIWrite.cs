@@ -285,7 +285,7 @@ namespace EDI_Orders
         * these pads ensure that the information is lined up correctly an it is readable by KTN.
         * The counter with pad left using 0 is the line number, again this is required in KTN's format.
         */
-        public static int WriteProductsKTN(SqlConnection con, StreamWriter sw, string orderNo, int counter)
+        public static int WriteProductsKTN(SqlConnection con, StreamWriter sw, string orderNo, int counter, string[][] vals)
         {
             try
             {
@@ -342,13 +342,19 @@ namespace EDI_Orders
                     text = "";
                     counter++;
                     item++;
+
+                    //string[][] items = new string[2][];
+                    //items[0] = new string[] { "QTYOrdered", row["Quantity"].ToString() };
+                    //items[1] = new string[] { "StockCode", row["ItemNumber"].ToString() };
+                    //items[2] = new string[] { "UnitSalesPrice", row["UnitPrice"].ToString() };
+                    //UpdateTracker(vals, items, con);
                 }
                 return counter;
             }
             catch (Exception ex)
             {
-                return counter;
                 Console.WriteLine("Write order items Failed to process, error message is: " + ex.Message);
+                return counter;
             }
         }
         #endregion
@@ -384,7 +390,7 @@ namespace EDI_Orders
                     string text = "";
                     streamWriter.WriteLine("000002FACC  " + text.PadRight(35, ' ') + "");
 
-                    text = row["OrderImportType"].ToString();
+                    text = row["OrderImportType"].ToString().PadRight(20, ' ').Substring(0,10);
                     text = text.PadRight(30, ' ');
                     streamWriter.WriteLine("000003TDT" + text.PadLeft(113, ' ') + "");
                     text = "";
@@ -398,14 +404,14 @@ namespace EDI_Orders
                     text = text.PadRight(80, ' ');
                     streamWriter.WriteLine("000005RFFCR2" + text + "");
 
-                    text = row["CustomerAccountRef"].ToString();                                     //FCPN
-                    text = text.PadRight(80, ' ');
-                    streamWriter.WriteLine("000006RFFCR3" + text + "");
-                    text = "";
+                    //text = row["CustomerAccountRef"].ToString();                                     //FCPN
+                    //text = text.PadRight(80, ' ');
+                    //streamWriter.WriteLine("000006RFFCR3" + text + "");
+                    //text = "";
 
                     text = row["OrderReference"].ToString();                                     //FCPN
                     text = text.PadRight(80, ' ');
-                    streamWriter.WriteLine("000006RFFCR4" + text + "");
+                    streamWriter.WriteLine("000006RFFCR3" + text + "");
                     text = "";
 
                     text = row["OrderDate"].ToString();
@@ -475,6 +481,7 @@ namespace EDI_Orders
                     }
                     else
                     {
+                        text = text + row["DelTelephone"].ToString(); //Phone Number
                         text = text.PadRight(523, ' ');
                         text = text + row["DelEmail"].ToString();
                         text = text.PadRight(573, ' ');
@@ -484,7 +491,7 @@ namespace EDI_Orders
                     streamWriter.WriteLine("000009NADDES" + text.PadRight(996, ' ') + "");             //Can be swapped for GLNs but will need swapping to ensure the correct lcoation
                     text = "";
 
-                    ID = row["InvoicePostalAddress"].ToString().Substring(0, 10);
+                    ID = row["InvoicePostalAddress"].ToString().PadRight(10, ' ').Substring(0, 10);
                     text = ID;            //Can be swapped for GLNs
                     text = text.PadRight(20, ' ');
                     text = text + row["InvoicePostalAddress"].ToString();
@@ -522,10 +529,29 @@ namespace EDI_Orders
                     streamWriter.WriteLine("000012ALI" + text.PadLeft(204, ' ') + "");
                     text = "";
 
-                    WriteProductsKTN(con, streamWriter, row["OrderNumber"].ToString(), counter);
+                    Console.WriteLine("ADSJJDHSUSAHDNIDHSAKDSJ");
+
+
+                    string[][] vals = new string[12][];
+                    vals[0] = new string[] { "SalesOrderNumber", row["OrderNumber"].ToString() };
+                    vals[1] = new string[] { "DSVOrderNumber", row["WHOrderNumber"].ToString() };
+                    vals[2] = new string[] { "CustomerAccountReference", row["CustomerAccountRef"].ToString() };
+                    vals[3] = new string[] { "OrderSource", row["OrderImportType"].ToString() };
+                    vals[4] = new string[] { "Warehouse", row["Warehouse"].ToString() };
+                    vals[5] = new string[] { "AccountType", row["OrderType"].ToString() };
+                    vals[6] = new string[] { "Priority", row["Priority"].ToString() };
+                    vals[7] = new string[] { "DateOrdered", row["OrderDate"].ToString() };
+                    vals[8] = new string[] { "DateRequestedDel", row["OrderRequestedDate"].ToString() };
+                    vals[9] = new string[] { "FileNameSO", fileName };
+                    vals[10] = new string[] { "CountryCode", row["DelCountryCode"].ToString() };
+
+                    
+
+                    WriteProductsKTN(con, streamWriter, row["OrderNumber"].ToString(), counter, vals);
 
                     streamWriter.Close();
                     var lineCount = File.ReadLines(file).Count();
+
                     File.AppendAllText(file, (lineCount + 1).ToString().PadLeft(6, '0') + "UNT" + (lineCount + 1).ToString().PadRight(6, ' ') + "00000001            ");
                     if (flag)
                     {
@@ -1037,6 +1063,28 @@ namespace EDI_Orders
         #region Write Product List
 
         #endregion
+        #endregion
+
+        #region Update tracker
+        public static void UpdateTracker(string[][] vals, string[][] items, SqlConnection con)
+        {
+            con.Open();
+            SqlCommand storedProcedure = new SqlCommand("OSP_INSERT_INTO_TRACKER", con);
+            storedProcedure.CommandType = CommandType.StoredProcedure;
+
+            for (int i = 0; i < vals.Length; i++)
+            {
+                storedProcedure.Parameters.AddWithValue(vals[i][0], vals[i][1]);
+            }
+            for (int i = 0; i < items.Length; i++)
+            {
+                storedProcedure.Parameters.AddWithValue(items[i][0], items[i][1]);
+            }
+
+            storedProcedure.ExecuteNonQuery();
+            storedProcedure.Parameters.Clear();
+            con.Close();
+        }
         #endregion
     }
 }
