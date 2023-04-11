@@ -343,11 +343,20 @@ namespace EDI_Orders
                     counter++;
                     item++;
 
-                    //string[][] items = new string[2][];
-                    //items[0] = new string[] { "QTYOrdered", row["Quantity"].ToString() };
-                    //items[1] = new string[] { "StockCode", row["ItemNumber"].ToString() };
-                    //items[2] = new string[] { "UnitSalesPrice", row["UnitPrice"].ToString() };
-                    //UpdateTracker(vals, items, con);
+                    try
+                    {
+                        //string[][] items = new string[3][];
+                        //items[0] = new string[] { "QTYOrdered", row["Quantity"].ToString() };
+                        //items[1] = new string[] { "StockCode", row["ItemNumber"].ToString() };
+                        //items[2] = new string[] { "UnitSalesPrice", row["UnitPrice"].ToString() };
+                        //UpdateTracker(vals, items, con);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("Update Tracker Failed.");
+                        Console.WriteLine(ex.ToString());
+                    }
+
                 }
                 return counter;
             }
@@ -529,7 +538,7 @@ namespace EDI_Orders
                     streamWriter.WriteLine("000012ALI" + text.PadLeft(204, ' ') + "");
                     text = "";
 
-                    Console.WriteLine("ADSJJDHSUSAHDNIDHSAKDSJ");
+                    
 
 
                     string[][] vals = new string[12][];
@@ -556,7 +565,7 @@ namespace EDI_Orders
                     if (flag)
                     {
                         string name = Path.GetFileName(file);
-                        File.Move(file, ConfigurationManager.AppSettings["GDPROrder"] + "/WEB" + name);
+                        File.Move(file, ConfigurationManager.AppSettings["Test"] + "/WEB" + name);
                     }
                     flag = false;
                     //SharedFunctions.UpdateRecords(con, "OSP_Update_StatusID_KTN_Orders", row["OrderNumber"].ToString());

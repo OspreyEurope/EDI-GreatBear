@@ -341,20 +341,26 @@ namespace EDI_Orders
 
                                     storedProcedure.ExecuteNonQuery();
                                     storedProcedure.Parameters.Clear();
-                                    //string[][] data = new string[6][];
-                                    //data[0] = new string[] { "SalesOrderNumber", ID };
-                                    //data[1] = new string[] { "ConNumber", ConNumber };
-                                    //data[2] = new string[] { "QTYDispatched", PQty };
-                                    //data[3] = new string[] { "Transport", Transporter };
-                                    //data[4] = new string[] { "DateShipped", DateShipped };
-                                    //data[5] = new string[] { "FileNameDispatch1", file };
-                                    //Updatetracker(con, data);
-                                    //here is where the update takes place    
+
+                                    try
+                                    {
+                                        //string[][] data = new string[6][];
+                                        //data[0] = new string[] { "SalesOrderNumber", ID };
+                                        //data[1] = new string[] { "ConNumber", ConNumber };
+                                        //data[2] = new string[] { "QTYDispatched", PQty };
+                                        //data[3] = new string[] { "Transport", Transporter };
+                                        //data[4] = new string[] { "DateShipped", DateShipped };
+                                        //data[5] = new string[] { "FileNameDispatch1", file };
+                                        //Updatetracker(con, data);
+                                        //here is where the update takes place
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        Console.WriteLine("Update Tracker Failed.");
+                                        Console.WriteLine(ex.ToString());
+                                    }
+                                        
                                 }
-                                    /**
-                                    * This section allows the program to know if it is the first repeating section and only writes if it has all values needed.
-                                    */
-                                
                             }
                         }
                         con.Close();
