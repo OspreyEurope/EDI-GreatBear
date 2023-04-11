@@ -24,7 +24,7 @@ namespace EDI_Orders
          */
         public static void WriteEDIFact (SqlConnection con)
         {
-            DataTable data = SharedFunctions.QueryDB(con, "OSP_Write_Header_EDI");
+            DataTable data = SharedFunctions.QueryDB(con, "OSP_WRITE_HEADER_EDI");
             int counter = 0;
             /**
              * Retrives the data from the database and then writes it line by line into a file.
@@ -113,7 +113,7 @@ namespace EDI_Orders
         #region Write products
         public static void WriteEDIFactProducts(SqlConnection con, StreamWriter sw, string orderNo)
         {
-            DataTable data = SharedFunctions.QueryDB(con, "OSP_Write_Products_EDI", orderNo);
+            DataTable data = SharedFunctions.QueryDB(con, "OSP_WRITE_PRODUCTS_EDI", orderNo);
             /**
              * Retrives the data from the database and then writes it line by line into a file.
              */
@@ -276,7 +276,6 @@ namespace EDI_Orders
         #endregion
         #endregion
 
-
         #region KTN
         #region Write Products KTN Format
         /**
@@ -289,7 +288,7 @@ namespace EDI_Orders
         {
             try
             {
-                DataTable data = SharedFunctions.QueryDB(con, "OSP_Write_Products_EDI", orderNo);
+                DataTable data = SharedFunctions.QueryDB(con, "OSP_WRITE_PRODUCTS_EDI", orderNo);
                 /**
                  * Retrives the data from the database and then writes it line by line into a file.
                  */
@@ -378,7 +377,7 @@ namespace EDI_Orders
         public static void WriteOrder (SqlConnection con, string id)
         {
             try { 
-            DataTable data = SharedFunctions.QueryDB(con, "OSP_Write_Header_EDI", id);
+            DataTable data = SharedFunctions.QueryDB(con, "OSP_WRITE_HEADER_EDI", id);
             int counter = 13;
             bool flag = false;
 

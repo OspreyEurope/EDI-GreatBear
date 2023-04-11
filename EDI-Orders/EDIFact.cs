@@ -26,7 +26,7 @@ namespace EDI_Orders
 
             List<List<string>> temps = new List<List<string>>();
             conOE.Open();
-            SqlCommand storedProcedure = new SqlCommand("OSP_iNSERT_EDI", conOE);
+            SqlCommand storedProcedure = new SqlCommand("OSP_INSERT_EDI", conOE);
             storedProcedure.CommandType = CommandType.StoredProcedure;
 
             /**

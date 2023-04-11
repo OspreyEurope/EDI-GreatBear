@@ -13,6 +13,7 @@ using static System.Net.WebRequestMethods;
 using File = System.IO.File;
 using System.Reflection;
 using System.Diagnostics;
+using System.IO.Packaging;
 
 namespace EDI_Orders
 {
@@ -43,7 +44,7 @@ namespace EDI_Orders
                     #region STKMVT
                     case "STKMVT              ":
                         type = "STKMVT";
-                        SP = "OSP_Insert_Stock_Movement";
+                        SP = "OSP_INSERT_STOCK_MOVEMENT";
                         con.Open();
                         /**
                          * Write the header table values
@@ -101,7 +102,7 @@ namespace EDI_Orders
                          * It finds the header value and the data value by using the method 'ReadKTN' due to the style of file.
                          */
                         con.Open();
-                        storedProcedure = new SqlCommand("OSP_Inseert_Items_For_STKMVT", con);
+                        storedProcedure = new SqlCommand("OSP_INSERT_ITEMS_FOR_STKMVT", con);
                         storedProcedure.CommandType = CommandType.StoredProcedure;
                         /**
                          * Write the line items to a seperate table
@@ -109,6 +110,7 @@ namespace EDI_Orders
                         lineCount = File.ReadLines(file).Count();
                         for (int i = 3; i < (lineCount - 2); i++)
                         {
+                            Console.WriteLine(i);
                             string[][] t = ReadKTN(lines[i]);
                             if (t != null)
                             {
@@ -121,6 +123,7 @@ namespace EDI_Orders
                                  */
                                 if (lines[i + 1].Substring(6, 3) == "LIN" || lines[i + 1].Substring(6, 3) == "UNT")
                                 {
+                                    Console.WriteLine(storedProcedure.Parameters.Count);
                                     storedProcedure.Parameters.AddWithValue("ID", ID);
                                     storedProcedure.ExecuteNonQuery();
                                     storedProcedure.Parameters.Clear();
@@ -136,7 +139,7 @@ namespace EDI_Orders
                     #region RECCON
                     case "RECCON              ":
                         type = "RECCON";
-                        SP = "OSP_Insert_Reccon";
+                        SP = "OSP_INSERT_RECCON";
                         storedProcedure = new SqlCommand(SP, con);
                         storedProcedure.CommandType = CommandType.StoredProcedure;
                         lineCount = File.ReadLines(file).Count();
@@ -186,7 +189,7 @@ namespace EDI_Orders
                          * Creates the variables needed to temporarily store the data needed for each row of the database.
                          */
                         type = "PPLCON";
-                        SP = "OSP_Insert_Pplcon";
+                        SP = "OSP_INSERT_PPLCON";
                         var headers = SharedFunctions.QueryDB(con, "OSP_GetHeaders", "PPLCON");
 
                         Console.WriteLine(headers.Rows.Count);
@@ -214,6 +217,7 @@ namespace EDI_Orders
                         string TrackingNo2 = "";
                         string BarcodeOnLabel = "";
                         string Carrier = "";
+                        string PL = "";
                         int p = 0;
 
                         /**
@@ -238,6 +242,7 @@ namespace EDI_Orders
                                     Warehouse = row.Substring(59, 10);
                                     DateReceived = row.Substring(201, 35);
                                     OriginalFileName = row.Substring(239, 50);
+                                    PL = row.Substring(69, 5);
                                 }
                                 else if (lines[i].Substring(6, 3) == "LIN")
                                 {
@@ -337,6 +342,7 @@ namespace EDI_Orders
                                     storedProcedure.Parameters.AddWithValue("TrackingNo2", TrackingNo2);
                                     storedProcedure.Parameters.AddWithValue("BarcodeOnLabel", BarcodeOnLabel);
                                     storedProcedure.Parameters.AddWithValue("CarrierTrackingNo", Carrier);
+                                    storedProcedure.Parameters.AddWithValue("PL",PL);
 
 
                                     storedProcedure.ExecuteNonQuery();
@@ -380,7 +386,6 @@ namespace EDI_Orders
             }
         }
         #endregion
-
 
         #region Write RECCON Header
         public static string WriteRECCONHeader (SqlConnection con, SqlCommand storedProcedure, string[] lines, int linePos, string file, string SP)
@@ -474,7 +479,7 @@ namespace EDI_Orders
                          * It finds the header value and the data value by using the method 'ReadKTN' due to the style of file.
                          */
             con.Open();
-            SqlCommand StoredProcedure2  = new SqlCommand("OSP_Insert_Items_For_RECCON", con);
+            SqlCommand StoredProcedure2  = new SqlCommand("OSP_INSERT_ITEMS_FOR_RECCON", con);
             StoredProcedure2.CommandType = CommandType.StoredProcedure;
             /**
              * Write the line items to a seperate table
@@ -790,12 +795,12 @@ namespace EDI_Orders
                     result[0] = new string[] { LOCParty + "Location", row.Substring(12, 25) };
                     break;
                 case "SBD":
-                    result[0] = new string[] { "TotalQuantity", row.Substring(47, 15) };
-                    result[1] = new string[] { "BlockedQuantity", row.Substring(62, 15) };
-                    result[2] = new string[] { "InOrderQuantity", row.Substring(77, 15) };
-                    result[3] = new string[] { "ReservedQuantity", row.Substring(92, 15) };
-                    result[4] = new string[] { "PickedQuantity", row.Substring(107, 15) };
-                    result[5] = new string[] { "AvalibleQuantity", row.Substring(122, 15) };
+                    result[0] = new string[] { "Quantity", row.Substring(47, 15) };
+                    //result[1] = new string[] { "BlockedQuantity", row.Substring(62, 15) };
+                    //result[2] = new string[] { "InOrderQuantity", row.Substring(77, 15) };
+                    //result[3] = new string[] { "ReservedQuantity", row.Substring(92, 15) };
+                    //result[4] = new string[] { "PickedQuantity", row.Substring(107, 15) };
+                    //result[5] = new string[] { "AvalibleQuantity", row.Substring(122, 15) };
                     break;
                 case "SMD":
                     result[0] = new string[] { "StockMovementType", row.Substring(9, 3) };
@@ -858,6 +863,7 @@ namespace EDI_Orders
         }
         #endregion
 
+        #region Update Tracker
         public static void Updatetracker (SqlConnection con, string[][] vals)
         {
             con.Open();
@@ -872,5 +878,6 @@ namespace EDI_Orders
             storedProcedure.Parameters.Clear();
             con.Close();
         }
+        #endregion
     }
 }
