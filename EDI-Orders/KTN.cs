@@ -110,7 +110,6 @@ namespace EDI_Orders
                         lineCount = File.ReadLines(file).Count();
                         for (int i = 3; i < (lineCount - 2); i++)
                         {
-                            Console.WriteLine(i);
                             string[][] t = ReadKTN(lines[i]);
                             if (t != null)
                             {
@@ -123,7 +122,6 @@ namespace EDI_Orders
                                  */
                                 if (lines[i + 1].Substring(6, 3) == "LIN" || lines[i + 1].Substring(6, 3) == "UNT")
                                 {
-                                    Console.WriteLine(storedProcedure.Parameters.Count);
                                     storedProcedure.Parameters.AddWithValue("ID", ID);
                                     storedProcedure.ExecuteNonQuery();
                                     storedProcedure.Parameters.Clear();
@@ -151,13 +149,10 @@ namespace EDI_Orders
                         {
                             row = lines[linePos];
                             string segment = row.Substring(6, 3);
-                            Console.WriteLine("Line: " + linePos);
-                            Console.WriteLine(segment);
                             switch (segment)
                             {
                                 case "FAC":
                                     temp = WriteRECCONHeader(con, storedProcedure,lines,linePos,file,SP);
-                                    Console.WriteLine("Made It Out");
                                     break;
                                 case "LIN":
                                     WriteRECCONItems(con,lines,linePos,temp);;
@@ -191,8 +186,6 @@ namespace EDI_Orders
                         type = "PPLCON";
                         SP = "OSP_INSERT_PPLCON";
                         var headers = SharedFunctions.QueryDB(con, "OSP_GetHeaders", "PPLCON");
-
-                        Console.WriteLine(headers.Rows.Count);
 
                         con.Open();
                         storedProcedure = new SqlCommand(SP, con);
