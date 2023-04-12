@@ -472,7 +472,7 @@ namespace EDI_Orders
                             EDIWrite.WriteProductList(conLive, "100994002");
                             break;
                         case "PO":
-                            EDIWrite.WriteASNFile(conDev, "0000023544");
+                            EDIWrite.WriteASNFile(conDev, "0000023549");
                             //EDIWrite.WriteASNFile(conDev, "0000023521");
                             //EDIWrite.WriteASNFile(conDev, "0000023462");
                             //EDIWrite.WriteASNFile(conDev, "0000023463");
