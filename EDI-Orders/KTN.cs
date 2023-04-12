@@ -236,7 +236,7 @@ namespace EDI_Orders
                          */
                         type = "PPLCON";
                         SP = "OSP_INSERT_PPLCON";
-                        var headers = SharedFunctions.QueryDB(con, "OSP_GetHeaders", "PPLCON");
+                        var headers = SharedFunctions.QueryDB(con, "OSP_GETHEADERS", "PPLCON");
 
                         con.Open();
                         storedProcedure = new SqlCommand(SP, con);
@@ -422,7 +422,7 @@ namespace EDI_Orders
             {
                 con.Close();
                 string name = Path.GetFileName(file);
-                File.Move(file, ConfigurationManager.AppSettings["KTN"+ type + "Quarantined"] + "/" + name);
+                File.Move(file, ConfigurationManager.AppSettings["PKTN"+ type + "Quarantined"] + "/" + name);
                 Console.WriteLine("There was an issue: " + ex.Message);
                 Console.WriteLine( );
                 Console.WriteLine();

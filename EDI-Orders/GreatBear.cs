@@ -87,7 +87,7 @@ namespace EDI_Orders
                 case "N9":
 
                     break;
-                case "WO6":
+                case "W06":
 
                     break;
                 case "W27":
@@ -99,7 +99,22 @@ namespace EDI_Orders
                 case "W12":
 
                     break;
-                case "WO3":
+                case "W03":
+
+                    break;
+                case "W15":
+
+                    break;
+                case "W19":
+
+                    break;
+                case "AK1":
+
+                    break;
+                case "AK2":
+
+                    break;
+                case "AK5":
 
                     break;
                 default:

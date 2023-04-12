@@ -385,6 +385,8 @@ namespace EDI_Orders
             conDev.ConnectionString = ConfigurationManager.ConnectionStrings["OERADEVORBIS"].ConnectionString;
             SqlConnection conLive = new SqlConnection();
             conLive.ConnectionString = ConfigurationManager.ConnectionStrings["OERA"].ConnectionString;
+            SqlConnection Live = new SqlConnection();
+            Live.ConnectionString = ConfigurationManager.ConnectionStrings["Live"].ConnectionString;
             switch (A)
             {
                 case "STKMVT":
@@ -416,7 +418,7 @@ namespace EDI_Orders
                     break;
 
                 case "PPLCON":
-                    files = Directory.GetFiles(ConfigurationManager.AppSettings["KTNPPLCONHolding"]); //Temp for testing
+                    files = Directory.GetFiles(ConfigurationManager.AppSettings["PKTNPPLCONHolding"]); //Temp for testing
 
                     foreach (var file in files)
                     {
@@ -425,14 +427,14 @@ namespace EDI_Orders
                         {
                             if (file.Substring(3, 0) == "WEB")
                             {
-                                File.Move(file, ConfigurationManager.AppSettings["GDPRProcessed"] + "/" + name);
+                                File.Move(file, ConfigurationManager.AppSettings["PKTNPPLCONProcessed"] + "/" + name);
                                 Console.WriteLine(file + " Was Processed and moved to EU network Successfully.");
                             }
                             else
                             {
                                 Console.WriteLine(file);
-                                KTN.ProcessKTN(file, conDev);
-                                File.Move(file, ConfigurationManager.AppSettings["KTNPPLCONProcessed"] + "/" + name);
+                                KTN.ProcessKTN(file, Live);
+                                File.Move(file, ConfigurationManager.AppSettings["PKTNPPLCONProcessed"] + "/" + name);
                                 Console.WriteLine(file + " Was Processed Successfully.");
                             }
                         }
