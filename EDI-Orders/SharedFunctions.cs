@@ -387,6 +387,7 @@ namespace EDI_Orders
             conLive.ConnectionString = ConfigurationManager.ConnectionStrings["OERA"].ConnectionString;
             SqlConnection Live = new SqlConnection();
             Live.ConnectionString = ConfigurationManager.ConnectionStrings["Live"].ConnectionString;
+            
             switch (A)
             {
                 case "STKMVT":
@@ -419,7 +420,7 @@ namespace EDI_Orders
 
                 case "PPLCON":
                     files = Directory.GetFiles(ConfigurationManager.AppSettings["PKTNPPLCONHolding"]); //Temp for testing
-
+                    Console.WriteLine(files.Length);
                     foreach (var file in files)
                     {
                         string name = Path.GetFileName(file);

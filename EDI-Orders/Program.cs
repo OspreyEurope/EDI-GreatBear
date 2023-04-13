@@ -465,16 +465,16 @@ namespace EDI_Orders
                         case "WriteOrder":
                             //EDIWrite.WriteOrder(conKTN, "0000466027");
                             //EDIWrite.WriteOrder(conKTN, "0000466028");
-                            EDIWrite.WriteOrder(conKTN, "0000466029");
-                            //EDIWrite.WriteOrder(conKTN, "0000466030");
+                            //EDIWrite.WriteOrder(conKTN, "0000466029");
+                            EDIWrite.WriteOrder(conKTN, "0000466030");
                             //EDIWrite.WriteOrder(conKTN, "0000466031");
                             break;
                         case "WriteProductList":
                             EDIWrite.WriteProductList(conLive, "100994002");
                             break;
                         case "PO":
-                            EDIWrite.WriteASNFile(conDev, "0000023556");
-                            //EDIWrite.WriteASNFile(conDev, "0000023521");
+                            EDIWrite.WriteASNFile(conDev, "0000023558");
+                            EDIWrite.WriteASNFile(conDev, "0000023557");
                             //EDIWrite.WriteASNFile(conDev, "0000023462");
                             //EDIWrite.WriteASNFile(conDev, "0000023463");
                             //EDIWrite.WriteASNFile(conDev, "0000023464");

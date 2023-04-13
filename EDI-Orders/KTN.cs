@@ -367,7 +367,7 @@ namespace EDI_Orders
                                      * It adds all the header style information previously gathered and adds it to the stored procedure.
                                      * It then clears the values ready for the next section of data.
                                      */
-                                if ((lines[i+1].Substring(6, 3) == "LIN" && p > 0) || lines[i+1].Substring(6, 3) == "UNT")
+                                if ((lines[i+1].PadRight(13).Substring(6, 6) == "RFFCR2" && p > 0) || lines[i+1].Substring(6, 3) == "UNT" || (lines[i+1].Substring(6,3) == "LIN"))
                                 {
                                     storedProcedure.Parameters.AddWithValue("ID", ID);
                                     storedProcedure.Parameters.AddWithValue("ItemNumber",ItemNumber);
@@ -388,6 +388,18 @@ namespace EDI_Orders
                                     storedProcedure.Parameters.AddWithValue("CarrierTrackingNo", Carrier);
                                     storedProcedure.Parameters.AddWithValue("PL",PL);
 
+
+                                    storedProcedure.ExecuteNonQuery();
+                                    storedProcedure.Parameters.Clear();
+
+                                    
+                                    SqlCommand UpdateTracker = new SqlCommand("OSP_UPDATE_TRACKER",con);
+                                    UpdateTracker.Parameters.AddWithValue("OrderNumber", OrderNumber);
+                                    UpdateTracker.Parameters.AddWithValue("ConNumber", ConNumber);
+                                    UpdateTracker.Parameters.AddWithValue("PackedQty", PQty);
+                                    UpdateTracker.Parameters.AddWithValue("transport", Transporter);
+                                    UpdateTracker.Parameters.AddWithValue("DateShipped", DateShipped);
+                                    UpdateTracker.Parameters.AddWithValue("FileName",OriginalFileName );
 
                                     storedProcedure.ExecuteNonQuery();
                                     storedProcedure.Parameters.Clear();

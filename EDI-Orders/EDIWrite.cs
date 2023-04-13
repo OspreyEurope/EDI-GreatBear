@@ -284,7 +284,7 @@ namespace EDI_Orders
         * these pads ensure that the information is lined up correctly an it is readable by KTN.
         * The counter with pad left using 0 is the line number, again this is required in KTN's format.
         */
-        public static int WriteProductsKTN(SqlConnection con, StreamWriter sw, string orderNo, int counter, string[][] vals)
+        public static int WriteProductsKTN(SqlConnection con, StreamWriter sw, string orderNo, int counter)
         {
             try
             {
@@ -342,21 +342,6 @@ namespace EDI_Orders
                     text = "";
                     counter++;
                     item++;
-
-                    try
-                    {
-                        //string[][] items = new string[3][];
-                        //items[0] = new string[] { "QTYOrdered", row["Quantity"].ToString() };
-                        //items[1] = new string[] { "StockCode", row["ItemNumber"].ToString() };
-                        //items[2] = new string[] { "UnitSalesPrice", row["UnitPrice"].ToString() };
-                        //UpdateTracker(vals, items, con);
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine("Update Tracker Failed.");
-                        Console.WriteLine(ex.ToString());
-                    }
-
                 }
                 return counter;
             }
@@ -388,7 +373,7 @@ namespace EDI_Orders
                     /**
                      * * Retrives the data from the database and then writes it line by line into a file.
                      */
-                    string file = ConfigurationManager.AppSettings["PKTNOrders"] + "/" + row["OrderNumber"].ToString() + ".txt";
+                    string file = ConfigurationManager.AppSettings["Test"] + "/" + row["OrderNumber"].ToString() + ".txt";
                     string fileName = row["OrderNumber"].ToString() + ".txt";
                     fileName = fileName.PadRight((35 - fileName.Length), ' ');
                     FileStream f = new FileStream(file, FileMode.Create);
@@ -538,25 +523,7 @@ namespace EDI_Orders
                     streamWriter.WriteLine("000012ALI" + text.PadLeft(204, ' ') + "");
                     text = "";
 
-                    
-
-
-                    string[][] vals = new string[12][];
-                    vals[0] = new string[] { "SalesOrderNumber", row["OrderNumber"].ToString() };
-                    vals[1] = new string[] { "DSVOrderNumber", row["WHOrderNumber"].ToString() };
-                    vals[2] = new string[] { "CustomerAccountReference", row["CustomerAccountRef"].ToString() };
-                    vals[3] = new string[] { "OrderSource", row["OrderImportType"].ToString() };
-                    vals[4] = new string[] { "Warehouse", row["Warehouse"].ToString() };
-                    vals[5] = new string[] { "AccountType", row["OrderType"].ToString() };
-                    vals[6] = new string[] { "Priority", row["Priority"].ToString() };
-                    vals[7] = new string[] { "DateOrdered", row["OrderDate"].ToString() };
-                    vals[8] = new string[] { "DateRequestedDel", row["OrderRequestedDate"].ToString() };
-                    vals[9] = new string[] { "FileNameSO", fileName };
-                    vals[10] = new string[] { "CountryCode", row["DelCountryCode"].ToString() };
-
-                    
-
-                    WriteProductsKTN(con, streamWriter, row["OrderNumber"].ToString(), counter, vals);
+                    WriteProductsKTN(con, streamWriter, row["OrderNumber"].ToString(), counter);
 
                     streamWriter.Close();
                     var lineCount = File.ReadLines(file).Count();
@@ -565,10 +532,12 @@ namespace EDI_Orders
                     if (flag)
                     {
                         string name = Path.GetFileName(file);
-                        File.Move(file, ConfigurationManager.AppSettings["PKTNOrders"] + "/WEB" + name);
+                        File.Move(file, ConfigurationManager.AppSettings["Test"] + "/WEB" + name);
                     }
                     flag = false;
-                    //SharedFunctions.UpdateRecords(con, "OSP_Update_StatusID_KTN_Orders", row["OrderNumber"].ToString());
+
+                    
+                    SharedFunctions.QueryDB(tracker, "OSP_INSERT_TO_TRACKER", fileName, row["OrderNumber"].ToString());
                 }
             }
             catch(Exception ex)
@@ -1072,28 +1041,6 @@ namespace EDI_Orders
         #region Write Product List
 
         #endregion
-        #endregion
-
-        #region Update tracker
-        public static void UpdateTracker(string[][] vals, string[][] items, SqlConnection con)
-        {
-            con.Open();
-            SqlCommand storedProcedure = new SqlCommand("OSP_INSERT_INTO_TRACKER", con);
-            storedProcedure.CommandType = CommandType.StoredProcedure;
-
-            for (int i = 0; i < vals.Length; i++)
-            {
-                storedProcedure.Parameters.AddWithValue(vals[i][0], vals[i][1]);
-            }
-            for (int i = 0; i < items.Length; i++)
-            {
-                storedProcedure.Parameters.AddWithValue(items[i][0], items[i][1]);
-            }
-
-            storedProcedure.ExecuteNonQuery();
-            storedProcedure.Parameters.Clear();
-            con.Close();
-        }
         #endregion
     }
 }
