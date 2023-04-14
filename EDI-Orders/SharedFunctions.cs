@@ -381,12 +381,10 @@ namespace EDI_Orders
             conKTN.ConnectionString = ConfigurationManager.ConnectionStrings["Orbis_Interface"].ConnectionString;
             SqlConnection conOE = new SqlConnection();
             conOE.ConnectionString = ConfigurationManager.ConnectionStrings["OERADEV"].ConnectionString;
-            SqlConnection conDev = new SqlConnection();
-            conDev.ConnectionString = ConfigurationManager.ConnectionStrings["OERADEVORBIS"].ConnectionString;
             SqlConnection conLive = new SqlConnection();
             conLive.ConnectionString = ConfigurationManager.ConnectionStrings["OERA"].ConnectionString;
             SqlConnection Live = new SqlConnection();
-            Live.ConnectionString = ConfigurationManager.ConnectionStrings["Live"].ConnectionString;
+            Live.ConnectionString = ConfigurationManager.ConnectionStrings["LiveOrbis"].ConnectionString;
             
             switch (A)
             {
@@ -405,15 +403,14 @@ namespace EDI_Orders
                             else
                             {
                                 Console.WriteLine(file);
-                                KTN.ProcessKTN(file, conDev);
+                                KTN.ProcessKTN(file, conKTN);
                                 File.Move(file, ConfigurationManager.AppSettings["KTNSTKMVTProcessed"] + "/" + name);
                                 Console.WriteLine(file + " Was Processed Successfully.");
                             }
                         }
                         catch (Exception ex)
                         {
-                            Console.WriteLine("File Quanrintined: " + name);
-                            Console.WriteLine(ex.Message);
+                            Writefile("File Quarantined: " + name, ex.Message);
                         }
                     }
                     break;
@@ -441,8 +438,7 @@ namespace EDI_Orders
                         }
                         catch (Exception ex)
                         {
-                            Console.WriteLine("File Quanrintined: " + name);
-                            Console.WriteLine(ex.Message);
+                            Writefile("File Quarantined: " + name, ex.Message);
                         }
                     }
                     break;
@@ -463,7 +459,7 @@ namespace EDI_Orders
                             else
                             {
                                 Console.WriteLine(file);
-                                KTN.ProcessKTN(file, conDev);
+                                KTN.ProcessKTN(file, conKTN);
                                 Console.WriteLine("Apples");
                                 File.Move(file, ConfigurationManager.AppSettings["KTNRECCONProcessed"] + "/" + name);
                                 Console.WriteLine(file + " Was Processed Successfully.");
@@ -471,8 +467,7 @@ namespace EDI_Orders
                         }
                         catch (Exception ex)
                         {
-                            Console.WriteLine("File Quanrintined: " + name);
-                            Console.WriteLine(ex.Message);
+                            Writefile("File Quarantined: " + name, ex.Message);
                         }
                     }
                     break;
@@ -492,7 +487,7 @@ namespace EDI_Orders
                         catch (Exception ex)
                         {
                             Console.WriteLine(ex.Message);
-                            Console.WriteLine("Files replace Crashed" + name);
+                            Writefile("Files replace Crashed" + name, ex.Message); ;
                         }
                     }
                     files = Directory.GetFiles(ConfigurationManager.AppSettings["KTNQuarintine"]); //Temp for testing
@@ -506,10 +501,25 @@ namespace EDI_Orders
                         catch (Exception ex)
                         {
                             Console.WriteLine(ex.Message);
-                            Console.WriteLine("Files replace Crashed" + name);
+                            Writefile("Files replace Crashed" + name, ex.Message);
                         }
                     }
                     break;
+            }
+        }
+        #endregion
+
+        #region Log Writing
+        public static void Writefile(string v, string z)
+        {
+            string strPath = @"C:\Temp\KTNOrder.txt";
+            if (!File.Exists(strPath))
+            {
+                File.Create(strPath).Dispose();
+            }
+            using (StreamWriter sw = File.AppendText(strPath))
+            {
+                sw.WriteLine(DateTime.Now + v + " - " + z);
             }
         }
         #endregion

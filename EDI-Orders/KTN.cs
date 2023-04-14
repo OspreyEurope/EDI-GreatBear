@@ -402,26 +402,7 @@ namespace EDI_Orders
                                     UpdateTracker.Parameters.AddWithValue("FileName",OriginalFileName );
 
                                     storedProcedure.ExecuteNonQuery();
-                                    storedProcedure.Parameters.Clear();
-
-                                    try
-                                    {
-                                        //string[][] data = new string[6][];
-                                        //data[0] = new string[] { "SalesOrderNumber", ID };
-                                        //data[1] = new string[] { "ConNumber", ConNumber };
-                                        //data[2] = new string[] { "QTYDispatched", PQty };
-                                        //data[3] = new string[] { "Transport", Transporter };
-                                        //data[4] = new string[] { "DateShipped", DateShipped };
-                                        //data[5] = new string[] { "FileNameDispatch1", file };
-                                        //Updatetracker(con, data);
-                                        //here is where the update takes place
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        Console.WriteLine("Update Tracker Failed.");
-                                        Console.WriteLine(ex.ToString());
-                                    }
-                                        
+                                    storedProcedure.Parameters.Clear();     
                                 }
                             }
                         }
@@ -435,10 +416,7 @@ namespace EDI_Orders
                 con.Close();
                 string name = Path.GetFileName(file);
                 File.Move(file, ConfigurationManager.AppSettings["PKTN"+ type + "Quarantined"] + "/" + name);
-                Console.WriteLine("There was an issue: " + ex.Message);
-                Console.WriteLine( );
-                Console.WriteLine();
-                Console.WriteLine();
+                SharedFunctions.Writefile("There was an issue: " + ex.Message, "File Moved to PKTN" + type + "Quarantined");
             }
         }
         #endregion
@@ -916,23 +894,6 @@ namespace EDI_Orders
                 count++;
             }
             return vals;
-        }
-        #endregion
-
-        #region Update Tracker
-        public static void Updatetracker (SqlConnection con, string[][] vals)
-        {
-            con.Open();
-            SqlCommand storedProcedure = new SqlCommand("OSP_UPDATE_TRACKER", con);
-            storedProcedure.CommandType = CommandType.StoredProcedure;
-
-            for (int i = 0; i < vals.Length; i++)
-            {
-                storedProcedure.Parameters.AddWithValue(vals[i][0], vals[i][1]);
-            }
-            storedProcedure.ExecuteNonQuery();
-            storedProcedure.Parameters.Clear();
-            con.Close();
         }
         #endregion
     }
