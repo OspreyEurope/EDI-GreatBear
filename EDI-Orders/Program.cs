@@ -60,6 +60,9 @@ namespace EDI_Orders
                     case "TruckDels":
                         EDIWrite.WriteTruckDelsFile(OrbisDev, args[1]);
                         break;
+                    case "Return":
+                        EDIWrite.WriteReturnResponce(OrbisDev, args[1]);
+                        break;
                     #endregion
                     #region KTN Read
                     case "STKMVT":

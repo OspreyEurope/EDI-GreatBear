@@ -206,7 +206,7 @@ namespace EDI_Orders
                                     temp = WriteRECCONHeader(con, storedProcedure,lines,linePos,file,SP);
                                     break;
                                 case "LIN":
-                                    WriteRECCONItems(con,lines,linePos,temp);;
+                                    linePos = WriteRECCONItems(con,lines,linePos,temp);;
                                     break;
                                 case "UNT":
                                     Console.WriteLine("Made it to the end of the file");
@@ -392,17 +392,17 @@ namespace EDI_Orders
                                     storedProcedure.ExecuteNonQuery();
                                     storedProcedure.Parameters.Clear();
 
-                                    
-                                    SqlCommand UpdateTracker = new SqlCommand("OSP_UPDATE_TRACKER",con);
+
+                                    SqlCommand UpdateTracker = new SqlCommand("OSP_UPDATE_TRACKER", con);
                                     UpdateTracker.Parameters.AddWithValue("OrderNumber", OrderNumber);
                                     UpdateTracker.Parameters.AddWithValue("ConNumber", ConNumber);
                                     UpdateTracker.Parameters.AddWithValue("PackedQty", PQty);
                                     UpdateTracker.Parameters.AddWithValue("transport", Transporter);
                                     UpdateTracker.Parameters.AddWithValue("DateShipped", DateShipped);
-                                    UpdateTracker.Parameters.AddWithValue("FileName",OriginalFileName );
+                                    UpdateTracker.Parameters.AddWithValue("FileName", OriginalFileName);
 
                                     storedProcedure.ExecuteNonQuery();
-                                    storedProcedure.Parameters.Clear();     
+                                    storedProcedure.Parameters.Clear();
                                 }
                             }
                         }
@@ -505,7 +505,7 @@ namespace EDI_Orders
         #endregion
 
         #region Write Items for RECCON
-        public static void WriteRECCONItems (SqlConnection con, string[] lines, int lineCount, string ID)
+        public static int WriteRECCONItems (SqlConnection con, string[] lines, int lineCount, string ID)
         {
             /**
                          * This is the start of the stored procedure to add the items to their table.
@@ -541,6 +541,8 @@ namespace EDI_Orders
                 i++;
             }
             con.Close();
+
+            return i;
         }
         #endregion
 

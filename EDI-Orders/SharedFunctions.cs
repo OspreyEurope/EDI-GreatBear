@@ -450,7 +450,7 @@ namespace EDI_Orders
                     break;
 
                 case "RECCON":
-                    files = Directory.GetFiles(ConfigurationManager.AppSettings["KTNRECCONHolding"]); //Temp for testing
+                    files = Directory.GetFiles(ConfigurationManager.AppSettings["PKTNRECCONHolding"]); //Temp for testing
 
                     foreach (var file in files)
                     {
@@ -467,7 +467,7 @@ namespace EDI_Orders
                                 Console.WriteLine(file);
                                 KTN.ProcessKTN(file, OrbisDev);
                                 Console.WriteLine("Apples");
-                                File.Move(file, ConfigurationManager.AppSettings["KTNRECCONProcessed"] + "/" + name);
+                                File.Move(file, ConfigurationManager.AppSettings["PKTNRECCONProcessed"] + "/" + name);
                                 Console.WriteLine(file + " Was Processed Successfully.");
                             }
                         }
