@@ -393,16 +393,16 @@ namespace EDI_Orders
                                     storedProcedure.Parameters.Clear();
 
 
-                                    SqlCommand UpdateTracker = new SqlCommand("OSP_UPDATE_TRACKER", con);
-                                    UpdateTracker.Parameters.AddWithValue("OrderNumber", OrderNumber);
-                                    UpdateTracker.Parameters.AddWithValue("ConNumber", ConNumber);
-                                    UpdateTracker.Parameters.AddWithValue("PackedQty", PQty);
-                                    UpdateTracker.Parameters.AddWithValue("transport", Transporter);
-                                    UpdateTracker.Parameters.AddWithValue("DateShipped", DateShipped);
-                                    UpdateTracker.Parameters.AddWithValue("FileName", OriginalFileName);
+                                    //SqlCommand UpdateTracker = new SqlCommand("OSP_UPDATE_TRACKER", con);
+                                    //UpdateTracker.Parameters.AddWithValue("OrderNumber", OrderNumber);
+                                    //UpdateTracker.Parameters.AddWithValue("ConNumber", ConNumber);
+                                    //UpdateTracker.Parameters.AddWithValue("PackedQty", PQty);
+                                    //UpdateTracker.Parameters.AddWithValue("transport", Transporter);
+                                    //UpdateTracker.Parameters.AddWithValue("DateShipped", DateShipped);
+                                    //UpdateTracker.Parameters.AddWithValue("FileName", OriginalFileName);
 
-                                    storedProcedure.ExecuteNonQuery();
-                                    storedProcedure.Parameters.Clear();
+                                    //UpdateTracker.ExecuteNonQuery();
+                                    //UpdateTracker.Parameters.Clear();
                                 }
                             }
                         }
@@ -415,7 +415,7 @@ namespace EDI_Orders
             {
                 con.Close();
                 string name = Path.GetFileName(file);
-                File.Move(file, ConfigurationManager.AppSettings["PKTN"+ type + "Quarantined"] + "/" + name);
+                File.Move(file, ConfigurationManager.AppSettings["KTN"+ type + "Quarantined"] + "/" + name);
                 SharedFunctions.Writefile("There was an issue: " + ex.Message, "File Moved to PKTN" + type + "Quarantined");
             }
         }
