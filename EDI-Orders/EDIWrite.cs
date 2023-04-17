@@ -104,7 +104,7 @@ namespace EDI_Orders
             DataTable data = SharedFunctions.QueryDB(con, "OSP_WRITE_HEADER_EDI", id);
             int counter = 13;
             bool flag = false;
-
+                con.Open();
                 for (int i = 0; i < data.Rows.Count; i++)
                 {
                     DataRow row = data.Rows[i];
@@ -182,15 +182,16 @@ namespace EDI_Orders
                         text = text.PadRight(280, ' ');
                         text = text + row["DelCountryCode"].ToString();
                         text = text.PadRight(370, ' ');
-                        SqlCommand Update = new SqlCommand("OSP_UPDATE_GDPR", conDTC);
-                        Update.CommandType = CommandType.StoredProcedure;
-                        Update.Parameters.AddWithValue("@id", row["DelPostCode"].ToString());
-                        Update.Parameters.AddWithValue("@id2", row["OrderReference"].ToString());
-                        Update.Parameters.AddWithValue("@Date", DateTime.Now);
-                        Update.Parameters.AddWithValue("@Dile", file);
+                        //SqlCommand Update = new SqlCommand("OSP_UPDATE_GDPR", conDTC);
+                        //Update.CommandType = CommandType.StoredProcedure;
+                        //Update.Parameters.AddWithValue("@id", row["DelPostCode"].ToString());
+                        //Update.Parameters.AddWithValue("@id2", row["OrderReference"].ToString());
+                        //Update.Parameters.AddWithValue("@Date", DateTime.Now);
+                        //Update.Parameters.AddWithValue("@Dile", file);
 
-                        Update.ExecuteNonQuery();
-                        Update.Parameters.Clear();
+                        //Update.ExecuteNonQuery();
+                        //Update.Parameters.Clear();
+                        
                     }
                     else
                     {
@@ -219,6 +220,7 @@ namespace EDI_Orders
                         text = text + GDPR["EmailAddress"].ToString();
                         text = text.PadRight(573, ' ');
                         flag = true;
+                        
                     }
                     else
                     {
@@ -291,11 +293,12 @@ namespace EDI_Orders
                     {
                         SharedFunctions.Writefile("Failed on write tracker: " + ex.Message, "");
                     }
+                    
                 }
             }
             catch(Exception ex)
             {
-                SharedFunctions.Writefile("Order Failed to process, error message is: " + ex.Message, "");
+                SharedFunctions.Writefile("Order Failed to process, error message is: " + ex.Message + ex.ToString(), "");
             }
         }
         #endregion
