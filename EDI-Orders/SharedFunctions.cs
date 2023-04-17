@@ -422,7 +422,7 @@ namespace EDI_Orders
                     break;
 
                 case "PPLCON":
-                    files = Directory.GetFiles(ConfigurationManager.AppSettings["KTNPPLCONHolding"]); //Temp for testing
+                    files = Directory.GetFiles(ConfigurationManager.AppSettings["PKTNPPLCONHolding"]); //Temp for testing
                     Console.WriteLine(files.Length);
                     foreach (var file in files)
                     {
@@ -431,14 +431,14 @@ namespace EDI_Orders
                         {
                             if (file.Substring(3, 0) == "WEB")
                             {
-                                File.Move(file, ConfigurationManager.AppSettings["KTNPPLCONProcessed"] + "/" + name);
+                                File.Move(file, ConfigurationManager.AppSettings["PKTNPPLCONProcessed"] + "/" + name);
                                 Console.WriteLine(file + " Was Processed and moved to EU network Successfully.");
                             }
                             else
                             {
                                 Console.WriteLine(file);
-                                KTN.ProcessKTN(file, OrbisDev);
-                                File.Move(file, ConfigurationManager.AppSettings["KTNPPLCONProcessed"] + "/" + name);
+                                KTN.ProcessKTN(file, OrbisLive);
+                                File.Move(file, ConfigurationManager.AppSettings["PKTNPPLCONProcessed"] + "/" + name);
                                 Console.WriteLine(file + " Was Processed Successfully.");
                             }
                         }
@@ -465,7 +465,7 @@ namespace EDI_Orders
                             else
                             {
                                 Console.WriteLine(file);
-                                KTN.ProcessKTN(file, OrbisDev);
+                                KTN.ProcessKTN(file, OrbisLive);
                                 File.Move(file, ConfigurationManager.AppSettings["PKTNRECCONProcessed"] + "/" + name);
                                 Console.WriteLine(file + " Was Processed Successfully.");
                             }

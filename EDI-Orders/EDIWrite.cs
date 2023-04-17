@@ -286,7 +286,7 @@ namespace EDI_Orders
                     if (flag)
                     {
                         string name = Path.GetFileName(file);
-                        File.Move(file, ConfigurationManager.AppSettings["Test"] + "/WEB" + name);
+                        File.Move(file, ConfigurationManager.AppSettings["GDPROrder"] + "/WEB" + name);
                     }
                     flag = false;
 
