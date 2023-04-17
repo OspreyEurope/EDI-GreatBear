@@ -26,6 +26,7 @@ namespace EDI_Orders
         {
             try
             {
+                
                 DataTable data = SharedFunctions.QueryDB(con, "OSP_WRITE_PRODUCTS_EDI", orderNo);
                 /**
                  * Retrives the data from the database and then writes it line by line into a file.
@@ -81,11 +82,12 @@ namespace EDI_Orders
                     counter++;
                     item++;
                 }
+                
                 return counter;
             }
             catch (Exception ex)
             {
-                SharedFunctions.Writefile("Write order items Failed to process, error message is: " + ex.Message,"");
+                SharedFunctions.Writefile("Write order items Failed to process, error message is: " + ex.Message + ex.ToString() , "");
                 return counter;
             }
         }
@@ -182,6 +184,8 @@ namespace EDI_Orders
                         text = text.PadRight(280, ' ');
                         text = text + row["DelCountryCode"].ToString();
                         text = text.PadRight(370, ' ');
+
+
                         //SqlCommand Update = new SqlCommand("OSP_UPDATE_GDPR", conDTC);
                         //Update.CommandType = CommandType.StoredProcedure;
                         //Update.Parameters.AddWithValue("@id", row["DelPostCode"].ToString());
@@ -272,6 +276,7 @@ namespace EDI_Orders
                     streamWriter.WriteLine("000012ALI" + text.PadLeft(204, ' ') + "");
                     text = "";
 
+                    con.Close();
                     WriteProductsKTN(con, streamWriter, row["OrderNumber"].ToString(), counter);
 
                     streamWriter.Close();
@@ -285,16 +290,17 @@ namespace EDI_Orders
                     }
                     flag = false;
 
-                    try
-                    {
-                        SharedFunctions.QueryDB(con, "OSP_INSERT_TO_TRACKER", fileName, row["OrderNumber"].ToString());
-                    }
-                   catch (Exception ex)
-                    {
-                        SharedFunctions.Writefile("Failed on write tracker: " + ex.Message, "");
-                    }
+                   // try
+                   // {
+                   //     SharedFunctions.QueryDB(con, "OSP_INSERT_TO_TRACKER", fileName, row["OrderNumber"].ToString());
+                   // }
+                   //catch (Exception ex)
+                   // {
+                   //     SharedFunctions.Writefile("Failed on write tracker: " + ex.Message, "");
+                   // }
                     
                 }
+                con.Close();
             }
             catch(Exception ex)
             {
