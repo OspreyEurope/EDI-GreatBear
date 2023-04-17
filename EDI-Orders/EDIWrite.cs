@@ -182,6 +182,15 @@ namespace EDI_Orders
                         text = text.PadRight(280, ' ');
                         text = text + row["DelCountryCode"].ToString();
                         text = text.PadRight(370, ' ');
+                        SqlCommand Update = new SqlCommand("OSP_UPDATE_GDPR", conDTC);
+                        Update.CommandType = CommandType.StoredProcedure;
+                        Update.Parameters.AddWithValue("@id", row["DelPostCode"].ToString());
+                        Update.Parameters.AddWithValue("@id2", row["OrderReference"].ToString());
+                        Update.Parameters.AddWithValue("@Date", DateTime.Now);
+                        Update.Parameters.AddWithValue("@Dile", file);
+
+                        Update.ExecuteNonQuery();
+                        Update.Parameters.Clear();
                     }
                     else
                     {

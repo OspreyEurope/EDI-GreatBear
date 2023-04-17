@@ -403,7 +403,7 @@ namespace EDI_Orders
                         {
                             if (file.Substring(3, 0) == "WEB")
                             {
-                                File.Move(file, ConfigurationManager.AppSettings["GDPRProcessed"] + "/" + name);
+                                File.Move(file, ConfigurationManager.AppSettings["KTNSTKMVTProcessed"] + "/" + name);
                                 Console.WriteLine(file + " Was Processed and moved to EU network Successfully.");
                             }
                             else
@@ -459,14 +459,13 @@ namespace EDI_Orders
                         {
                             if (file.Substring(3, 0) == "WEB")
                             {
-                                File.Move(file, ConfigurationManager.AppSettings["GDPRProcessed"] + "/" + name);
+                                File.Move(file, ConfigurationManager.AppSettings["PKTNRECCONProcessed"] + "/" + name);
                                 Console.WriteLine(file + " Was Processed and moved to EU network Successfully.");
                             }
                             else
                             {
                                 Console.WriteLine(file);
                                 KTN.ProcessKTN(file, OrbisDev);
-                                Console.WriteLine("Apples");
                                 File.Move(file, ConfigurationManager.AppSettings["PKTNRECCONProcessed"] + "/" + name);
                                 Console.WriteLine(file + " Was Processed Successfully.");
                             }
