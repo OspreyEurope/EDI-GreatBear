@@ -1,25 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Configuration;
-using System.Data;
 using System.Data.SqlClient;
-using System.IO;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.Runtime.Remoting.Messaging;
-using System.Web;
-using static System.Net.WebRequestMethods;
-using File = System.IO.File;
-
-
-
 
 //TODO: Swap Connection strings to move to live,
 //TODO: Swap the file locations in EDIWrite to production
-
-
-
 
 namespace EDI_Orders
 {

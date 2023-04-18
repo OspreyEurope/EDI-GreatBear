@@ -217,10 +217,6 @@ namespace EDI_Orders
                             }
                             linePos++;
                         }
-
-                        //lineCount = File.ReadLines(file).Count();
-                        //here write the run through and write items section
-
                         break;
                     #endregion
                     /**
@@ -271,7 +267,6 @@ namespace EDI_Orders
                         for (int i = 0; i < (lineCount - 1); i++)
                         { 
                             string[][] t = ReadKTN(lines[i]);
-                            //Console.WriteLine(lines[i].Substring(0, 6));         //This will print the line number which is being processed, if there is a crash this is sueful to figure which is the line it is crashing on, this is usually the ALI line due to length issues
                             if (t != null)
                             {
                                 /**
@@ -296,7 +291,7 @@ namespace EDI_Orders
                                 }
                                 else if (lines[i].Substring(6, 3) == "ALI")
                                 {
-                                    //This is an awkard line, this jsut needs to be here or it fails as this line is the only line in KTN that has a variable length
+                                    
                                 }
                                 else if (lines[i].Substring(6, 3) == "FAC")
                                 {
@@ -352,15 +347,6 @@ namespace EDI_Orders
                                 {
                                     
                                 }
-                                
-                                
-                                    //for (int j = 0; j < t.Length; j++)
-                                    //{
-                                    //    if (headers.AsEnumerable().Any(a => t[j][0].ToString() == a.Field<string>("Header")))
-                                    //    {
-                                    //        storedProcedure.Parameters.AddWithValue(t[j][0], t[j][1]);
-                                    //    }
-                                    //}
 
                                     /**
                                      * This is when the data is inserted, this only happens when the data is to be repeated.
@@ -392,17 +378,33 @@ namespace EDI_Orders
                                     storedProcedure.ExecuteNonQuery();
                                     storedProcedure.Parameters.Clear();
 
+                                    if (lines[0].Substring(69,4) == "LOAD")
+                                    {
+                                        //SqlCommand UpdateTracker = new SqlCommand("OSP_UPDATE_TRACKER_LOAD", con);
+                                        //UpdateTracker.Parameters.AddWithValue("OrderNumber", OrderNumber);
+                                        //UpdateTracker.Parameters.AddWithValue("ConNumber", ConNumber);
+                                        //UpdateTracker.Parameters.AddWithValue("PackedQty", PQty);
+                                        //UpdateTracker.Parameters.AddWithValue("Transport", Transporter);
+                                        //UpdateTracker.Parameters.AddWithValue("DateShipped", DateShipped);
+                                        //UpdateTracker.Parameters.AddWithValue("FileName", OriginalFileName);
 
-                                    //SqlCommand UpdateTracker = new SqlCommand("OSP_UPDATE_TRACKER", con);
-                                    //UpdateTracker.Parameters.AddWithValue("OrderNumber", OrderNumber);
-                                    //UpdateTracker.Parameters.AddWithValue("ConNumber", ConNumber);
-                                    //UpdateTracker.Parameters.AddWithValue("PackedQty", PQty);
-                                    //UpdateTracker.Parameters.AddWithValue("transport", Transporter);
-                                    //UpdateTracker.Parameters.AddWithValue("DateShipped", DateShipped);
-                                    //UpdateTracker.Parameters.AddWithValue("FileName", OriginalFileName);
+                                        //UpdateTracker.ExecuteNonQuery();
+                                        //UpdateTracker.Parameters.Clear();
+                                    }
+                                    else if (lines[0].Substring(69, 4) == "PACK")
+                                    {
+                                        //SqlCommand UpdateTracker = new SqlCommand("OSP_UPDATE_TRACKER_PACK", con);
+                                        //UpdateTracker.Parameters.AddWithValue("OrderNumber", OrderNumber);
+                                        //UpdateTracker.Parameters.AddWithValue("ConNumber", ConNumber);
+                                        //UpdateTracker.Parameters.AddWithValue("PackedQty", PQty);
+                                        //UpdateTracker.Parameters.AddWithValue("Transport", Transporter);
+                                        //UpdateTracker.Parameters.AddWithValue("DateShipped", DateShipped);
+                                        //UpdateTracker.Parameters.AddWithValue("FileName", OriginalFileName);
 
-                                    //UpdateTracker.ExecuteNonQuery();
-                                    //UpdateTracker.Parameters.Clear();
+                                        //UpdateTracker.ExecuteNonQuery();
+                                        //UpdateTracker.Parameters.Clear();
+                                    }
+
                                 }
                             }
                         }
@@ -467,7 +469,6 @@ namespace EDI_Orders
             result[14] = new string[] { "SupplierName", row.Substring(32, 80) };
             result[15] = new string[] { "SupplierAddress", row.Substring(112, 80) };
             result[16] = new string[] { "SupplierCountry", row.Substring(302, 80) };
-            //result[17] = new string[] { "SupplierContact", row.Substring(486, 50) };
             y++;
             row = lines[linePos + y];
             result[18] = new string[] { "ArrivedDate", row.Substring(12, 35) };

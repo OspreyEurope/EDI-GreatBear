@@ -1,11 +1,9 @@
-﻿using Aspose.Pdf.Operators;
-using System;
+﻿using System;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
-using static System.Net.WebRequestMethods;
 using File = System.IO.File;
 
 namespace EDI_Orders
@@ -476,40 +474,6 @@ namespace EDI_Orders
                         }
                     }
                     break;
-
-
-
-                //Testing, Moves the file back
-                case "R":
-                    files = Directory.GetFiles(ConfigurationManager.AppSettings["KTNProcessed"]); //Temp for testing
-                    foreach (var file in files)
-                    {
-                        string name = Path.GetFileName(file);
-                        try
-                        {
-                            File.Move(file, ConfigurationManager.AppSettings["KTNHolding"] + "/" + name);
-                        }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine(ex.Message);
-                            Writefile("Files replace Crashed" + name, ex.Message); ;
-                        }
-                    }
-                    files = Directory.GetFiles(ConfigurationManager.AppSettings["KTNQuarintine"]); //Temp for testing
-                    foreach (var file in files)
-                    {
-                        string name = Path.GetFileName(file);
-                        try
-                        {
-                            File.Move(file, ConfigurationManager.AppSettings["KTNHolding"] + "/" + name);
-                        }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine(ex.Message);
-                            Writefile("Files replace Crashed" + name, ex.Message);
-                        }
-                    }
-                    break;
             }
         }
         #endregion
@@ -526,6 +490,7 @@ namespace EDI_Orders
             {
                 sw.WriteLine(DateTime.Now + v + " - " + z);
             }
+            //Add emailing here
         }
         #endregion
     }
