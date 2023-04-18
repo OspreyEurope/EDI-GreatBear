@@ -272,7 +272,6 @@ namespace EDI_Orders
                                 /**
                                  * This section of if statments is used to build the header data that is only present once but is repeated in the database.
                                  */
-                                Console.WriteLine("Line: " + i);
                                 if (lines[i].Substring(6, 3) == "UNH")
                                 {
                                     row = lines[i];
@@ -378,49 +377,42 @@ namespace EDI_Orders
                                     storedProcedure.ExecuteNonQuery();
                                     storedProcedure.Parameters.Clear();
 
-                                    if (lines[0].Substring(69,4) == "LOAD")
+                                    if (lines[0].Substring(69, 4) == "LOAD")
                                     {
-                                        try
-                                        {
-                                            SqlCommand UpdateTracker = new SqlCommand("OSP_UPDATE_TRACKER_LOAD", con);
-                                            UpdateTracker.Parameters.AddWithValue("OrderNumber", OrderNumber);
-                                            UpdateTracker.Parameters.AddWithValue("ConNumber", ConNumber);
-                                            UpdateTracker.Parameters.AddWithValue("PackedQty", PQty);
-                                            UpdateTracker.Parameters.AddWithValue("Transport", Transporter);
-                                            UpdateTracker.Parameters.AddWithValue("DateShipped", DateShipped);
-                                            UpdateTracker.Parameters.AddWithValue("FileName", OriginalFileName);
 
-                                            UpdateTracker.ExecuteNonQuery();
-                                            UpdateTracker.Parameters.Clear();
-                                        }
-                                        catch (Exception ex)
+                                        SqlCommand UpdateTracker = new SqlCommand("OSP_UPDATE_TRACKER_LOAD", con)
                                         {
-                                            string name = Path.GetFileName(file);
-                                            SharedFunctions.Writefile("Error on OSP_UPDATE_TRACKER_LOAD: " + ex.Message, ex.ToString());
-                                        }
+                                            CommandType = CommandType.StoredProcedure
+                                        };
+                                        UpdateTracker.Parameters.AddWithValue("OrderNumber", OrderNumber.Substring(0,10));
+                                        UpdateTracker.Parameters.AddWithValue("ConNumber", ConNumber);
+                                        UpdateTracker.Parameters.AddWithValue("PackedQty", PQty);
+                                        UpdateTracker.Parameters.AddWithValue("Transport", Transporter);
+                                        UpdateTracker.Parameters.AddWithValue("DateShipped", DateShipped);
+                                        UpdateTracker.Parameters.AddWithValue("FileName", OriginalFileName);
+                                        
+                                        UpdateTracker.ExecuteNonQuery();
+                                        UpdateTracker.Parameters.Clear();
                                     }
+
+
                                     else if (lines[0].Substring(69, 4) == "PACK")
                                     {
-                                        try
-                                        {
-                                            SqlCommand UpdateTracker = new SqlCommand("OSP_UPDATE_TRACKER_PACK", con);
-                                            UpdateTracker.Parameters.AddWithValue("OrderNumber", OrderNumber);
-                                            UpdateTracker.Parameters.AddWithValue("ConNumber", ConNumber);
-                                            UpdateTracker.Parameters.AddWithValue("PNPQty", PQty);
-                                            UpdateTracker.Parameters.AddWithValue("Transport", Transporter);
-                                            UpdateTracker.Parameters.AddWithValue("DatePNP", DateShipped);
-                                            UpdateTracker.Parameters.AddWithValue("FileName", OriginalFileName);
 
-                                            UpdateTracker.ExecuteNonQuery();
-                                            UpdateTracker.Parameters.Clear();
-                                        }
-                                        catch (Exception ex)
+                                        SqlCommand UpdateTracker = new SqlCommand("OSP_UPDATE_TRACKER_PACK", con)
                                         {
-                                            string name = Path.GetFileName(file);
-                                            SharedFunctions.Writefile("Error on OSP_UPDATE_TRACKER_PACK: " + ex.Message, ex.ToString());
-                                        }
+                                            CommandType = CommandType.StoredProcedure
+                                        };
+                                        UpdateTracker.Parameters.AddWithValue("OrderNumber", OrderNumber.Substring(0, 10));
+                                        UpdateTracker.Parameters.AddWithValue("ConNumber", ConNumber);
+                                        UpdateTracker.Parameters.AddWithValue("PNPQty", PQty);
+                                        UpdateTracker.Parameters.AddWithValue("Transport", Transporter);
+                                        UpdateTracker.Parameters.AddWithValue("DatePNP", DateShipped);
+                                        UpdateTracker.Parameters.AddWithValue("FileName", OriginalFileName);
+
+                                        UpdateTracker.ExecuteNonQuery();
+                                        UpdateTracker.Parameters.Clear();
                                     }
-
                                 }
                             }
                         }
