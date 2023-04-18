@@ -13,17 +13,10 @@ namespace EDI_Orders
         static void Main(string[] args)
         {
             #region Dev Connections
-            SqlConnection OERADev = new SqlConnection();
-            OERADev.ConnectionString = ConfigurationManager.ConnectionStrings["OERADEV"].ConnectionString;
-            SqlConnection OrbisDev = new SqlConnection();
-            OrbisDev.ConnectionString = ConfigurationManager.ConnectionStrings["Orbis_Interface"].ConnectionString;
-            #endregion
-
-            #region Live Connections
-            SqlConnection OERALive = new SqlConnection();
-            OERALive.ConnectionString = ConfigurationManager.ConnectionStrings["OERA"].ConnectionString;
-            SqlConnection OrbisLive = new SqlConnection();
-            OrbisLive.ConnectionString = ConfigurationManager.ConnectionStrings["LiveOrbis"].ConnectionString;
+            SqlConnection OERA = new SqlConnection();
+            OERA.ConnectionString = ConfigurationManager.ConnectionStrings["OERA"].ConnectionString;
+            SqlConnection Orbis = new SqlConnection();
+            Orbis.ConnectionString = ConfigurationManager.ConnectionStrings["Orbis"].ConnectionString;
             #endregion
 
             if (args.Length >= 1)
@@ -33,19 +26,19 @@ namespace EDI_Orders
                 {
                     #region KTN Wite File
                     case "WriteOrder":
-                        EDIWrite.WriteOrder(OrbisLive, args[1]);
+                        EDIWrite.WriteOrder(Orbis, args[1]);
                         break;
                     case "WriteProductList":
-                        EDIWrite.WriteProductList(OERALive, "100994002");
+                        EDIWrite.WriteProductList(OERA, "100994002");
                         break;
                     case "PO":
-                        EDIWrite.WriteASNFile(OrbisDev, args[1]);
+                        EDIWrite.WriteASNFile(Orbis, args[1]);
                         break;
                     case "TruckDels":
-                        EDIWrite.WriteTruckDelsFile(OrbisDev, args[1]);
+                        EDIWrite.WriteTruckDelsFile(Orbis, args[1]);
                         break;
                     case "Return":
-                        EDIWrite.WriteReturnResponce(OrbisDev, args[1]);
+                        EDIWrite.WriteReturnResponce(Orbis, args[1]);
                         break;
                     #endregion
                     #region KTN Read
@@ -73,20 +66,20 @@ namespace EDI_Orders
                     {
                         #region Testing Wite File
                         case "WriteOrder":
-                            EDIWrite.WriteOrder(OrbisDev, "0000467716"); 
+                            EDIWrite.WriteOrder(Orbis, "0000467716"); 
                             break;
                         case "WriteProductList":
-                            EDIWrite.WriteProductList(OERALive, "100994002");
+                            EDIWrite.WriteProductList(OERA, "100994002");
                             break;
                         case "PO":
-                            EDIWrite.WriteASNFile(OrbisDev, "0000023558");
-                            EDIWrite.WriteASNFile(OrbisDev, "0000023557");
+                            EDIWrite.WriteASNFile(Orbis, "0000023558");
+                            EDIWrite.WriteASNFile(Orbis, "0000023557");
                             break;
                         case "TruckDels":
-                            EDIWrite.WriteTruckDelsFile(OrbisDev, "TRUCK118-2");
+                            EDIWrite.WriteTruckDelsFile(Orbis, "TRUCK118-2");
                             break;
                         case "Returns":
-                            EDIWrite.WriteReturnResponce(OrbisDev, "0000058894");
+                            EDIWrite.WriteReturnResponce(Orbis, "0000058894");
                             break;
                         #endregion
                         #region KTN Read

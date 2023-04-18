@@ -472,6 +472,11 @@ namespace EDI_Orders
                     streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "TRABC " + text + "");
                     counter++;
 
+                    text = row["HSCode"].ToString();  //Barcode for the Box
+                    text = text.PadRight(35, ' ');
+                    streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "TRACUS" + text + "");
+                    counter++;
+
                     streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "CFGCONFIG1             YNEW         ");
                     counter++;
 

@@ -316,7 +316,7 @@ namespace EDI_Orders
         public static void EDIDecision(string[][] order)
         {
             SqlConnection conOE = new SqlConnection();
-            conOE.ConnectionString = ConfigurationManager.ConnectionStrings["OERADEV"].ConnectionString;
+            conOE.ConnectionString = ConfigurationManager.ConnectionStrings["OERA"].ConnectionString;
             if (order[0][0].Equals("UNH"))
             {
                 EDIFact.BuilRecordEDIFact(order, conOE);
@@ -377,19 +377,11 @@ namespace EDI_Orders
         public static void FileCheck (string A)
         {
             #region Dev Connections
-            SqlConnection OERADev = new SqlConnection();
-            OERADev.ConnectionString = ConfigurationManager.ConnectionStrings["OERADEV"].ConnectionString;
-            SqlConnection OrbisDev = new SqlConnection();
-            OrbisDev.ConnectionString = ConfigurationManager.ConnectionStrings["Orbis_Interface"].ConnectionString;
+            SqlConnection OERA = new SqlConnection();
+            OERA.ConnectionString = ConfigurationManager.ConnectionStrings["OERA"].ConnectionString;
+            SqlConnection Orbis = new SqlConnection();
+            Orbis.ConnectionString = ConfigurationManager.ConnectionStrings["Orbis"].ConnectionString;
             #endregion
-
-            #region Live Connections
-            SqlConnection OERALive = new SqlConnection();
-            OERALive.ConnectionString = ConfigurationManager.ConnectionStrings["OERA"].ConnectionString;
-            SqlConnection OrbisLive = new SqlConnection();
-            OrbisLive.ConnectionString = ConfigurationManager.ConnectionStrings["LiveOrbis"].ConnectionString;
-            #endregion
-
 
             switch (A)
             {
@@ -408,7 +400,7 @@ namespace EDI_Orders
                             else
                             {
                                 Console.WriteLine(file);
-                                KTN.ProcessKTN(file, OrbisDev);
+                                KTN.ProcessKTN(file, Orbis);
                                 File.Move(file, ConfigurationManager.AppSettings["KTNSTKMVTProcessed"] + "/" + name);
                                 Console.WriteLine(file + " Was Processed Successfully.");
                             }
@@ -437,7 +429,7 @@ namespace EDI_Orders
                             else
                             {
                                 Console.WriteLine(file);
-                                KTN.ProcessKTN(file, OrbisDev);
+                                KTN.ProcessKTN(file, Orbis);
                                 File.Move(file, ConfigurationManager.AppSettings["KTNPPLCONProcessed"] + "/" + name);
                                 Console.WriteLine(file + " Was Processed Successfully.");
                             }
@@ -466,7 +458,7 @@ namespace EDI_Orders
                             else
                             {
                                 Console.WriteLine(file);
-                                KTN.ProcessKTN(file, OrbisDev);
+                                KTN.ProcessKTN(file, Orbis);
                                 File.Move(file, ConfigurationManager.AppSettings["KTNRECCONProcessed"] + "/" + name);
                                 Console.WriteLine(file + " Was Processed Successfully.");
                             }
