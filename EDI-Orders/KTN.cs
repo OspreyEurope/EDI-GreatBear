@@ -380,29 +380,45 @@ namespace EDI_Orders
 
                                     if (lines[0].Substring(69,4) == "LOAD")
                                     {
-                                        //SqlCommand UpdateTracker = new SqlCommand("OSP_UPDATE_TRACKER_LOAD", con);
-                                        //UpdateTracker.Parameters.AddWithValue("OrderNumber", OrderNumber);
-                                        //UpdateTracker.Parameters.AddWithValue("ConNumber", ConNumber);
-                                        //UpdateTracker.Parameters.AddWithValue("PackedQty", PQty);
-                                        //UpdateTracker.Parameters.AddWithValue("Transport", Transporter);
-                                        //UpdateTracker.Parameters.AddWithValue("DateShipped", DateShipped);
-                                        //UpdateTracker.Parameters.AddWithValue("FileName", OriginalFileName);
+                                        try
+                                        {
+                                            SqlCommand UpdateTracker = new SqlCommand("OSP_UPDATE_TRACKER_LOAD", con);
+                                            UpdateTracker.Parameters.AddWithValue("OrderNumber", OrderNumber);
+                                            UpdateTracker.Parameters.AddWithValue("ConNumber", ConNumber);
+                                            UpdateTracker.Parameters.AddWithValue("PackedQty", PQty);
+                                            UpdateTracker.Parameters.AddWithValue("Transport", Transporter);
+                                            UpdateTracker.Parameters.AddWithValue("DateShipped", DateShipped);
+                                            UpdateTracker.Parameters.AddWithValue("FileName", OriginalFileName);
 
-                                        //UpdateTracker.ExecuteNonQuery();
-                                        //UpdateTracker.Parameters.Clear();
+                                            UpdateTracker.ExecuteNonQuery();
+                                            UpdateTracker.Parameters.Clear();
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            string name = Path.GetFileName(file);
+                                            SharedFunctions.Writefile("Error on OSP_UPDATE_TRACKER_LOAD: " + ex.Message, ex.ToString());
+                                        }
                                     }
                                     else if (lines[0].Substring(69, 4) == "PACK")
                                     {
-                                        //SqlCommand UpdateTracker = new SqlCommand("OSP_UPDATE_TRACKER_PACK", con);
-                                        //UpdateTracker.Parameters.AddWithValue("OrderNumber", OrderNumber);
-                                        //UpdateTracker.Parameters.AddWithValue("ConNumber", ConNumber);
-                                        //UpdateTracker.Parameters.AddWithValue("PackedQty", PQty);
-                                        //UpdateTracker.Parameters.AddWithValue("Transport", Transporter);
-                                        //UpdateTracker.Parameters.AddWithValue("DateShipped", DateShipped);
-                                        //UpdateTracker.Parameters.AddWithValue("FileName", OriginalFileName);
+                                        try
+                                        {
+                                            SqlCommand UpdateTracker = new SqlCommand("OSP_UPDATE_TRACKER_PACK", con);
+                                            UpdateTracker.Parameters.AddWithValue("OrderNumber", OrderNumber);
+                                            UpdateTracker.Parameters.AddWithValue("ConNumber", ConNumber);
+                                            UpdateTracker.Parameters.AddWithValue("PNPQty", PQty);
+                                            UpdateTracker.Parameters.AddWithValue("Transport", Transporter);
+                                            UpdateTracker.Parameters.AddWithValue("DatePNP", DateShipped);
+                                            UpdateTracker.Parameters.AddWithValue("FileName", OriginalFileName);
 
-                                        //UpdateTracker.ExecuteNonQuery();
-                                        //UpdateTracker.Parameters.Clear();
+                                            UpdateTracker.ExecuteNonQuery();
+                                            UpdateTracker.Parameters.Clear();
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            string name = Path.GetFileName(file);
+                                            SharedFunctions.Writefile("Error on OSP_UPDATE_TRACKER_PACK: " + ex.Message, ex.ToString());
+                                        }
                                     }
 
                                 }
