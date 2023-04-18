@@ -206,7 +206,7 @@ namespace EDI_Orders
                                     temp = WriteRECCONHeader(con, storedProcedure,lines,linePos,file,SP);
                                     break;
                                 case "LIN":
-                                    linePos = WriteRECCONItems(con,lines,linePos,temp);;
+                                    linePos = WriteRECCONItems(con,lines,linePos,temp);
                                     break;
                                 case "UNT":
                                     Console.WriteLine("Made it to the end of the file");
@@ -427,6 +427,7 @@ namespace EDI_Orders
                 string name = Path.GetFileName(file);
                 File.Move(file, ConfigurationManager.AppSettings["KTN"+ type + "Quarantined"] + "/" + name);
                 SharedFunctions.Writefile("There was an issue: " + ex.Message, "File Moved to PKTN" + type + "Quarantined");
+                SharedFunctions.ErrorAlert(file + " moved to PKTN" + type + "Quarantined", ex);
             }
         }
         #endregion
@@ -528,7 +529,7 @@ namespace EDI_Orders
              * Write the line items to a seperate table
              */
             int i = lineCount;
-            while (!((lines[i + 1].Substring(6, 3) == "FAC") || (lines[i + 1].Substring(6,3) == "UNT")))
+            while (!((lines[i + 1].Substring(6, 3) == "FAC") || (lines[i+1].Substring(6,3) == "UNT")))
             { 
                 string[][] t = ReadKTN(lines[i]);
                 if (t != null)
@@ -540,8 +541,9 @@ namespace EDI_Orders
                     /**
                      * Ths dictates when the write is used and then clears the parameters to be used again after.
                      */
-                    if (lines[i + 1].Substring(6, 3) == "LIN" || lines[i + 1].Substring(6, 3) == "UNT" || lines[i + 1].Substring(6, 3) == "FAC")
+                    if (lines[i + 1].Substring(6, 3) == "LIN" || lines[i + 2].Substring(6, 3) == "UNT" || lines[i + 1].Substring(6, 3) == "FAC")
                     {
+                        Console.WriteLine(lines[i+1].Substring(6,3));
                         StoredProcedure2.Parameters.AddWithValue("ID", ID);
                         StoredProcedure2.ExecuteNonQuery();
                         StoredProcedure2.Parameters.Clear();

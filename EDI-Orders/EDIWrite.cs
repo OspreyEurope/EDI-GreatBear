@@ -74,6 +74,7 @@ namespace EDI_Orders
             catch (Exception ex)
             {
                 SharedFunctions.Writefile("Write order items Failed to process, error message is: " + ex.Message + ex.ToString() , "");
+                SharedFunctions.ErrorAlert("Write Order Products", ex);
                 return counter;
             }
         }
@@ -105,7 +106,7 @@ namespace EDI_Orders
                     FileStream f = new FileStream(file, FileMode.Create);
                     Encoding utf8WithoutBom = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false);
                     StreamWriter streamWriter = new StreamWriter(f, utf8WithoutBom);
-                    streamWriter.WriteLine("000001UNH00000001            ORDER               R4        KTN                                          ORDER                                                                      OSPREY     KTN        " + DateTime.Now.ToString("yyyyMMddTHHmmss").PadRight(35, ' ') + "204" + fileName.PadRight(50, ' ') + "");
+                    streamWriter.WriteLine("000001UNH00000001            ORDER               R4        KTN                                          ORDER                                                                      OSPREY     KTN        " + DateTime.Now.ToString("yyyyMMddHHmmss").PadRight(35, ' ') + "204" + fileName.PadRight(50, ' ') + "");
 
                     string text = "";
                     streamWriter.WriteLine("000002FACC  " + text.PadRight(35, ' ') + "");
@@ -280,6 +281,7 @@ namespace EDI_Orders
             catch(Exception ex)
             {
                 SharedFunctions.Writefile("Order Failed to process, error message is: " + ex.Message + ex.ToString(), "");
+                SharedFunctions.ErrorAlert("Write Order", ex);
             }
         }
         #endregion
@@ -305,7 +307,7 @@ namespace EDI_Orders
                 StreamWriter streamWriter = new StreamWriter(f, utf8WithoutBom);
                 string fileName = "PO" + id + ".txt";
                 fileName = fileName.PadRight((35 - fileName.Length), ' ');
-                streamWriter.WriteLine("000001UNH00000001            ASN                 R4        KTN                                           ASN                                                                       OSPREY     KTN       " + DateTime.Now.ToString("yyyyMMddTHHmmss") + "204" + fileName.PadRight((80 - fileName.Length), ' ') + "");
+                streamWriter.WriteLine("000001UNH00000001            ASN                 R4        KTN                                           ASN                                                                       OSPREY     KTN       " + DateTime.Now.ToString("yyyyMMddHHmmss") + "204" + fileName.PadRight((80 - fileName.Length), ' ') + "");
                 streamWriter.WriteLine("000002FACC");
 
                 int counter = 3;
@@ -383,6 +385,7 @@ namespace EDI_Orders
             catch (Exception ex)
             {
                 SharedFunctions.Writefile("PO Failed to process, error message is: " + ex.Message, "");
+                SharedFunctions.ErrorAlert("Write ASN", ex);
             }
         }
         #endregion
@@ -408,7 +411,7 @@ namespace EDI_Orders
                 StreamWriter streamWriter = new StreamWriter(f, utf8WithoutBom);
                 string fileName = id + "_Product_List.txt";
                 fileName = fileName.PadRight(35, ' ');
-                streamWriter.WriteLine("000001UNH00000001            ITEMS               R4        KTN                                          ITEMS                                                                      OSPREY     KTN        " + DateTime.Now.ToString("yyyyMMddTHHmmss").PadRight(35, ' ') + "204" + fileName.PadRight(50, ' ') + "");
+                streamWriter.WriteLine("000001UNH00000001            ITEMS               R4        KTN                                          ITEMS                                                                      OSPREY     KTN        " + DateTime.Now.ToString("yyyyMMddHHmmss").PadRight(35, ' ') + "204" + fileName.PadRight(50, ' ') + "");
 
                 int counter = 2;
 
@@ -495,6 +498,7 @@ namespace EDI_Orders
             catch (Exception ex)
             {
                 SharedFunctions.Writefile("Write Produc List Failed to process, error message is: " + ex.Message, "");
+                SharedFunctions.ErrorAlert("Write Product List", ex);
             }
         }
         #endregion
@@ -517,7 +521,7 @@ namespace EDI_Orders
                 StreamWriter streamWriter = new StreamWriter(f, utf8WithoutBom);
                 string fileName = "PO" + id + ".txt";
                 fileName = fileName.PadRight((35 - fileName.Length), ' ');
-                streamWriter.WriteLine("000001UNH00000001            ASN                 R4        KTN                                           ASN                                                                       OSPREY     KTN       " + DateTime.Now.ToString("yyyyMMddTHHmmss") + "204" + fileName.PadRight((80 - fileName.Length), ' ') + "");
+                streamWriter.WriteLine("000001UNH00000001            ASN                 R4        KTN                                           ASN                                                                       OSPREY     KTN       " + DateTime.Now.ToString("yyyyMMddHHmmss") + "204" + fileName.PadRight((80 - fileName.Length), ' ') + "");
                 streamWriter.WriteLine("000002FACC");
 
                 int counter = 3;
@@ -581,6 +585,7 @@ namespace EDI_Orders
             catch (Exception ex)
             {
                 SharedFunctions.Writefile("Warehouse to warehouse Failed to process, error message is: " + ex.Message, "");
+                SharedFunctions.ErrorAlert("Write Truck Del To Warehouse", ex);
             }
 
         }
@@ -601,7 +606,7 @@ namespace EDI_Orders
                 StreamWriter streamWriter = new StreamWriter(f, utf8WithoutBom);
                 string fileName = "PO" + id + ".txt";
                 fileName = fileName.PadRight((35 - fileName.Length), ' ');
-                streamWriter.WriteLine("000001UNH00000001            ASN                 R4        KTN                                           ASN                                                                       OSPREY     KTN       " + DateTime.Now.ToString("yyyyMMddTHHmmss") + "204" + fileName.PadRight((80 - fileName.Length), ' ') + "");
+                streamWriter.WriteLine("000001UNH00000001            ASN                 R4        KTN                                           ASN                                                                       OSPREY     KTN       " + DateTime.Now.ToString("yyyyMMddHHmmss") + "204" + fileName.PadRight((80 - fileName.Length), ' ') + "");
                 streamWriter.WriteLine("000002FACC");
 
                 int counter = 3;
@@ -685,6 +690,7 @@ namespace EDI_Orders
             catch (Exception ex)
             {
                 SharedFunctions.Writefile("PO Failed to process, error message is: " + ex.Message, "");
+                SharedFunctions.ErrorAlert("Write Return", ex);
             }
         }
         #endregion

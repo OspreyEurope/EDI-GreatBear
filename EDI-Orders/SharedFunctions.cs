@@ -4,6 +4,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
+using System.Net.Mail;
 using File = System.IO.File;
 
 namespace EDI_Orders
@@ -415,6 +416,7 @@ namespace EDI_Orders
                         catch (Exception ex)
                         {
                             Writefile("File Quarantined: " + name, ex.Message);
+                            ErrorAlert("Read STKMVT", ex);
                         }
                     }
                     break;
@@ -443,12 +445,13 @@ namespace EDI_Orders
                         catch (Exception ex)
                         {
                             Writefile("File Quarantined: " + name, ex.Message);
+                            ErrorAlert("Read PPLCON", ex);
                         }
                     }
                     break;
 
                 case "RECCON":
-                    files = Directory.GetFiles(ConfigurationManager.AppSettings["PKTNRECCONHolding"]); //Temp for testing
+                    files = Directory.GetFiles(ConfigurationManager.AppSettings["KTNRECCONHolding"]); //Temp for testing
 
                     foreach (var file in files)
                     {
@@ -457,20 +460,21 @@ namespace EDI_Orders
                         {
                             if (file.Substring(3, 0) == "WEB")
                             {
-                                File.Move(file, ConfigurationManager.AppSettings["PKTNRECCONProcessed"] + "/" + name);
+                                File.Move(file, ConfigurationManager.AppSettings["KTNRECCONProcessed"] + "/" + name);
                                 Console.WriteLine(file + " Was Processed and moved to EU network Successfully.");
                             }
                             else
                             {
                                 Console.WriteLine(file);
-                                KTN.ProcessKTN(file, OrbisLive);
-                                File.Move(file, ConfigurationManager.AppSettings["PKTNRECCONProcessed"] + "/" + name);
+                                KTN.ProcessKTN(file, OrbisDev);
+                                File.Move(file, ConfigurationManager.AppSettings["KTNRECCONProcessed"] + "/" + name);
                                 Console.WriteLine(file + " Was Processed Successfully.");
                             }
                         }
                         catch (Exception ex)
                         {
                             Writefile("File Quarantined: " + name, ex.Message);
+                            ErrorAlert("Read RECCON", ex);
                         }
                     }
                     break;
@@ -492,6 +496,38 @@ namespace EDI_Orders
             }
             //Add emailing here
         }
+        #endregion
+
+        #region Email Alerts
+        public static void ErrorAlert(string v, Exception ex)
+        {
+            using (var mail = new MailMessage())
+            {
+                //mail.To.Add(ConfigurationManager.AppSettings["AlertEmail"]);
+                //mail.To.Add(ConfigurationManager.AppSettings["AlertEmail2"]);
+                mail.To.Add(ConfigurationManager.AppSettings["AlertEmail3"]);
+                mail.From = new MailAddress(ConfigurationManager.AppSettings["FromAddress"]);
+                mail.Subject = "Backup Databases on TH-SQLE1901";
+                mail.Body = DateTime.Now + " Error in " + v + ": "+ ex.Message;
+                mail.IsBodyHtml = true;
+
+                System.Net.ServicePointManager.ServerCertificateValidationCallback = new System.Net.Security.RemoteCertificateValidationCallback(RemoteServerCertificateValidationCallback);
+                SmtpClient smtp = new SmtpClient
+                {
+                    Host = "10.10.118.250",
+                    UseDefaultCredentials = true,
+                    EnableSsl = false,
+                    Port = 25
+                };
+                smtp.Send(mail);
+            }
+        }
+
+        private static bool RemoteServerCertificateValidationCallback(object sender, System.Security.Cryptography.X509Certificates.X509Certificate certificate, System.Security.Cryptography.X509Certificates.X509Chain chain, System.Net.Security.SslPolicyErrors sslPolicyErrors)
+        {
+            return true;
+        }
+
         #endregion
     }
 }
