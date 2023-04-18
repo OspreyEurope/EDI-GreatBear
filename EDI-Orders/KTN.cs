@@ -265,10 +265,11 @@ namespace EDI_Orders
                          */
                         
                         for (int i = 0; i < (lineCount - 1); i++)
-                        { 
+                        {
                             string[][] t = ReadKTN(lines[i]);
                             if (t != null)
                             {
+                                Console.WriteLine(i);
                                 /**
                                  * This section of if statments is used to build the header data that is only present once but is repeated in the database.
                                  */
@@ -346,13 +347,13 @@ namespace EDI_Orders
                                 {
                                     
                                 }
-
-                                    /**
-                                     * This is when the data is inserted, this only happens when the data is to be repeated.
-                                     * It adds all the header style information previously gathered and adds it to the stored procedure.
-                                     * It then clears the values ready for the next section of data.
-                                     */
-                                if ((lines[i+1].PadRight(13).Substring(6, 6) == "RFFCR2" && p > 0) || lines[i+1].Substring(6, 3) == "UNT" || (lines[i+1].Substring(6,3) == "LIN"))
+                                
+                                /**
+                                 * This is when the data is inserted, this only happens when the data is to be repeated.
+                                 * It adds all the header style information previously gathered and adds it to the stored procedure.
+                                 * It then clears the values ready for the next section of data.
+                                 */
+                                if ( lines[i + 1].Substring(6, 3) == "UNT"  || (lines[i + 1].PadRight(13).Substring(6, 3) == "LIN" && p > 0))
                                 {
                                     storedProcedure.Parameters.AddWithValue("ID", ID);
                                     storedProcedure.Parameters.AddWithValue("ItemNumber",ItemNumber);
@@ -377,24 +378,31 @@ namespace EDI_Orders
                                     storedProcedure.ExecuteNonQuery();
                                     storedProcedure.Parameters.Clear();
 
+
+                                    
                                     if (lines[0].Substring(69, 4) == "LOAD")
                                     {
+                                        //SqlCommand UpdateTracker = new SqlCommand("OSP_UPDATE_TRACKER_LOAD", con)
+                                        //{
+                                        //    CommandType = CommandType.StoredProcedure
+                                        //};
+                                        //Console.WriteLine("dasjdsilajdl");
+                                        //UpdateTracker.Parameters.AddWithValue("OrderNumber", OrderNumber.Substring(1,10));
+                                        //UpdateTracker.Parameters.AddWithValue("ConNumber", ConNumber);
+                                        //UpdateTracker.Parameters.AddWithValue("PackedQty", PQty);
+                                        //UpdateTracker.Parameters.AddWithValue("Transport", Transporter);
+                                        //UpdateTracker.Parameters.AddWithValue("DateShipped", DateShipped);
+                                        //UpdateTracker.Parameters.AddWithValue("FileName", OriginalFileName);
 
-                                        SqlCommand UpdateTracker = new SqlCommand("OSP_UPDATE_TRACKER_LOAD", con)
-                                        {
-                                            CommandType = CommandType.StoredProcedure
-                                        };
-                                        UpdateTracker.Parameters.AddWithValue("OrderNumber", OrderNumber.Substring(0,10));
-                                        UpdateTracker.Parameters.AddWithValue("ConNumber", ConNumber);
-                                        UpdateTracker.Parameters.AddWithValue("PackedQty", PQty);
-                                        UpdateTracker.Parameters.AddWithValue("Transport", Transporter);
-                                        UpdateTracker.Parameters.AddWithValue("DateShipped", DateShipped);
-                                        UpdateTracker.Parameters.AddWithValue("FileName", OriginalFileName);
-                                        
-                                        UpdateTracker.ExecuteNonQuery();
-                                        UpdateTracker.Parameters.Clear();
+
+                                        //Console.WriteLine("dasjdsilajdl");
+                                        //UpdateTracker.ExecuteNonQuery();
+                                        //UpdateTracker.Parameters.Clear();
+
+                                        //Console.WriteLine("dasjdsilajdl");
                                     }
 
+                                    
 
                                     else if (lines[0].Substring(69, 4) == "PACK")
                                     {
@@ -413,6 +421,8 @@ namespace EDI_Orders
                                         UpdateTracker.ExecuteNonQuery();
                                         UpdateTracker.Parameters.Clear();
                                     }
+                                    Console.WriteLine("ajdsjaknsdla!2");
+
                                 }
                             }
                         }
