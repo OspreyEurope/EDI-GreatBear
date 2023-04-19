@@ -287,15 +287,14 @@ namespace EDI_Orders
                                 {
                                     ItemNumber = lines[i].Substring(39, 25);
                                     ItemDescrtiption = lines[i].Substring(64, 80);
-                                    p++;
+                                    p = 0;
                                 }
                                 else if (lines[i].Substring(6, 3) == "ALI")
                                 {
-                                    
+                                    p++;
                                 }
                                 else if (lines[i].Substring(6, 3) == "FAC")
                                 {
-
                                     row = lines[i];
                                     FileAction = row.Substring(12, 35);
                                 }
@@ -343,9 +342,9 @@ namespace EDI_Orders
                                 {
                                     Carrier = lines[i].Substring(12, 35);
                                 }
-                                else
+                                else if (lines[i].PadRight(13).Substring(6, 5) == "MEANW")
                                 {
-                                    
+                                   
                                 }
                                 
                                 /**
@@ -353,7 +352,7 @@ namespace EDI_Orders
                                  * It adds all the header style information previously gathered and adds it to the stored procedure.
                                  * It then clears the values ready for the next section of data.
                                  */
-                                if ( lines[i + 1].Substring(6, 3) == "UNT"  || (lines[i + 1].PadRight(13).Substring(6, 3) == "LIN" && p > 0))
+                                if ((lines[i].Substring(6, 5) == "MEANW" && (lines[i + 1].Substring(6, 3) == "LIN" || lines[i + 1].Substring(6, 3) == "ALI" || lines[i + 1].Substring(6,3) == "FAC")) || lines[i + 1].Substring(6, 3) == "UNT")
                                 {
                                     storedProcedure.Parameters.AddWithValue("ID", ID);
                                     storedProcedure.Parameters.AddWithValue("ItemNumber",ItemNumber);
@@ -377,8 +376,6 @@ namespace EDI_Orders
 
                                     storedProcedure.ExecuteNonQuery();
                                     storedProcedure.Parameters.Clear();
-
-
                                     
                                     if (lines[0].Substring(69, 4) == "LOAD")
                                     {
@@ -387,7 +384,7 @@ namespace EDI_Orders
                                         //    CommandType = CommandType.StoredProcedure
                                         //};
                                         //Console.WriteLine("dasjdsilajdl");
-                                        //UpdateTracker.Parameters.AddWithValue("OrderNumber", OrderNumber.Substring(1,10));
+                                        //UpdateTracker.Parameters.AddWithValue("OrderNumber", OrderNumber.Substring(1, 10));
                                         //UpdateTracker.Parameters.AddWithValue("ConNumber", ConNumber);
                                         //UpdateTracker.Parameters.AddWithValue("PackedQty", PQty);
                                         //UpdateTracker.Parameters.AddWithValue("Transport", Transporter);
@@ -407,21 +404,21 @@ namespace EDI_Orders
                                     else if (lines[0].Substring(69, 4) == "PACK")
                                     {
 
-                                        SqlCommand UpdateTracker = new SqlCommand("OSP_UPDATE_TRACKER_PACK", con)
-                                        {
-                                            CommandType = CommandType.StoredProcedure
-                                        };
-                                        UpdateTracker.Parameters.AddWithValue("OrderNumber", OrderNumber.Substring(0, 10));
-                                        UpdateTracker.Parameters.AddWithValue("ConNumber", ConNumber);
-                                        UpdateTracker.Parameters.AddWithValue("PNPQty", PQty);
-                                        UpdateTracker.Parameters.AddWithValue("Transport", Transporter);
-                                        UpdateTracker.Parameters.AddWithValue("DatePNP", DateShipped);
-                                        UpdateTracker.Parameters.AddWithValue("FileName", OriginalFileName);
+                                        //SqlCommand UpdateTracker = new SqlCommand("OSP_UPDATE_TRACKER_PACK", con)
+                                        //{
+                                        //    CommandType = CommandType.StoredProcedure
+                                        //};
+                                        //UpdateTracker.Parameters.AddWithValue("OrderNumber", OrderNumber.Substring(0, 10));
+                                        //UpdateTracker.Parameters.AddWithValue("ConNumber", ConNumber);
+                                        //UpdateTracker.Parameters.AddWithValue("PNPQty", PQty);
+                                        //UpdateTracker.Parameters.AddWithValue("Transport", Transporter);
+                                        //UpdateTracker.Parameters.AddWithValue("DatePNP", DateShipped);
+                                        //UpdateTracker.Parameters.AddWithValue("FileName", OriginalFileName);
 
-                                        UpdateTracker.ExecuteNonQuery();
-                                        UpdateTracker.Parameters.Clear();
+                                        //UpdateTracker.ExecuteNonQuery();
+                                        //UpdateTracker.Parameters.Clear();
                                     }
-                                    Console.WriteLine("ajdsjaknsdla!2");
+                                    
 
                                 }
                             }
