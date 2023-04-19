@@ -409,6 +409,7 @@ namespace EDI_Orders
                         {
                             Writefile("File Quarantined: " + name, ex.Message);
                             ErrorAlert("Read STKMVT", ex);
+                            File.Move(file, ConfigurationManager.AppSettings["KTNSTKMVTQuarantined"] + "/" + name);
                         }
                     }
                     break;
@@ -438,6 +439,7 @@ namespace EDI_Orders
                         {
                             Writefile("File Quarantined: " + name, ex.Message);
                             ErrorAlert("Read PPLCON", ex);
+                            File.Move(file, ConfigurationManager.AppSettings["KTNPPLCONQuarantined"] + "/" + name);
                         }
                     }
                     break;
@@ -467,6 +469,7 @@ namespace EDI_Orders
                         {
                             Writefile("File Quarantined: " + name, ex.Message);
                             ErrorAlert("Read RECCON", ex);
+                            File.Move(file, ConfigurationManager.AppSettings["KTNRECCONQuarantined"] + "/" + name);
                         }
                     }
                     break;
@@ -499,7 +502,7 @@ namespace EDI_Orders
                 //mail.To.Add(ConfigurationManager.AppSettings["AlertEmail2"]);
                 mail.To.Add(ConfigurationManager.AppSettings["AlertEmail3"]);
                 mail.From = new MailAddress(ConfigurationManager.AppSettings["FromAddress"]);
-                mail.Subject = "Backup Databases on TH-SQLE1901";
+                mail.Subject = "EDI handling program:";
                 mail.Body = DateTime.Now + " Error in " + v + ": "+ ex.Message;
                 mail.IsBodyHtml = true;
 

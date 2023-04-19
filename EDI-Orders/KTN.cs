@@ -269,7 +269,6 @@ namespace EDI_Orders
                             string[][] t = ReadKTN(lines[i]);
                             if (t != null)
                             {
-                                Console.WriteLine(i);
                                 /**
                                  * This section of if statments is used to build the header data that is only present once but is repeated in the database.
                                  */
@@ -379,24 +378,19 @@ namespace EDI_Orders
                                     
                                     if (lines[0].Substring(69, 4) == "LOAD")
                                     {
-                                        //SqlCommand UpdateTracker = new SqlCommand("OSP_UPDATE_TRACKER_LOAD", con)
-                                        //{
-                                        //    CommandType = CommandType.StoredProcedure
-                                        //};
-                                        //Console.WriteLine("dasjdsilajdl");
-                                        //UpdateTracker.Parameters.AddWithValue("OrderNumber", OrderNumber.Substring(1, 10));
-                                        //UpdateTracker.Parameters.AddWithValue("ConNumber", ConNumber);
-                                        //UpdateTracker.Parameters.AddWithValue("PackedQty", PQty);
-                                        //UpdateTracker.Parameters.AddWithValue("Transport", Transporter);
-                                        //UpdateTracker.Parameters.AddWithValue("DateShipped", DateShipped);
-                                        //UpdateTracker.Parameters.AddWithValue("FileName", OriginalFileName);
+                                        SqlCommand UpdateTracker = new SqlCommand("OSP_UPDATE_TRACKER_LOAD", con)
+                                        {
+                                            CommandType = CommandType.StoredProcedure
+                                        };
+                                        UpdateTracker.Parameters.AddWithValue("OrderNumber", OrderNumber.Substring(0, 10));
+                                        UpdateTracker.Parameters.AddWithValue("ConNumber", ConNumber);
+                                        UpdateTracker.Parameters.AddWithValue("PackedQty", PQty);
+                                        UpdateTracker.Parameters.AddWithValue("Transport", Transporter);
+                                        UpdateTracker.Parameters.AddWithValue("DateShipped", DateShipped);
+                                        UpdateTracker.Parameters.AddWithValue("FileName", OriginalFileName);
 
-
-                                        //Console.WriteLine("dasjdsilajdl");
-                                        //UpdateTracker.ExecuteNonQuery();
-                                        //UpdateTracker.Parameters.Clear();
-
-                                        //Console.WriteLine("dasjdsilajdl");
+                                        UpdateTracker.ExecuteNonQuery();
+                                        UpdateTracker.Parameters.Clear();
                                     }
 
                                     
@@ -404,19 +398,19 @@ namespace EDI_Orders
                                     else if (lines[0].Substring(69, 4) == "PACK")
                                     {
 
-                                        //SqlCommand UpdateTracker = new SqlCommand("OSP_UPDATE_TRACKER_PACK", con)
-                                        //{
-                                        //    CommandType = CommandType.StoredProcedure
-                                        //};
-                                        //UpdateTracker.Parameters.AddWithValue("OrderNumber", OrderNumber.Substring(0, 10));
-                                        //UpdateTracker.Parameters.AddWithValue("ConNumber", ConNumber);
-                                        //UpdateTracker.Parameters.AddWithValue("PNPQty", PQty);
-                                        //UpdateTracker.Parameters.AddWithValue("Transport", Transporter);
-                                        //UpdateTracker.Parameters.AddWithValue("DatePNP", DateShipped);
-                                        //UpdateTracker.Parameters.AddWithValue("FileName", OriginalFileName);
+                                        SqlCommand UpdateTracker = new SqlCommand("OSP_UPDATE_TRACKER_PACK", con)
+                                        {
+                                            CommandType = CommandType.StoredProcedure
+                                        };
+                                        UpdateTracker.Parameters.AddWithValue("OrderNumber", OrderNumber.Substring(0, 10));
+                                        UpdateTracker.Parameters.AddWithValue("ConNumber", ConNumber);
+                                        UpdateTracker.Parameters.AddWithValue("PNPQty", PQty);
+                                        UpdateTracker.Parameters.AddWithValue("Transport", Transporter);
+                                        UpdateTracker.Parameters.AddWithValue("DatePNP", DateShipped);
+                                        UpdateTracker.Parameters.AddWithValue("FileName", OriginalFileName);
 
-                                        //UpdateTracker.ExecuteNonQuery();
-                                        //UpdateTracker.Parameters.Clear();
+                                        UpdateTracker.ExecuteNonQuery();
+                                        UpdateTracker.Parameters.Clear();
                                     }
                                     
 
@@ -432,9 +426,20 @@ namespace EDI_Orders
             {
                 con.Close();
                 string name = Path.GetFileName(file);
-                File.Move(file, ConfigurationManager.AppSettings["KTN"+ type + "Quarantined"] + "/" + name);
+                switch(type)
+                {
+                    case "PPLCON":
+                        File.Move(file, ConfigurationManager.AppSettings["KTNPPLCONQuarantined"] + "/" + name);
+                        break;
+                    case "RECCON":
+                        File.Move(file, ConfigurationManager.AppSettings["KTNRECCONQuarantined"] + "/" + name);
+                        break;
+                            case "STKMVT":
+                        File.Move(file, ConfigurationManager.AppSettings["KTNSTKMVTQuarantined"] + "/" + name);
+                        break;
+                }
                 SharedFunctions.Writefile("There was an issue: " + ex.Message, "File Moved to PKTN" + type + "Quarantined");
-                SharedFunctions.ErrorAlert(file + " moved to PKTN" + type + "Quarantined", ex);
+                SharedFunctions.ErrorAlert(file + " moved to pKTN" + type + "Quarantined", ex);
             }
         }
         #endregion
