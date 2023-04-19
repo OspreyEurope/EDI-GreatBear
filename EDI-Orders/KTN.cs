@@ -383,6 +383,7 @@ namespace EDI_Orders
                                             CommandType = CommandType.StoredProcedure
                                         };
                                         UpdateTracker.Parameters.AddWithValue("OrderNumber", OrderNumber.Substring(0, 10));
+                                        UpdateTracker.Parameters.AddWithValue("WHOrderNumber", OrderNumber.Substring(10, 6));
                                         UpdateTracker.Parameters.AddWithValue("ConNumber", ConNumber);
                                         UpdateTracker.Parameters.AddWithValue("PackedQty", PQty);
                                         UpdateTracker.Parameters.AddWithValue("Transport", Transporter);
@@ -403,6 +404,7 @@ namespace EDI_Orders
                                             CommandType = CommandType.StoredProcedure
                                         };
                                         UpdateTracker.Parameters.AddWithValue("OrderNumber", OrderNumber.Substring(0, 10));
+                                        UpdateTracker.Parameters.AddWithValue("WHOrderNumber", OrderNumber.Substring(10, 6));
                                         UpdateTracker.Parameters.AddWithValue("ConNumber", ConNumber);
                                         UpdateTracker.Parameters.AddWithValue("PNPQty", PQty);
                                         UpdateTracker.Parameters.AddWithValue("Transport", Transporter);
