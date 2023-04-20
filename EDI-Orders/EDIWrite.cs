@@ -265,16 +265,25 @@ namespace EDI_Orders
                         File.Move(file, ConfigurationManager.AppSettings["GDPROrder"] + "/WEB" + name);
                     }
                     flag = false;
-
+                    Console.WriteLine(i);
                     try
                     {
-                        SharedFunctions.QueryDB(con, "OSP_INSERT_TO_TRACKER", fileName, row["OrderNumber"].ToString());
+                        con.Open();
+                        SqlCommand insertTracker = new SqlCommand("OSP_INSERT_TO_TRACKER", con);
+                        insertTracker.CommandType = CommandType.StoredProcedure;
+                        insertTracker.Parameters.AddWithValue("id2", row["OrderNumber"].ToString());
+                        insertTracker.Parameters.AddWithValue("id", fileName);
+
+
+                        insertTracker.ExecuteNonQuery();
+                        insertTracker.Parameters.Clear();
+                        con.Close();
+                        //SharedFunctions.QueryDB(con, "OSP_INSERT_TO_TRACKER", fileName, row["OrderNumber"].ToString());
                     }
                     catch (Exception ex)
                     {
                         SharedFunctions.Writefile("Failed on write tracker: " + ex.Message, "");
                     }
-
                 }
                 con.Close();
             }

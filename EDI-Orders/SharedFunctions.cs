@@ -334,6 +334,7 @@ namespace EDI_Orders
          */
         public static DataTable QueryDB(SqlConnection con, string SP, string id = null, string id2 = null)
         {
+            Console.WriteLine(SP);
             con.Open();
             SqlCommand dataQuery = new SqlCommand(SP, con);
             dataQuery.CommandType = CommandType.StoredProcedure;
@@ -498,8 +499,8 @@ namespace EDI_Orders
         {
             using (var mail = new MailMessage())
             {
-                mail.To.Add(ConfigurationManager.AppSettings["AlertEmail"]);
-                mail.To.Add(ConfigurationManager.AppSettings["AlertEmail2"]);
+                //mail.To.Add(ConfigurationManager.AppSettings["AlertEmail"]);
+                //mail.To.Add(ConfigurationManager.AppSettings["AlertEmail2"]);
                 mail.To.Add(ConfigurationManager.AppSettings["AlertEmail3"]);
                 mail.From = new MailAddress(ConfigurationManager.AppSettings["FromAddress"]);
                 mail.Subject = "EDI handling program:";
