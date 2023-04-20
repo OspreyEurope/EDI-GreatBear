@@ -12,7 +12,7 @@ namespace EDI_Orders
         #region Run Program Reading Incoming
         static void Main(string[] args)
         {
-            #region Dev Connections
+            #region SQL Connections
             SqlConnection OERA = new SqlConnection();
             OERA.ConnectionString = ConfigurationManager.ConnectionStrings["OERA"].ConnectionString;
             SqlConnection Orbis = new SqlConnection();
@@ -94,6 +94,15 @@ namespace EDI_Orders
                             break;
                         case "R":
                             SharedFunctions.FileCheck(choice);
+                            break;
+                        #endregion
+
+                        #region GBD
+                        case "944":
+                            GreatBear.ProcessGreatBear("C:\\Bespoke\\EDI\\GreatBearSamples\\944.txt", Orbis);
+                            break;
+                        case "945":
+                            GreatBear.ProcessGreatBear("C:\\Bespoke\\EDI\\GreatBearSamples\\945.txt", Orbis);
                             break;
                         #endregion
                         default:

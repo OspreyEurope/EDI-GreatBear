@@ -30,8 +30,11 @@ namespace EDI_Orders
             foreach (string line in lines)
             {
                 char[] spliters = { '+', ':', '*' };
-                string[] seperateData = line.Split(spliters);
-                order[countLine] = seperateData.Where((c => !string.IsNullOrEmpty(c))).ToArray();
+                string temp = line.Replace("* ", "*");
+                temp = temp.Replace("*", "* ");
+                Console.WriteLine(temp);
+                string[] seperateData = temp.Split(spliters);
+                order[countLine] = seperateData;
                 countLine++;
             }
             return order;

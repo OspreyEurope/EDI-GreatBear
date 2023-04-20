@@ -173,7 +173,7 @@ namespace EDI_Orders
                         Update.Parameters.AddWithValue("@id", row["DelPostCode"].ToString());
                         Update.Parameters.AddWithValue("@id2", row["OrderReference"].ToString());
                         Update.Parameters.AddWithValue("@Date", DateTime.Now);
-                        Update.Parameters.AddWithValue("@File", file);
+                        Update.Parameters.AddWithValue("@File", fileName);
 
                         Update.ExecuteNonQuery();
                         Update.Parameters.Clear();

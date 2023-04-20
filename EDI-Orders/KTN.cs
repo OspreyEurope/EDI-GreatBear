@@ -389,6 +389,7 @@ namespace EDI_Orders
                                         UpdateTracker.Parameters.AddWithValue("Transport", Transporter);
                                         UpdateTracker.Parameters.AddWithValue("DateShipped", DateShipped);
                                         UpdateTracker.Parameters.AddWithValue("FileName", OriginalFileName);
+                                        UpdateTracker.Parameters.AddWithValue("ItemNumber", ItemNumber);
 
                                         UpdateTracker.ExecuteNonQuery();
                                         UpdateTracker.Parameters.Clear();
@@ -410,6 +411,7 @@ namespace EDI_Orders
                                         UpdateTracker.Parameters.AddWithValue("Transport", Transporter);
                                         UpdateTracker.Parameters.AddWithValue("DatePNP", DateShipped);
                                         UpdateTracker.Parameters.AddWithValue("FileName", OriginalFileName);
+                                        UpdateTracker.Parameters.AddWithValue("ItemNumber", ItemNumber);
 
                                         UpdateTracker.ExecuteNonQuery();
                                         UpdateTracker.Parameters.Clear();
