@@ -22,12 +22,12 @@ namespace EDI_Orders
         * these pads ensure that the information is lined up correctly an it is readable by KTN.
         * The counter with pad left using 0 is the line number, again this is required in KTN's format.
         */
-        public static int WriteProductsKTN(SqlConnection con, StreamWriter sw, string orderNo, int counter)
+        public static int WriteProductsKTN(SqlConnection con, StreamWriter sw, string orderNo, int counter, string WHOrderNumber)
         {
             try
             {
                 
-                DataTable data = SharedFunctions.QueryDB(con, "OSP_WRITE_PRODUCTS_EDI", orderNo);
+                DataTable data = SharedFunctions.QueryDB(con, "OSP_WRITE_PRODUCTS_EDI", orderNo, WHOrderNumber);
                 /**
                  * Retrives the data from the database and then writes it line by line into a file.
                  */
@@ -253,7 +253,7 @@ namespace EDI_Orders
                     text = "";
 
                     con.Close();
-                    WriteProductsKTN(con, streamWriter, row["OrderNumber"].ToString(), counter);
+                    WriteProductsKTN(con, streamWriter, row["OrderNumber"].ToString(), counter, row["WHOrderNumber"].ToString());
 
                     streamWriter.Close();
                     var lineCount = File.ReadLines(file).Count();
