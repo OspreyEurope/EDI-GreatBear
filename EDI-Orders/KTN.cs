@@ -258,7 +258,11 @@ namespace EDI_Orders
                         string BarcodeOnLabel = "";
                         string Carrier = "";
                         string PL = "";
+                        string PalletQty = "";
+                        string ASDV = "";
+                        string SSCC = "";
                         int p = 0;
+                        int q = 0;
 
                         /**
                          * This gets the length of the file and then cycles through the file reading each line.
@@ -337,15 +341,36 @@ namespace EDI_Orders
                                 {
                                     BarcodeOnLabel = lines[i].Substring(12, 35);
                                 }
-                                else if (lines[i].PadRight(13).Substring(6, 6) == "TRACTR")
-                                {
-                                    Carrier = lines[i].Substring(12, 35);
-                                }
                                 else if (lines[i].PadRight(13).Substring(6, 5) == "MEANW")
                                 {
                                    
                                 }
-                                
+                                else if (lines[i].PadRight(13).Substring(6, 6) == "NADDES")
+                                {
+                                    ASDV = lines[i].Substring(32, 6);
+                                    Console.WriteLine(ASDV);
+                                }
+                                else if (lines[i].PadRight(13).Substring(6, 6) == "TRAUID")
+                                {
+                                    SSCC = lines[i].Substring(12, 35).Trim();
+                                }
+                                else if (lines[i].PadRight(13).Substring(6, 6) == "QTYRLO")
+                                {
+                                    PalletQty = lines[i].Substring(12, 15);
+                                }
+                                else if (lines[i].PadRight(13).Substring(6,6) == "TRACTR")
+                                {
+                                    Carrier = lines[i].Substring(12, 35);
+                                    Console.WriteLine(PalletQty != "" && ASDV == "AMAZON" && SSCC != "");
+
+                                    if (PalletQty != "" && ASDV == "AMAZON" && SSCC != "")
+                                    {
+                                        Console.WriteLine("URGH");
+                                        InsertDESADV(OrderNumber, ItemNumber, PalletQty, SSCC, con);
+                                        PalletQty = "";
+                                        SSCC = "";
+                                    }
+                                }
                                 /**
                                  * This is when the data is inserted, this only happens when the data is to be repeated.
                                  * It adds all the header style information previously gathered and adds it to the stored procedure.
@@ -375,7 +400,15 @@ namespace EDI_Orders
 
                                     storedProcedure.ExecuteNonQuery();
                                     storedProcedure.Parameters.Clear();
-                                    
+
+                                    if (PalletQty != "" && ASDV == "AMAZON" && SSCC != "")
+                                    {
+                                        Console.WriteLine("URGH");
+                                        InsertDESADV(OrderNumber, ItemNumber, PalletQty, SSCC, con);
+                                        PalletQty = "";
+                                        SSCC = "";
+                                    }
+
                                     if (lines[0].Substring(69, 4) == "LOAD")
                                     {
                                         SqlCommand UpdateTracker = new SqlCommand("OSP_UPDATE_TRACKER_LOAD", con)
@@ -923,6 +956,23 @@ namespace EDI_Orders
                 count++;
             }
             return vals;
+        }
+        #endregion
+
+        #region PPLCON_ASDV
+        public static void InsertDESADV (string orderNumber, string Item, string palletQty, string SSCC, SqlConnection con)
+        {
+            Console.WriteLine("HIT THE INSERT DESADV");
+            SqlCommand InsertPallet = new SqlCommand("OSP_INSERT_PPLCON_PALLET", con);
+            InsertPallet.CommandType = CommandType.StoredProcedure;
+
+            InsertPallet.Parameters.AddWithValue("OrderNumber",orderNumber);
+            InsertPallet.Parameters.AddWithValue("ItemNumber",Item);
+            InsertPallet.Parameters.AddWithValue("PalletQty",palletQty);
+            InsertPallet.Parameters.AddWithValue("SSCC", SSCC);
+
+            InsertPallet.ExecuteNonQuery();
+            InsertPallet.Parameters.Clear();
         }
         #endregion
     }
