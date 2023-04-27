@@ -220,26 +220,83 @@ namespace EDI_Orders
                     streamWriter.WriteLine("000009NADDES" + text.PadRight(996, ' ') + "");             //Can be swapped for GLNs but will need swapping to ensure the correct lcoation
                     text = "";
 
-                    ID = row["InvoicePostalAddress"].ToString().PadRight(10, ' ').Substring(0, 10);
+                    ID = row["CustomerAccountRef"].ToString();
+                    if (ID == "")
+                    {
+                        ID = row["DelPostalName"].ToString().Substring(0, 10).PadRight(20, ' ');             //AccountRef
+                    }
                     text = ID;            //Can be swapped for GLNs
-                    text = text.PadRight(20, ' ');
-                    text = text + row["InvoicePostalAddress"].ToString();
-                    text = text.PadRight(100, ' ');
-                    text = text + row["InvoiceAddressLine1"].ToString();
-                    text = text.PadRight(180, ' ');
-                    text = text + row["InvoicePostCode"].ToString();
-                    text = text.PadRight(200, ' ');
-                    text = text + row["InvoiceCity"].ToString();
-                    text = text.PadRight(280, ' ');
-                    text = text + row["InvoiceCountryCode"].ToString();
-                    text = text.PadRight(290, ' ');
-                    text = text + row["InvoiceCountry"].ToString();
-                    text = text.PadRight(653, ' ');
-                    text = text + row["CustomerVATCode"].ToString();
-                    text = text.PadRight(743, ' ');
-                    text = text + row["Currency"].ToString();
+                    if ((row["DelPostalName"].ToString() == "DTC Customer") || (row["DelPostalName"].ToString() == "Ecommerce"))
+                    {
+                        SqlConnection conDTC = new SqlConnection();
+                        conDTC.ConnectionString = ConfigurationManager.ConnectionStrings["DTC"].ConnectionString;
+                        DataTable GDPRData = SharedFunctions.QueryDB(conDTC, "OSP_GET_GDPR_DATA", row["DelPostCode"].ToString(), row["OrderReference"].ToString());
+                        DataRow GDPR = GDPRData.Rows[0];
+
+
+                        text = text.PadRight(20, ' ');
+                        text = text + GDPR["PostalName"].ToString();
+                        //text = text + "John Smith";
+                        text = text.PadRight(100, ' ');
+                        text = text + GDPR["AddressLine1"].ToString();
+                        text = text.PadRight(180, ' ');
+                        text = text + row["DelPostCode"].ToString();
+                        text = text.PadRight(200, ' ');
+                        text = text + row["DelCity"].ToString();
+                        text = text.PadRight(280, ' ');
+                        text = text + row["DelCountryCode"].ToString();
+                        text = text.PadRight(370, ' ');
+
+                        conDTC.Open();
+                        SqlCommand Update = new SqlCommand("OSP_UPDATE_GDPR", conDTC);
+                        Update.CommandType = CommandType.StoredProcedure;
+                        Update.Parameters.AddWithValue("@id", row["DelPostCode"].ToString());
+                        Update.Parameters.AddWithValue("@id2", row["OrderReference"].ToString());
+                        Update.Parameters.AddWithValue("@Date", DateTime.Now);
+                        Update.Parameters.AddWithValue("@File", "WEB" + fileName);
+
+                        Update.ExecuteNonQuery();
+                        Update.Parameters.Clear();
+
+                    }
+                    else
+                    {
+                        text = text.PadRight(20, ' ');
+                        text = text + row["DelPostalName"].ToString();
+                        text = text.PadRight(100, ' ');
+                        text = text + row["DelAddressLine1"].ToString();
+                        text = text.PadRight(180, ' ');
+                        text = text + row["DelPostCode"].ToString();
+                        text = text.PadRight(200, ' ');
+                        text = text + row["DelCity"].ToString();
+                        text = text.PadRight(280, ' ');
+                        text = text + row["DelCountryCode"].ToString();
+                        text = text.PadRight(370, ' ');
+                    }
+                    if ((row["DelPostalName"].ToString() == "DTC Customer") || (row["DelPostalName"].ToString() == "Ecommerce"))
+                    {
+                        SqlConnection conDTC = new SqlConnection();
+                        conDTC.ConnectionString = ConfigurationManager.ConnectionStrings["DTC"].ConnectionString;
+                        DataTable GDPRData = SharedFunctions.QueryDB(conDTC, "OSP_GET_GDPR_DATA", row["DelPostCode"].ToString(), row["OrderReference"].ToString());
+                        DataRow GDPR = GDPRData.Rows[0];
+                        text = text + GDPR["TelephoneNo"].ToString(); //Phone Number
+                        text = text.PadRight(473, ' ');
+                        text = text + GDPR["PostalName"].ToString(); //Destination Contact
+                        text = text.PadRight(523, ' ');
+                        text = text + GDPR["EmailAddress"].ToString();
+                        text = text.PadRight(573, ' ');
+                        flag = true;
+
+                    }
+                    else
+                    {
+                        text = text + row["DelTelephone"].ToString(); //Phone Number
+                        text = text.PadRight(523, ' ');
+                        text = text + row["DelEmail"].ToString();
+                        text = text.PadRight(573, ' ');
+                    }
+                    text = text + row["DelAddressLine2"].ToString(); // GDPR[""].ToString();  //Del Name 2
                     text = text.PadRight(846, ' ');
-                    text = text + row["InvoiceAddressLine2"].ToString();
                     streamWriter.WriteLine("000010NADINV" + text.PadRight(996, ' ') + "");
                     text = "";
 
@@ -464,7 +521,9 @@ namespace EDI_Orders
                     counter++;
 
                     text = row["CountryOrigin"].ToString();     //Country Of origin field to be added
-                    text = text.PadRight(50, ' ');
+                    text = text.PadRight(42, ' ');
+                    text = text + "YY";
+                    text = text.PadRight(50, ' '):
                     streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "TRACOU" + text + "");
                     text = "";
                     counter++;
