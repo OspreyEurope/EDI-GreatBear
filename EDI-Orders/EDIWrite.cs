@@ -100,7 +100,7 @@ namespace EDI_Orders
                     /**
                      * * Retrives the data from the database and then writes it line by line into a file.
                      */
-                    string file = ConfigurationManager.AppSettings["KTNOrders"] + "/" + row["OrderNumber"].ToString() + ".txt";
+                    string file = ConfigurationManager.AppSettings["Generating"] + "/" + row["OrderNumber"].ToString() + ".txt";
                     string fileName = row["OrderNumber"].ToString() + ".txt";
                     fileName = fileName.PadRight((35 - fileName.Length), ' ');
                     FileStream f = new FileStream(file, FileMode.Create);
@@ -263,6 +263,10 @@ namespace EDI_Orders
                     {
                         string name = Path.GetFileName(file);
                         File.Move(file, ConfigurationManager.AppSettings["GDPROrder"] + "/WEB" + name);
+                    }
+                    else
+                    {
+                        File.Move(file, ConfigurationManager.AppSettings["KTNOrders"] + Path.GetFileName(file));
                     }
                     flag = false;
                     Console.WriteLine(i);

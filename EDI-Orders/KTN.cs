@@ -348,7 +348,6 @@ namespace EDI_Orders
                                 else if (lines[i].PadRight(13).Substring(6, 6) == "NADDES")
                                 {
                                     ASDV = lines[i].Substring(32, 6);
-                                    Console.WriteLine(ASDV);
                                 }
                                 else if (lines[i].PadRight(13).Substring(6, 6) == "TRAUID")
                                 {
@@ -365,7 +364,6 @@ namespace EDI_Orders
 
                                     if (PalletQty != "" && ASDV == "AMAZON" && SSCC != "")
                                     {
-                                        Console.WriteLine("URGH");
                                         InsertDESADV(OrderNumber, ItemNumber, PalletQty, SSCC, con);
                                         PalletQty = "";
                                         SSCC = "";
@@ -403,7 +401,6 @@ namespace EDI_Orders
 
                                     if (PalletQty != "" && ASDV == "AMAZON" && SSCC != "")
                                     {
-                                        Console.WriteLine("URGH");
                                         InsertDESADV(OrderNumber, ItemNumber, PalletQty, SSCC, con);
                                         PalletQty = "";
                                         SSCC = "";
@@ -962,7 +959,6 @@ namespace EDI_Orders
         #region PPLCON_ASDV
         public static void InsertDESADV (string orderNumber, string Item, string palletQty, string SSCC, SqlConnection con)
         {
-            Console.WriteLine("HIT THE INSERT DESADV");
             SqlCommand InsertPallet = new SqlCommand("OSP_INSERT_PPLCON_PALLET", con);
             InsertPallet.CommandType = CommandType.StoredProcedure;
 
