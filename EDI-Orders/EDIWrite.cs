@@ -258,15 +258,22 @@ namespace EDI_Orders
                     streamWriter.Close();
                     var lineCount = File.ReadLines(file).Count();
 
+                    FileInfo fi = new FileInfo(file);
+
                     File.AppendAllText(file, (lineCount + 1).ToString().PadLeft(6, '0') + "UNT" + (lineCount + 1).ToString().PadRight(6, ' ') + "00000001            ");
                     if (flag)
                     {
                         string name = Path.GetFileName(file);
                         File.Move(file, ConfigurationManager.AppSettings["GDPROrder"] + "/WEB" + name);
                     }
-                    else
+                    else if (fi.Length > 0)
                     {
                         File.Move(file, ConfigurationManager.AppSettings["KTNOrders"] + Path.GetFileName(file));
+                    }
+                    else
+                    {
+                        Exception  ex = new Exception ( "Error: Blank file!" );
+                        SharedFunctions.ErrorAlert("Write Order", ex);
                     }
                     flag = false;
                     Console.WriteLine(i);
