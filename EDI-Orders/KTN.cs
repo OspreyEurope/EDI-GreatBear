@@ -45,8 +45,10 @@ namespace EDI_Orders
                     case "STKMVT              ":
                         type = "STKMVT";
                         SP = "OSP_INSERT_STOCK_MOVEMENT";
-                        SqlCommand storedProcedure = new SqlCommand(SP, con);
-                        storedProcedure.CommandType = CommandType.StoredProcedure;
+                        SqlCommand storedProcedure = new SqlCommand(SP, con)
+                        {
+                            CommandType = CommandType.StoredProcedure
+                        };
                         int lineCount = File.ReadLines(file).Count();
                         //Add Try catch on this block to check it can be read and is not corrupted to prevent a crash sooner rather than later
                         string[] lines = File.ReadAllLines(file);
@@ -108,8 +110,10 @@ namespace EDI_Orders
                                  * It finds the header value and the data value by using the method 'ReadKTN' due to the style of file.
                                  */
                                 con.Open();
-                                storedProcedure = new SqlCommand("OSP_INSERT_ITEMS_FOR_STKMVT", con);
-                                storedProcedure.CommandType = CommandType.StoredProcedure;
+                                storedProcedure = new SqlCommand("OSP_INSERT_ITEMS_FOR_STKMVT", con)
+                                {
+                                    CommandType = CommandType.StoredProcedure
+                                };
                                 /**
                                  * Write the line items to a seperate table
                                  */
@@ -147,8 +151,10 @@ namespace EDI_Orders
                                 string date = row.Substring(201, 35);
 
                                 con.Open();
-                                storedProcedure = new SqlCommand("OSP_INSERT_STKBAL", con);
-                                storedProcedure.CommandType = CommandType.StoredProcedure;
+                                storedProcedure = new SqlCommand("OSP_INSERT_STKBAL", con)
+                                {
+                                    CommandType = CommandType.StoredProcedure
+                                };
                                 /**
                                  * Write the line items to a seperate table
                                  */
@@ -189,8 +195,10 @@ namespace EDI_Orders
                     case "RECCON              ":
                         type = "RECCON";
                         SP = "OSP_INSERT_RECCON";
-                        storedProcedure = new SqlCommand(SP, con);
-                        storedProcedure.CommandType = CommandType.StoredProcedure;
+                        storedProcedure = new SqlCommand(SP, con)
+                        {
+                            CommandType = CommandType.StoredProcedure
+                        };
                         lineCount = File.ReadLines(file).Count();
                         lines = File.ReadAllLines(file);
                         ID = lines[0].Substring(9, 20);
@@ -235,8 +243,10 @@ namespace EDI_Orders
                         var headers = SharedFunctions.QueryDB(con, "OSP_GETHEADERS", "PPLCON");
 
                         con.Open();
-                        storedProcedure = new SqlCommand(SP, con);
-                        storedProcedure.CommandType = CommandType.StoredProcedure;
+                        storedProcedure = new SqlCommand(SP, con)
+                        {
+                            CommandType = CommandType.StoredProcedure
+                        };
                         lineCount = File.ReadLines(file).Count();
                         lines = File.ReadAllLines(file);
                         result = new string[15][];
@@ -485,8 +495,10 @@ namespace EDI_Orders
             /**
              * Write the header table values
              */
-            storedProcedure = new SqlCommand(SP, con);
-            storedProcedure.CommandType = CommandType.StoredProcedure;
+            storedProcedure = new SqlCommand(SP, con)
+            {
+                CommandType = CommandType.StoredProcedure
+            };
             //Add Try catch on this block to check it can be read and is not corrupted to prevent a crash sooner rather than later
             lines = File.ReadAllLines(file);
             string row = lines[0];
@@ -569,8 +581,10 @@ namespace EDI_Orders
                          * It finds the header value and the data value by using the method 'ReadKTN' due to the style of file.
                          */
             con.Open();
-            SqlCommand StoredProcedure2  = new SqlCommand("OSP_INSERT_ITEMS_FOR_RECCON", con);
-            StoredProcedure2.CommandType = CommandType.StoredProcedure;
+            SqlCommand StoredProcedure2 = new SqlCommand("OSP_INSERT_ITEMS_FOR_RECCON", con)
+            {
+                CommandType = CommandType.StoredProcedure
+            };
             /**
              * Write the line items to a seperate table
              */
@@ -959,8 +973,10 @@ namespace EDI_Orders
         #region PPLCON_ASDV
         public static void InsertDESADV (string orderNumber, string Item, string palletQty, string SSCC, SqlConnection con)
         {
-            SqlCommand InsertPallet = new SqlCommand("OSP_INSERT_PPLCON_PALLET", con);
-            InsertPallet.CommandType = CommandType.StoredProcedure;
+            SqlCommand InsertPallet = new SqlCommand("OSP_INSERT_PPLCON_PALLET", con)
+            {
+                CommandType = CommandType.StoredProcedure
+            };
 
             InsertPallet.Parameters.AddWithValue("OrderNumber",orderNumber);
             InsertPallet.Parameters.AddWithValue("ItemNumber",Item);
