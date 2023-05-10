@@ -272,7 +272,7 @@ namespace EDI_Orders
                         string ASDV = "";
                         string SSCC = "";
                         int p = 0;
-                        int q = 0;
+                        //int q = 0;
 
                         /**
                          * This gets the length of the file and then cycles through the file reading each line.
@@ -589,7 +589,7 @@ namespace EDI_Orders
              * Write the line items to a seperate table
              */
             int i = lineCount;
-            while (!((lines[i + 1].Substring(6, 3) == "FAC") || (lines[i+1].Substring(6,3) == "UNT")))
+            while (!((lines[i+1].Substring(6,3) == "FAC") || (lines[i+1].Substring(6,3) == "UNT")))
             { 
                 string[][] t = ReadKTN(lines[i]);
                 if (t != null)
@@ -601,7 +601,7 @@ namespace EDI_Orders
                     /**
                      * Ths dictates when the write is used and then clears the parameters to be used again after.
                      */
-                    if (lines[i + 1].Substring(6, 3) == "LIN" || lines[i + 2].Substring(6, 3) == "UNT" || lines[i + 1].Substring(6, 3) == "FAC")
+                    if (lines[i + 1].Substring(6, 3) == "LIN" || lines[i + 2].Substring(6, 3) == "FAC" || lines[i + 2].Substring(6, 3) == "UNT")
                     {
                         Console.WriteLine(lines[i+1].Substring(6,3));
                         StoredProcedure2.Parameters.AddWithValue("ID", ID);

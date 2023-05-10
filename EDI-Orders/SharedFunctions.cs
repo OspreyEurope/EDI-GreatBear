@@ -315,8 +315,10 @@ namespace EDI_Orders
          */
         public static void EDIDecision(string[][] order)
         {
-            SqlConnection conOE = new SqlConnection();
-            conOE.ConnectionString = ConfigurationManager.ConnectionStrings["OERA"].ConnectionString;
+            SqlConnection conOE = new SqlConnection
+            {
+                ConnectionString = ConfigurationManager.ConnectionStrings["OERA"].ConnectionString
+            };
             if (order[0][0].Equals("UNH"))
             {
                 EDIFact.BuilRecordEDIFact(order, conOE);
@@ -336,8 +338,10 @@ namespace EDI_Orders
         {
             Console.WriteLine(SP);
             con.Open();
-            SqlCommand dataQuery = new SqlCommand(SP, con);
-            dataQuery.CommandType = CommandType.StoredProcedure;
+            SqlCommand dataQuery = new SqlCommand(SP, con)
+            {
+                CommandType = CommandType.StoredProcedure
+            };
             if (id != null)
             {
                 dataQuery.Parameters.AddWithValue("@id", id);
@@ -378,10 +382,14 @@ namespace EDI_Orders
         public static void FileCheck (string A)
         {
             #region Dev Connections
-            SqlConnection OERA = new SqlConnection();
-            OERA.ConnectionString = ConfigurationManager.ConnectionStrings["OERA"].ConnectionString;
-            SqlConnection Orbis = new SqlConnection();
-            Orbis.ConnectionString = ConfigurationManager.ConnectionStrings["Orbis"].ConnectionString;
+            SqlConnection OERA = new SqlConnection
+            {
+                ConnectionString = ConfigurationManager.ConnectionStrings["OERA"].ConnectionString
+            };
+            SqlConnection Orbis = new SqlConnection
+            {
+                ConnectionString = ConfigurationManager.ConnectionStrings["Orbis"].ConnectionString
+            };
             #endregion
 
             switch (A)

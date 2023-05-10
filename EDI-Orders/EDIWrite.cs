@@ -90,7 +90,7 @@ namespace EDI_Orders
         */
         public static void WriteOrder (SqlConnection con, string id)
         {
-            try { 
+            //try { 
             DataTable data = SharedFunctions.QueryDB(con, "OSP_WRITE_HEADER_EDI", id);
             int counter = 13;
             bool flag = false;
@@ -101,7 +101,7 @@ namespace EDI_Orders
                     /**
                      * * Retrives the data from the database and then writes it line by line into a file.
                      */
-                    string file = ConfigurationManager.AppSettings["Generating"] + "/" + row["OrderNumber"].ToString() + ".txt";
+                    string file = ConfigurationManager.AppSettings["Test"] + "/" + row["OrderNumber"].ToString() + ".txt";
                     string fileName = row["OrderNumber"].ToString() + ".txt";
                     fileName = fileName.PadRight((35 - fileName.Length), ' ');
                     FileStream f = new FileStream(file, FileMode.Create);
@@ -170,18 +170,18 @@ namespace EDI_Orders
                         text = text + row["DelCountryCode"].ToString();
                         text = text.PadRight(370, ' ');
 
-                        conDTC.Open();
-                        SqlCommand Update = new SqlCommand("OSP_UPDATE_GDPR", conDTC)
-                        {
-                            CommandType = CommandType.StoredProcedure
-                        };
-                        Update.Parameters.AddWithValue("@id", row["DelPostCode"].ToString());
-                        Update.Parameters.AddWithValue("@id2", row["OrderReference"].ToString());
-                        Update.Parameters.AddWithValue("@Date", DateTime.Now);
-                        Update.Parameters.AddWithValue("@File", "WEB" + fileName);
+                        //conDTC.Open();
+                        //SqlCommand Update = new SqlCommand("OSP_UPDATE_GDPR", conDTC)
+                        //{
+                        //    CommandType = CommandType.StoredProcedure
+                        //};
+                        //Update.Parameters.AddWithValue("@id", row["DelPostCode"].ToString());
+                        //Update.Parameters.AddWithValue("@id2", row["OrderReference"].ToString());
+                        //Update.Parameters.AddWithValue("@Date", DateTime.Now);
+                        //Update.Parameters.AddWithValue("@File", "WEB" + fileName);
 
-                        Update.ExecuteNonQuery();
-                        Update.Parameters.Clear();
+                        //Update.ExecuteNonQuery();
+                        //Update.Parameters.Clear();
 
                     }
                     else
@@ -211,7 +211,9 @@ namespace EDI_Orders
                         text = text + GDPR["PostalName"].ToString(); //Destination Contact
                         text = text.PadRight(523, ' ');
                         text = text + GDPR["EmailAddress"].ToString();
-                        text = text.PadRight(573, ' ');
+                        text = text.PadRight(846, ' ');
+                        text = text + GDPR["AddressLine2"].ToString(); // GDPR[""].ToString();  //Del add 2
+                        
                         flag = true;
                         
                     }
@@ -220,10 +222,10 @@ namespace EDI_Orders
                         text = text + row["DelTelephone"].ToString(); //Phone Number
                         text = text.PadRight(523, ' ');
                         text = text + row["DelEmail"].ToString();
-                        text = text.PadRight(573, ' ');
+                        text = text.PadRight(846, ' ');
+                        text = text + row["DelAddressLine2"].ToString(); // GDPR[""].ToString();  //Del Name 2
                     }
-                    text = text + row["DelAddressLine2"].ToString(); // GDPR[""].ToString();  //Del Name 2
-                    text = text.PadRight(846, ' ');
+                    
                     streamWriter.WriteLine("000009NADDES" + text.PadRight(996, ' ') + "");             //Can be swapped for GLNs but will need swapping to ensure the correct lcoation
                     text = "";
 
@@ -255,18 +257,18 @@ namespace EDI_Orders
                         text = text + row["DelCountryCode"].ToString();
                         text = text.PadRight(370, ' ');
 
-                        conDTC.Open();
-                        SqlCommand Update = new SqlCommand("OSP_UPDATE_GDPR", conDTC)
-                        {
-                            CommandType = CommandType.StoredProcedure
-                        };
-                        Update.Parameters.AddWithValue("@id", row["DelPostCode"].ToString());
-                        Update.Parameters.AddWithValue("@id2", row["OrderReference"].ToString());
-                        Update.Parameters.AddWithValue("@Date", DateTime.Now);
-                        Update.Parameters.AddWithValue("@File", "WEB" + fileName);
+                        //conDTC.Open();
+                        //SqlCommand Update = new SqlCommand("OSP_UPDATE_GDPR", conDTC)
+                        //{
+                        //    CommandType = CommandType.StoredProcedure
+                        //};
+                        //Update.Parameters.AddWithValue("@id", row["DelPostCode"].ToString());
+                        //Update.Parameters.AddWithValue("@id2", row["OrderReference"].ToString());
+                        //Update.Parameters.AddWithValue("@Date", DateTime.Now);
+                        //Update.Parameters.AddWithValue("@File", "WEB" + fileName);
 
-                        Update.ExecuteNonQuery();
-                        Update.Parameters.Clear();
+                        //Update.ExecuteNonQuery();
+                        //Update.Parameters.Clear();
 
                     }
                     else
@@ -297,6 +299,10 @@ namespace EDI_Orders
                         text = text.PadRight(523, ' ');
                         text = text + GDPR["EmailAddress"].ToString();
                         text = text.PadRight(743, ' ');
+                        text = text + row["Currency"].ToString();
+                        text = text.PadRight(846, ' ');
+                        text = text + GDPR["AddressLine2"].ToString();
+
                         flag = true;
 
                     }
@@ -306,11 +312,11 @@ namespace EDI_Orders
                         text = text.PadRight(523, ' ');
                         text = text + row["DelEmail"].ToString();
                         text = text.PadRight(743, ' ');
+                        text = text + row["Currency"].ToString();
+                        text = text.PadRight(846, ' ');
+                        text = text + row["DelAddressLine2"].ToString();  //Del Add 2
                     }
-                    text = text + row["Currency"].ToString();
-                    text = text.PadRight(846, ' ');
-                    text = text + row["DelAddressLine2"].ToString(); // GDPR[""].ToString();  //Del Name 2
-                    
+                                        
                     streamWriter.WriteLine("000010NADINV" + text.PadRight(996, ' ') + "");
                     text = "";
 
@@ -335,11 +341,11 @@ namespace EDI_Orders
                     if (flag)
                     {
                         string name = Path.GetFileName(file);
-                        File.Move(file, ConfigurationManager.AppSettings["GDPROrder"] + "/WEB" + name);
+                        File.Move(file, ConfigurationManager.AppSettings["Test"] + "/WEB" + name);
                     }
                     else if (fi.Length > 0)
                     {
-                        File.Move(file, ConfigurationManager.AppSettings["KTNOrders"] + "/" + Path.GetFileName(file));
+                        File.Move(file, ConfigurationManager.AppSettings["Test"] + "/" + Path.GetFileName(file));
                     }
                     else
                     {
@@ -348,34 +354,34 @@ namespace EDI_Orders
                     }
                     flag = false;
                     Console.WriteLine(i);
-                    try
-                    {
-                        con.Open();
-                        SqlCommand insertTracker = new SqlCommand("OSP_INSERT_TO_TRACKER", con)
-                        {
-                            CommandType = CommandType.StoredProcedure
-                        };
-                        insertTracker.Parameters.AddWithValue("id2", row["OrderNumber"].ToString());
-                        insertTracker.Parameters.AddWithValue("id", fileName);
+                    //try
+                    //{
+                    //    con.Open();
+                    //    SqlCommand insertTracker = new SqlCommand("OSP_INSERT_TO_TRACKER", con)
+                    //    {
+                    //        CommandType = CommandType.StoredProcedure
+                    //    };
+                    //    insertTracker.Parameters.AddWithValue("id2", row["OrderNumber"].ToString());
+                    //    insertTracker.Parameters.AddWithValue("id", fileName);
 
 
-                        insertTracker.ExecuteNonQuery();
-                        insertTracker.Parameters.Clear();
-                        con.Close();
-                        //SharedFunctions.QueryDB(con, "OSP_INSERT_TO_TRACKER", fileName, row["OrderNumber"].ToString());
-                    }
-                    catch (Exception ex)
-                    {
-                        SharedFunctions.Writefile("Failed on write tracker: " + ex.Message, "");
-                    }
+                    //    insertTracker.ExecuteNonQuery();
+                    //    insertTracker.Parameters.Clear();
+                    //    con.Close();
+                    //    //SharedFunctions.QueryDB(con, "OSP_INSERT_TO_TRACKER", fileName, row["OrderNumber"].ToString());
+                    //}
+                    //catch (Exception ex)
+                    //{
+                    //    SharedFunctions.Writefile("Failed on write tracker: " + ex.Message, "");
+                    //}
                 }
                 con.Close();
-            }
-            catch(Exception ex)
-            {
-                SharedFunctions.Writefile("Order Failed to process, error message is: " + ex.Message + ex.ToString(), "");
-                SharedFunctions.ErrorAlert("Write Order", ex);
-            }
+            //}
+            //catch(Exception ex)
+            //{
+            //    SharedFunctions.Writefile("Order Failed to process, error message is: " + ex.Message + ex.ToString(), "");
+            //    SharedFunctions.ErrorAlert("Write Order", ex);
+            //}
         }
         #endregion
 

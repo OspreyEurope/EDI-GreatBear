@@ -13,10 +13,14 @@ namespace EDI_Orders
         static void Main(string[] args)
         {
             #region SQL Connections
-            SqlConnection OERA = new SqlConnection();
-            OERA.ConnectionString = ConfigurationManager.ConnectionStrings["OERA"].ConnectionString;
-            SqlConnection Orbis = new SqlConnection();
-            Orbis.ConnectionString = ConfigurationManager.ConnectionStrings["Orbis"].ConnectionString;
+            SqlConnection OERA = new SqlConnection
+            {
+                ConnectionString = ConfigurationManager.ConnectionStrings["OERA"].ConnectionString
+            };
+            SqlConnection Orbis = new SqlConnection
+            {
+                ConnectionString = ConfigurationManager.ConnectionStrings["Orbis"].ConnectionString
+            };
             #endregion
 
             if (args.Length >= 1)
