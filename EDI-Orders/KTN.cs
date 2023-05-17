@@ -257,6 +257,7 @@ namespace EDI_Orders
                         string OriginalFileName = "";
                         string FileAction = "";
                         string DateShipped = "";
+                        string DatePacked = "";
                         string KTNOutBound = "";
                         string Transporter = "";
                         string OrderNumber = "";
@@ -271,6 +272,7 @@ namespace EDI_Orders
                         string PalletQty = "";
                         string ASDV = "";
                         string SSCC = "";
+                        string BoxID = "";
                         int p = 0;
                         //int q = 0;
 
@@ -316,6 +318,11 @@ namespace EDI_Orders
                                     row = lines[i];
                                     DateShipped = row.Substring(12, 35);
                                 }
+                                else if (lines[i].PadRight(13).Substring(6, 6) == "DTMPIC")
+                                {
+                                    row = lines[i];
+                                    DatePacked = row.Substring(12, 35);
+                                }
                                 else if (lines[i].PadRight(13).Substring(6, 6) == "RFFOUT")
                                 {
                                     row = lines[i];
@@ -329,7 +336,7 @@ namespace EDI_Orders
                                 else if (lines[i].PadRight(13).Substring(6, 6) == "NADTRO")
                                 {
                                     row = lines[i];
-                                    Transporter = row.Substring(9, 3);
+                                    Transporter = row.Substring(32, 20).Trim();
                                 }
                                 else if (lines[i].PadRight(13).Substring(6, 6) == "QTYTPA")
                                 {
@@ -363,6 +370,10 @@ namespace EDI_Orders
                                 {
                                     SSCC = lines[i].Substring(12, 35).Trim();
                                 }
+                                else if (lines[i].PadRight(13).Substring(6,6) == "TRACOL")
+                                {
+                                    BoxID = lines[i].Substring(12,10).Trim();
+                                }
                                 else if (lines[i].PadRight(13).Substring(6, 6) == "QTYRLO")
                                 {
                                     PalletQty = lines[i].Substring(12, 15);
@@ -374,9 +385,10 @@ namespace EDI_Orders
 
                                     if (PalletQty != "" && ASDV == "AMAZON" && SSCC != "")
                                     {
-                                        InsertDESADV(OrderNumber, ItemNumber, PalletQty, SSCC, con);
+                                        InsertDESADV(OrderNumber, ItemNumber, PalletQty, SSCC, BoxID, con);
                                         PalletQty = "";
                                         SSCC = "";
+                                        BoxID = "";
                                     }
                                 }
                                 /**
@@ -394,7 +406,14 @@ namespace EDI_Orders
                                     storedProcedure.Parameters.AddWithValue("DateReceived", DateReceived);
                                     storedProcedure.Parameters.AddWithValue("OriginalFileName", OriginalFileName);
                                     storedProcedure.Parameters.AddWithValue("FileAction", FileAction);
-                                    storedProcedure.Parameters.AddWithValue("DateShipped", DateShipped);
+                                    if (lines[0].Substring(69, 4) == "LOAD")
+                                    {
+                                        storedProcedure.Parameters.AddWithValue("DateShipped", DateShipped);
+                                    }
+                                    else if (lines[0].Substring(69, 4) == "PACK")
+                                    {
+                                        storedProcedure.Parameters.AddWithValue("DateShipped", DatePacked);
+                                    }
                                     storedProcedure.Parameters.AddWithValue("KTNOutBoundCode", KTNOutBound);
                                     storedProcedure.Parameters.AddWithValue("Transporter", Transporter);
                                     storedProcedure.Parameters.AddWithValue("OrderNumber", OrderNumber);
@@ -411,9 +430,10 @@ namespace EDI_Orders
 
                                     if (PalletQty != "" && ASDV == "AMAZON" && SSCC != "")
                                     {
-                                        InsertDESADV(OrderNumber, ItemNumber, PalletQty, SSCC, con);
+                                        InsertDESADV(OrderNumber, ItemNumber, PalletQty, SSCC,BoxID, con);
                                         PalletQty = "";
                                         SSCC = "";
+                                        BoxID = "";
                                     }
 
                                     if (lines[0].Substring(69, 4) == "LOAD")
@@ -449,7 +469,7 @@ namespace EDI_Orders
                                         UpdateTracker.Parameters.AddWithValue("ConNumber", ConNumber);
                                         UpdateTracker.Parameters.AddWithValue("PNPQty", PQty);
                                         UpdateTracker.Parameters.AddWithValue("Transport", Transporter);
-                                        UpdateTracker.Parameters.AddWithValue("DatePNP", DateShipped);
+                                        UpdateTracker.Parameters.AddWithValue("DatePNP", DatePacked);
                                         UpdateTracker.Parameters.AddWithValue("FileName", OriginalFileName);
                                         UpdateTracker.Parameters.AddWithValue("ItemNumber", ItemNumber);
 
@@ -695,6 +715,9 @@ namespace EDI_Orders
                         case "LOA":
                             DateParty = "Load";
                             break;
+                        case "PIC":
+                            DateParty = "Packed";
+                            break;
                         case "ARR":
                             DateParty = "";
                             break;
@@ -884,6 +907,9 @@ namespace EDI_Orders
                         case "UID":
                             TRAParty = "UID";
                             break;
+                        case "COL":
+                            TRAParty = "COL";
+                            break;
                     }
                     result[0] = new string[] { TRAParty + "TrackingCode", row.Substring(12, 35) };
                     break;
@@ -971,7 +997,7 @@ namespace EDI_Orders
         #endregion
 
         #region PPLCON_ASDV
-        public static void InsertDESADV (string orderNumber, string Item, string palletQty, string SSCC, SqlConnection con)
+        public static void InsertDESADV (string orderNumber, string Item, string palletQty, string SSCC, string BoxID, SqlConnection con)
         {
             SqlCommand InsertPallet = new SqlCommand("OSP_INSERT_PPLCON_PALLET", con)
             {
@@ -982,6 +1008,7 @@ namespace EDI_Orders
             InsertPallet.Parameters.AddWithValue("ItemNumber",Item);
             InsertPallet.Parameters.AddWithValue("PalletQty",palletQty);
             InsertPallet.Parameters.AddWithValue("SSCC", SSCC);
+            InsertPallet.Parameters.AddWithValue("BoxID", BoxID);
 
             InsertPallet.ExecuteNonQuery();
             InsertPallet.Parameters.Clear();

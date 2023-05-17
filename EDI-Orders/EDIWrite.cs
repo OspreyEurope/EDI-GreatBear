@@ -362,7 +362,7 @@ namespace EDI_Orders
                         {
                             CommandType = CommandType.StoredProcedure
                         };
-                        insertTracker.Parameters.AddWithValue("id2", row["OrderNumber"].ToString());
+                        insertTracker.Parameters.AddWithValue("id2", row["OrderNumber"].ToString() + row["WHOrderNumber"].ToString());
                         insertTracker.Parameters.AddWithValue("id", fileName);
 
 
