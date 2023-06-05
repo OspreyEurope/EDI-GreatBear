@@ -699,7 +699,7 @@ namespace EDI_Orders
         #endregion
 
         #region Returns to KTN
-        public static void WriteReturnResponce(SqlConnection con, string id)
+        public static void WriteReturnResponse(SqlConnection con, string id)
         {
             try
             {

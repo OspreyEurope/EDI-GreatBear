@@ -42,7 +42,7 @@ namespace EDI_Orders
                         EDIWrite.WriteTruckDelsFile(Orbis, args[1]);
                         break;
                     case "Return":
-                        EDIWrite.WriteReturnResponce(Orbis, args[1]);
+                        EDIWrite.WriteReturnResponse(Orbis, args[1]);
                         break;
                     #endregion
                     #region KTN Read
@@ -83,7 +83,7 @@ namespace EDI_Orders
                             EDIWrite.WriteTruckDelsFile(Orbis, "TRUCK118-2");
                             break;
                         case "Returns":
-                            EDIWrite.WriteReturnResponce(Orbis, "0000058894");
+                            EDIWrite.WriteReturnResponse(Orbis, "0000060553");
                             break;
                         #endregion
                         #region KTN Read

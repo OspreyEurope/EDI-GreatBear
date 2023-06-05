@@ -509,7 +509,7 @@ namespace EDI_Orders
             {
                 mail.To.Add(ConfigurationManager.AppSettings["AlertEmail"]);
                 mail.To.Add(ConfigurationManager.AppSettings["AlertEmail2"]);
-                //mail.To.Add(ConfigurationManager.AppSettings["AlertEmail3"]);
+                mail.To.Add(ConfigurationManager.AppSettings["AlertEmail3"]);
                 mail.From = new MailAddress(ConfigurationManager.AppSettings["FromAddress"]);
                 mail.Subject = "EDI handling program:";
                 mail.Body = DateTime.Now + " Error in " + v + ": "+ ex.Message;

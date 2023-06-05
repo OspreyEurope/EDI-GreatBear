@@ -313,7 +313,7 @@ namespace EDI_Orders
                                     row = lines[i];
                                     FileAction = row.Substring(12, 35);
                                 }
-                                else if (lines[i].PadRight(13).Substring(6, 6) == "DTMDEL")
+                                else if (lines[i].PadRight(13).Substring(6, 6) == "DTMDEP")
                                 {
                                     row = lines[i];
                                     DateShipped = row.Substring(12, 35);
@@ -490,7 +490,7 @@ namespace EDI_Orders
             {
                 con.Close();
                 string name = Path.GetFileName(file);
-                switch(type)
+                switch (type)
                 {
                     case "PPLCON":
                         File.Move(file, ConfigurationManager.AppSettings["KTNPPLCONQuarantined"] + "/" + name);
@@ -498,7 +498,7 @@ namespace EDI_Orders
                     case "RECCON":
                         File.Move(file, ConfigurationManager.AppSettings["KTNRECCONQuarantined"] + "/" + name);
                         break;
-                            case "STKMVT":
+                    case "STKMVT":
                         File.Move(file, ConfigurationManager.AppSettings["KTNSTKMVTQuarantined"] + "/" + name);
                         break;
                 }
@@ -536,29 +536,61 @@ namespace EDI_Orders
             row = lines[linePos + 2];
             result[7] = new string[] { "CustomerReferenceInbound", row.Substring(12, 80) };
             row = lines[linePos + 3];
-            result[8] = new string[] { "InboundDeliveryType", row.Substring(12, 80) };
-            row = lines[linePos + 4];
-            result[9] = new string[] { "CustomerReferenceTransport", row.Substring(12, 80) };
-            int y = 5;
-            row = lines[linePos + 5];
-            if (row.Substring(6, 6) != "NADTRA")
+            if(row.Substring(6,6) == "RFFCR2")
             {
+                row = lines[linePos + 4];
+                result[8] = new string[] { "InboundDeliveryType", row.Substring(12, 80) };
+                row = lines[linePos + 5];
+                result[9] = new string[] { "CustomerReferenceTransport", row.Substring(12, 80) };
+
+                int y = 6;
+                row = lines[linePos + 6];
+                if (row.Substring(6, 6) != "NADTRA")
+                {
+                    y++;
+                }
+                row = lines[linePos + y];
+                result[9] = new string[] { "TransporterName", row.Substring(32, 80) };
+                result[10] = new string[] { "TransporterAddress", row.Substring(112, 80) };
+                result[11] = new string[] { "TransporterCountry", row.Substring(302, 80) };
+                result[12] = new string[] { "TransporterLicensePlate", row.Substring(759, 20) };
+                result[13] = new string[] { "TransporterContact", row.Substring(486, 50) };
                 y++;
+                row = lines[linePos + y];
+                result[14] = new string[] { "SupplierName", row.Substring(32, 80) };
+                result[15] = new string[] { "SupplierAddress", row.Substring(112, 80) };
+                result[16] = new string[] { "SupplierCountry", row.Substring(302, 80) };
+                y++;
+                row = lines[linePos + y];
+                result[18] = new string[] { "ArrivedDate", row.Substring(12, 35) };
             }
-            row = lines[linePos + y];
-            result[9] = new string[] { "TransporterName", row.Substring(32, 80) };
-            result[10] = new string[] { "TransporterAddress", row.Substring(112, 80) };
-            result[11] = new string[] { "TransporterCountry", row.Substring(302, 80) };
-            result[12] = new string[] { "TransporterLicensePlate", row.Substring(759, 20) };
-            result[13] = new string[] { "TransporterContact", row.Substring(486, 50) };
-            y++;
-            row = lines[linePos + y];
-            result[14] = new string[] { "SupplierName", row.Substring(32, 80) };
-            result[15] = new string[] { "SupplierAddress", row.Substring(112, 80) };
-            result[16] = new string[] { "SupplierCountry", row.Substring(302, 80) };
-            y++;
-            row = lines[linePos + y];
-            result[18] = new string[] { "ArrivedDate", row.Substring(12, 35) };
+            else
+            {
+                result[8] = new string[] { "InboundDeliveryType", row.Substring(12, 80) };
+                row = lines[linePos + 4];
+                result[9] = new string[] { "CustomerReferenceTransport", row.Substring(12, 80) };
+                int y = 5;
+                row = lines[linePos + 5];
+                if (row.Substring(6, 6) != "NADTRA")
+                {
+                    y++;
+                }
+                row = lines[linePos + y];
+                result[9] = new string[] { "TransporterName", row.Substring(32, 80) };
+                result[10] = new string[] { "TransporterAddress", row.Substring(112, 80) };
+                result[11] = new string[] { "TransporterCountry", row.Substring(302, 80) };
+                result[12] = new string[] { "TransporterLicensePlate", row.Substring(759, 20) };
+                result[13] = new string[] { "TransporterContact", row.Substring(486, 50) };
+                y++;
+                row = lines[linePos + y];
+                result[14] = new string[] { "SupplierName", row.Substring(32, 80) };
+                result[15] = new string[] { "SupplierAddress", row.Substring(112, 80) };
+                result[16] = new string[] { "SupplierCountry", row.Substring(302, 80) };
+                y++;
+                row = lines[linePos + y];
+                result[18] = new string[] { "ArrivedDate", row.Substring(12, 35) };
+            }
+            
             /**
              * This section cycles through the array and adds the values to the stored procedure.
              * It then inserts the data into the headers table in the database.
@@ -710,7 +742,7 @@ namespace EDI_Orders
                     switch (DateSeg)
                     {
                         case "DEL":
-                            DateParty = "Delivery";
+                            DateParty = "Received";
                             break;
                         case "LOA":
                             DateParty = "Load";
@@ -720,6 +752,9 @@ namespace EDI_Orders
                             break;
                         case "ARR":
                             DateParty = "";
+                            break;
+                        case "DEP":
+                            DateParty = "Delivery";
                             break;
                         case "PER":
                             DateParty = "Period";
