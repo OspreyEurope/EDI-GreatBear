@@ -212,6 +212,8 @@ namespace EDI_Orders
                         text = text + GDPR["PostalName"].ToString(); //Destination Contact
                         text = text.PadRight(523, ' ');
                         text = text + GDPR["EmailAddress"].ToString();
+                        text = text.PadRight(653, ' ');
+                        text = text + row["CustomerVATCode"].ToString();
                         text = text.PadRight(846, ' ');
                         text = text + GDPR["AddressLine2"].ToString(); // GDPR[""].ToString();  //Del add 2
                         
@@ -223,6 +225,8 @@ namespace EDI_Orders
                         text = text + row["DelTelephone"].ToString(); //Phone Number
                         text = text.PadRight(523, ' ');
                         text = text + row["DelEmail"].ToString();
+                        text = text.PadRight(653, ' ');
+                        text = text + row["CustomerVATCode"].ToString();
                         text = text.PadRight(846, ' ');
                         text = text + row["DelAddressLine2"].ToString(); // GDPR[""].ToString();  //Del Name 2
                     }
@@ -299,6 +303,8 @@ namespace EDI_Orders
                         text = text + GDPR["PostalName"].ToString(); //Destination Contact
                         text = text.PadRight(523, ' ');
                         text = text + GDPR["EmailAddress"].ToString();
+                        text = text.PadRight(653, ' ');
+                        text = text + row["CustomerVATCode"].ToString();
                         text = text.PadRight(743, ' ');
                         text = text + row["Currency"].ToString();
                         text = text.PadRight(846, ' ');
@@ -312,6 +318,8 @@ namespace EDI_Orders
                         text = text + row["DelTelephone"].ToString(); //Phone Number
                         text = text.PadRight(523, ' ');
                         text = text + row["DelEmail"].ToString();
+                        text = text.PadRight(653, ' ');
+                        text = text + row["CustomerVATCode"].ToString();
                         text = text.PadRight(743, ' ');
                         text = text + row["Currency"].ToString();
                         text = text.PadRight(846, ' ');
