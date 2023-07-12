@@ -27,7 +27,7 @@ namespace EDI_Orders
         {
             try
             {
-                
+
                 DataTable data = SharedFunctions.QueryDB(con, "OSP_WRITE_PRODUCTS_EDI", orderNo, WHOrderNumber);
                 /**
                  * Retrives the data from the database and then writes it line by line into a file.
@@ -39,9 +39,9 @@ namespace EDI_Orders
 
                     string text = (i + 1).ToString();
                     text = text.PadRight(30, ' ');
-                    text = text + row["ProductCode"].ToString();
+                    text += row["ProductCode"].ToString();
                     text = text.PadRight(55, ' ');
-                    text = text + row["ProductDescription"].ToString();
+                    text += row["ProductDescription"].ToString();
                     text = text.PadRight(135, ' ');
                     sw.WriteLine(counter.ToString().PadLeft(6, '0') + "LIN" + text.PadRight(165, ' ') + "");
                     text = "";
@@ -53,7 +53,7 @@ namespace EDI_Orders
                     text = "";
                     foreach (string s in temp)
                     {
-                        text = text + s;
+                        text += s;
                     }
                     text = text.PadRight(18, ' ');
                     sw.WriteLine(counter.ToString().PadLeft(6, '0') + "QTYDEL" + text + "");
@@ -62,19 +62,19 @@ namespace EDI_Orders
 
                     text = row["UnitPrice"].ToString();
                     text = text.Replace('.', ',');
-                    text = text + "0";
+                    text += "0";
                     text = text.PadRight(18, ' ');
                     sw.WriteLine(counter.ToString().PadLeft(6, '0') + "QTYPRC" + text + "");
                     text = "";
                     counter++;
                     item++;
                 }
-                
+
                 return counter;
             }
             catch (Exception ex)
             {
-                SharedFunctions.Writefile("Write order items Failed to process, error message is: " + ex.Message + ex.ToString() , "");
+                SharedFunctions.Writefile("Write order items Failed to process, error message is: " + ex.Message + ex.ToString(), "");
                 SharedFunctions.ErrorAlert("Write Order Products", ex);
                 return counter;
             }
@@ -88,13 +88,13 @@ namespace EDI_Orders
         * these pads ensure that the information is lined up correctly an it is readable by KTN.
         * The counter with pad left using 0 is the line number, again this is required in KTN's format.
         */
-        public static void WriteOrder (SqlConnection con, string id)
+        public static void WriteOrder(SqlConnection con, string id)
         {
             try
             {
                 DataTable data = SharedFunctions.QueryDB(con, "OSP_WRITE_HEADER_EDI", id);
-            int counter = 13;
-            bool flag = false;
+                int counter = 13;
+                bool flag = false;
                 con.Open();
                 for (int i = 0; i < data.Rows.Count; i++)
                 {
@@ -113,7 +113,7 @@ namespace EDI_Orders
                     string text = "";
                     streamWriter.WriteLine("000002FACC  " + text.PadRight(35, ' ') + "");
 
-                    text = row["OrderImportType"].ToString().PadRight(20, ' ').Substring(0,10);
+                    text = row["OrderImportType"].ToString().PadRight(20, ' ').Substring(0, 10);
                     text = text.PadRight(30, ' ');
                     streamWriter.WriteLine("000003TDT" + text.PadLeft(113, ' ') + "");
                     text = "";
@@ -159,16 +159,16 @@ namespace EDI_Orders
 
 
                         text = text.PadRight(20, ' ');
-                        text = text + GDPR["PostalName"].ToString();
+                        text += GDPR["PostalName"].ToString();
                         //text = text + "John Smith";
                         text = text.PadRight(100, ' ');
-                        text = text + GDPR["AddressLine1"].ToString();
+                        text += GDPR["AddressLine1"].ToString();
                         text = text.PadRight(180, ' ');
-                        text = text + row["DelPostCode"].ToString();
+                        text += row["DelPostCode"].ToString();
                         text = text.PadRight(200, ' ');
-                        text = text + row["DelCity"].ToString();
+                        text += row["DelCity"].ToString();
                         text = text.PadRight(280, ' ');
-                        text = text + row["DelCountryCode"].ToString();
+                        text += row["DelCountryCode"].ToString();
                         text = text.PadRight(370, ' ');
 
                         conDTC.Open();
@@ -188,15 +188,15 @@ namespace EDI_Orders
                     else
                     {
                         text = text.PadRight(20, ' ');
-                        text = text + row["DelPostalName"].ToString();
+                        text += row["DelPostalName"].ToString();
                         text = text.PadRight(100, ' ');
-                        text = text + row["DelAddressLine1"].ToString();
+                        text += row["DelAddressLine1"].ToString();
                         text = text.PadRight(180, ' ');
-                        text = text + row["DelPostCode"].ToString();
+                        text += row["DelPostCode"].ToString();
                         text = text.PadRight(200, ' ');
-                        text = text + row["DelCity"].ToString();
+                        text += row["DelCity"].ToString();
                         text = text.PadRight(280, ' ');
-                        text = text + row["DelCountryCode"].ToString();
+                        text += row["DelCountryCode"].ToString();
                         text = text.PadRight(370, ' ');
                     }
                     if ((row["DelPostalName"].ToString() == "DTC Customer") || (row["DelPostalName"].ToString() == "Ecommerce"))
@@ -207,30 +207,30 @@ namespace EDI_Orders
                         };
                         DataTable GDPRData = SharedFunctions.QueryDB(conDTC, "OSP_GET_GDPR_DATA", row["DelPostCode"].ToString(), row["OrderReference"].ToString());
                         DataRow GDPR = GDPRData.Rows[0];
-                        text = text + GDPR["TelephoneNo"].ToString(); //Phone Number
+                        text += GDPR["TelephoneNo"].ToString(); //Phone Number
                         text = text.PadRight(473, ' ');
-                        text = text + GDPR["PostalName"].ToString(); //Destination Contact
+                        text += GDPR["PostalName"].ToString(); //Destination Contact
                         text = text.PadRight(523, ' ');
-                        text = text + GDPR["EmailAddress"].ToString();
+                        text += GDPR["EmailAddress"].ToString();
                         text = text.PadRight(653, ' ');
-                        text = text + row["CustomerVATCode"].ToString();
+                        text += row["CustomerVATCode"].ToString();
                         text = text.PadRight(846, ' ');
-                        text = text + GDPR["AddressLine2"].ToString(); // GDPR[""].ToString();  //Del add 2
-                        
+                        text += GDPR["AddressLine2"].ToString(); // GDPR[""].ToString();  //Del add 2
+
                         flag = true;
-                        
+
                     }
                     else
                     {
-                        text = text + row["DelTelephone"].ToString(); //Phone Number
+                        text += row["DelTelephone"].ToString(); //Phone Number
                         text = text.PadRight(523, ' ');
-                        text = text + row["DelEmail"].ToString();
+                        text += row["DelEmail"].ToString();
                         text = text.PadRight(653, ' ');
-                        text = text + row["CustomerVATCode"].ToString();
+                        text += row["CustomerVATCode"].ToString();
                         text = text.PadRight(846, ' ');
-                        text = text + row["DelAddressLine2"].ToString(); // GDPR[""].ToString();  //Del Name 2
+                        text += row["DelAddressLine2"].ToString(); // GDPR[""].ToString();  //Del Name 2
                     }
-                    
+
                     streamWriter.WriteLine("000009NADDES" + text.PadRight(996, ' ') + "");             //Can be swapped for GLNs but will need swapping to ensure the correct lcoation
                     text = "";
 
@@ -251,15 +251,15 @@ namespace EDI_Orders
 
 
                         text = text.PadRight(20, ' ');
-                        text = text + GDPR["PostalName"].ToString();
+                        text += GDPR["PostalName"].ToString();
                         text = text.PadRight(100, ' ');
-                        text = text + GDPR["AddressLine1"].ToString();
+                        text += GDPR["AddressLine1"].ToString();
                         text = text.PadRight(180, ' ');
-                        text = text + row["DelPostCode"].ToString();
+                        text += row["DelPostCode"].ToString();
                         text = text.PadRight(200, ' ');
-                        text = text + row["DelCity"].ToString();
+                        text += row["DelCity"].ToString();
                         text = text.PadRight(280, ' ');
-                        text = text + row["DelCountryCode"].ToString();
+                        text += row["DelCountryCode"].ToString();
                         text = text.PadRight(370, ' ');
 
                         conDTC.Open();
@@ -279,15 +279,15 @@ namespace EDI_Orders
                     else
                     {
                         text = text.PadRight(20, ' ');
-                        text = text + row["DelPostalName"].ToString();
+                        text += row["DelPostalName"].ToString();
                         text = text.PadRight(100, ' ');
-                        text = text + row["DelAddressLine1"].ToString();
+                        text += row["DelAddressLine1"].ToString();
                         text = text.PadRight(180, ' ');
-                        text = text + row["DelPostCode"].ToString();
+                        text += row["DelPostCode"].ToString();
                         text = text.PadRight(200, ' ');
-                        text = text + row["DelCity"].ToString();
+                        text += row["DelCity"].ToString();
                         text = text.PadRight(280, ' ');
-                        text = text + row["DelCountryCode"].ToString();
+                        text += row["DelCountryCode"].ToString();
                         text = text.PadRight(370, ' ');
                     }
                     if ((row["DelPostalName"].ToString() == "DTC Customer") || (row["DelPostalName"].ToString() == "Ecommerce"))
@@ -298,34 +298,34 @@ namespace EDI_Orders
                         };
                         DataTable GDPRData = SharedFunctions.QueryDB(conDTC, "OSP_GET_GDPR_DATA", row["DelPostCode"].ToString(), row["OrderReference"].ToString());
                         DataRow GDPR = GDPRData.Rows[0];
-                        text = text + GDPR["TelephoneNo"].ToString(); //Phone Number
+                        text += GDPR["TelephoneNo"].ToString(); //Phone Number
                         text = text.PadRight(473, ' ');
-                        text = text + GDPR["PostalName"].ToString(); //Destination Contact
+                        text += GDPR["PostalName"].ToString(); //Destination Contact
                         text = text.PadRight(523, ' ');
-                        text = text + GDPR["EmailAddress"].ToString();
+                        text += GDPR["EmailAddress"].ToString();
                         text = text.PadRight(653, ' ');
-                        text = text + row["CustomerVATCode"].ToString();
+                        text += row["CustomerVATCode"].ToString();
                         text = text.PadRight(743, ' ');
-                        text = text + row["Currency"].ToString();
+                        text += row["Currency"].ToString();
                         text = text.PadRight(846, ' ');
-                        text = text + GDPR["AddressLine2"].ToString();
+                        text += GDPR["AddressLine2"].ToString();
 
                         flag = true;
 
                     }
                     else
                     {
-                        text = text + row["DelTelephone"].ToString(); //Phone Number
+                        text += row["DelTelephone"].ToString(); //Phone Number
                         text = text.PadRight(523, ' ');
-                        text = text + row["DelEmail"].ToString();
+                        text += row["DelEmail"].ToString();
                         text = text.PadRight(653, ' ');
-                        text = text + row["CustomerVATCode"].ToString();
+                        text += row["CustomerVATCode"].ToString();
                         text = text.PadRight(743, ' ');
-                        text = text + row["Currency"].ToString();
+                        text += row["Currency"].ToString();
                         text = text.PadRight(846, ' ');
-                        text = text + row["DelAddressLine2"].ToString();  //Del Add 2
+                        text += row["DelAddressLine2"].ToString();  //Del Add 2
                     }
-                                        
+
                     streamWriter.WriteLine("000010NADINV" + text.PadRight(996, ' ') + "");
                     text = "";
 
@@ -358,7 +358,7 @@ namespace EDI_Orders
                     }
                     else
                     {
-                        Exception  ex = new Exception ( "Error: Blank file!" );
+                        Exception ex = new Exception("Error: Blank file!");
                         SharedFunctions.ErrorAlert("Write Order", ex);
                     }
                     flag = false;
@@ -455,9 +455,9 @@ namespace EDI_Orders
 
                     text = (i + 1).ToString();
                     text = text.PadRight(30, ' ');
-                    text = text + row["StockItemCode"].ToString();
+                    text += row["StockItemCode"].ToString();
                     text = text.PadRight(55, ' ');
-                    text = text + row["ProductDescription"].ToString();
+                    text += row["ProductDescription"].ToString();
                     text = text.PadRight(135, ' ');
                     streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "LIN" + text.PadRight(175, ' ') + "");
                     text = "";
@@ -476,11 +476,11 @@ namespace EDI_Orders
                     text = "";
                     foreach (string s in temp)
                     {
-                        text = text + s;
+                        text += s;
                     }
                     text = text.Substring(0, text.Length - 3);
                     text = text.PadRight(18, ' ');
-                    text = text + row["Currency"].ToString();
+                    text += row["Currency"].ToString();
                     text = text.PadRight(3, ' ');
                     streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "MOA116" + text + "");
                     text = "";
@@ -513,7 +513,7 @@ namespace EDI_Orders
                 /**
                  * Retrives the data from the database and then writes it line by line into a file.
                  */
-                string file = ConfigurationManager.AppSettings["KTNItems"] +"/"+ id + "_Product_List.txt";
+                string file = ConfigurationManager.AppSettings["KTNItems"] + "/" + id + "_Product_List.txt";
                 FileStream f = new FileStream(file, FileMode.Create);
                 Encoding utf8WithoutBom = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false);
                 StreamWriter streamWriter = new StreamWriter(f, utf8WithoutBom);
@@ -553,7 +553,7 @@ namespace EDI_Orders
 
                     text = row["CountryOrigin"].ToString();     //Country Of origin field to be added
                     text = text.PadRight(42, ' ');
-                    text = text + "YY";
+                    text += "YY";
                     text = text.PadRight(50, ' ');
                     streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "TRACOU" + text + "");
                     text = "";
@@ -670,9 +670,9 @@ namespace EDI_Orders
 
                     text = (i + 1).ToString();
                     text = text.PadRight(30, ' ');
-                    text = text + row["DTK_SKU"].ToString();
+                    text += row["DTK_SKU"].ToString();
                     text = text.PadRight(55, ' ');
-                    text = text + "";
+                    text += "";
                     text = text.PadRight(135, ' ');
                     streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "LIN" + text.PadRight(175, ' ') + "");
                     text = "";
@@ -751,6 +751,7 @@ namespace EDI_Orders
                 text = "";
                 counter++;
 
+
                 text = data.Rows[0]["ReturnRequestedDate"].ToString();
                 DateTime dateTime = DateTime.ParseExact(text, "dd/MM/yyyy hh:mm:ss", null);
                 text = dateTime.ToString("yyyyMMdd");
@@ -767,9 +768,9 @@ namespace EDI_Orders
 
                     text = (i + 1).ToString();
                     text = text.PadRight(30, ' ');
-                    text = text + row["StockItemCode"].ToString();
+                    text += row["StockItemCode"].ToString();
                     text = text.PadRight(55, ' ');
-                    text = text + row["ProductDescription"].ToString();
+                    text += row["ProductDescription"].ToString();
                     text = text.PadRight(135, ' ');
                     streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "LIN" + text.PadRight(175, ' ') + "");
                     text = "";
@@ -788,11 +789,11 @@ namespace EDI_Orders
                     text = "";
                     foreach (string s in temp)
                     {
-                        text = text + s;
+                        text += s;
                     }
                     text = text.Substring(0, text.Length - 3);
                     text = text.PadRight(18, ' ');
-                    text = text + row["Currency"].ToString();
+                    text += row["Currency"].ToString();
                     text = text.PadRight(3, ' ');
                     streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "MOA116" + text + "");
                     text = "";
@@ -816,22 +817,201 @@ namespace EDI_Orders
 
         #region Great Bear
         #region Write Order Header
-        public static void WriteOrderGB (SqlConnection con, string id)
+        public static void WriteOrderGB(SqlConnection con, string id)
         {
+            try
+            {
+                DataTable data = SharedFunctions.QueryDB(con, "OSP_WRITE_HEADER_EDI", id);
 
+                for (int i = 0; i < data.Rows.Count; i++)
+                {
+                    con.Open();
+                    DataRow row = data.Rows[i];
+                    /**
+                     * * Retrives the data from the database and then writes it line by line into a file.
+                     */
+                    string file = ConfigurationManager.AppSettings["Test"] + "/" + row["OrderNumber"].ToString() + ".txt";
+                    string fileName = row["OrderNumber"].ToString() + ".txt";
+                    FileStream f = new FileStream(file, FileMode.Create);
+                    Encoding utf8WithoutBom = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false);
+                    StreamWriter streamWriter = new StreamWriter(f, utf8WithoutBom);
+
+                    Console.WriteLine(data.Rows.Count);
+                    Console.WriteLine(row["OrderNumber"]);
+
+                    WritePLHeader(streamWriter, "940");
+
+                    /**
+                     * Writes the delivery information for the an order in the X12 format.
+                     */
+                    streamWriter.WriteLine("W05*C*" + row["OrderNumber"] + "******" + row["OrderType"] + "~");
+                    streamWriter.WriteLine("N1*DE*Osprey Europe*9*Our GLN~");
+                    streamWriter.WriteLine("N1*BP*" + row["InvoicePostalAddress"] + "*91*" + row["CustomerAccountRef"] + "~");
+                    streamWriter.WriteLine("N1*BT*" + row["InvoicePostalAddress"] + "*91*CustomerAccountRefAgain?~");
+                    streamWriter.WriteLine("N3*" + row["InvoiceAddressLine1"] + "*" + row["InvoiceAddressLine2"] + "~");
+                    streamWriter.WriteLine("N4*" + row["InvoiceAddressLine3"] + "*" + row["InvoiceAddressLine4"] + "*" + row["InvoicePostCode"] + "*" + row["InvoiceCountry"] + "~");
+                    streamWriter.WriteLine("N1*ST*" + row["DelPostalName"] + "*91*CustomerAccountRefAgain?~");
+                    streamWriter.WriteLine("N3*" + row["DelAddressLine1"] + "*" + row["DelAddressLine2"] + "~");
+                    streamWriter.WriteLine("N4*" + row["DelAddressLine3"] + "*" + row["DelAddressLine4"] + "*" + row["DelPostCode"] + "*" + row["DelCountryCode"] + "~");
+                    streamWriter.WriteLine("G62*02*" + row["OrderRequestedDate"] + "~");
+                    con.Close();
+
+                    int total = WriteItemsGB(con, streamWriter, id, row["WHOrderNumber"].ToString());
+                    streamWriter.WriteLine("W79*" + total + "~");
+
+                    WritePLFooter(streamWriter, data.Rows.Count, total + 15);
+
+                    streamWriter.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                SharedFunctions.Writefile("Write order body for Great Bear failed: " + ex.Message, "");
+                SharedFunctions.ErrorAlert("Write order body for GB ", ex);
+            }
         }
         #endregion
 
         #region Write Order Lines
+        public static int WriteItemsGB(SqlConnection con, StreamWriter sw, string id, string id2)
+        {
+            try
+            {
 
-        #endregion
-
-        #region Write ASN
-
+                DataTable data = SharedFunctions.QueryDB(con, "OSP_WRITE_PRODUCTS_EDI", id, id2);
+                int total = 0;
+                int counter = 1;
+                Console.WriteLine(data.Rows.Count);
+                foreach (DataRow row in data.Rows)
+                {
+                    sw.WriteLine("LX*" + counter + "~");
+                    sw.WriteLine("W01*" + row["Quantity"] + "*Each*" + "row[EAN]" + "*VN*" + row["ProductCode"] + "*BP*******~");
+                    sw.WriteLine("N9*KK*" + counter + "~");
+                    counter += 3;
+                }
+                return total;
+            }
+            catch (Exception ex)
+            {
+                SharedFunctions.Writefile("Write items for Great Bear order failed: " + ex.Message, "");
+                SharedFunctions.ErrorAlert("Write items for GB order ", ex);
+                return -1;
+            }
+        }
         #endregion
 
         #region Write Product List
+        public static void WriteProductListGB(SqlConnection con, string id)
+        {
+            try
+            {
+                DataTable data = SharedFunctions.QueryDB(con, "OSP_Get_Product_List", id);
+                /**
+                 * Retrives the data from the database and then writes it line by line into a file.
+                 */
+                string file = ConfigurationManager.AppSettings["Test"] + "/" + id + "_Product_List.txt";
+                FileStream f = new FileStream(file, FileMode.Create);
+                Encoding utf8WithoutBom = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false);
+                StreamWriter streamWriter = new StreamWriter(f, utf8WithoutBom);
+                string fileName = id + "_Product_List.txt";
+                fileName = fileName.PadRight(35, ' ');
 
+                //int counter = 2;
+
+                foreach (DataRow r in data.Rows)
+                {
+                    WritePLHeader(streamWriter, "846");
+
+                    streamWriter.WriteLine("LIN***" + r[0].ToString() + "~");
+                    streamWriter.WriteLine("PID*****" + r[1].ToString() + "~");
+                    streamWriter.WriteLine("QTY**" + r[2].ToString() + "EA~");
+
+                    WritePLFooter(streamWriter, data.Rows.Count, 8);
+                }
+                streamWriter.Close();
+            }
+            catch (Exception ex)
+            {
+                SharedFunctions.Writefile("Write Product List Failed to process, error message is: " + ex.Message, "");
+                SharedFunctions.ErrorAlert("Write Product List", ex);
+            }
+
+        }
+        #endregion
+
+        #region Product List Header
+        public static void WritePLHeader(StreamWriter sw, string MessageType)
+        {
+            try
+            {
+                sw.WriteLine("ISA*00*          *00*          *01*Osprey Europe  *ZZ*GreatBear      *" + DateTime.Now.ToString("dd/MM/yy") + "*" + DateTime.Now.ToString("hh:mm") + "*U*InterchangeControlVersionNo*InterchangeControlNo*0*P~");
+                sw.WriteLine("GS*IB*Osprey Europe*GreatBear*" + DateTime.Now.ToString("yyyy/MM/dd") + "*" + DateTime.Now.ToString("hh:mm") + "*GroupControl*X*VersionRelease~");
+                sw.WriteLine("ST*" + MessageType + "*transactionSetControlNo~");
+                sw.WriteLine("BIA*C~");
+            }
+            catch (Exception ex)
+            {
+                SharedFunctions.Writefile("Write header for Great Bear failed: " + ex.Message, "");
+                SharedFunctions.ErrorAlert("Write Header for GB", ex);
+            }
+        }
+        #endregion
+
+        #region Product List Footer
+        public static void WritePLFooter(StreamWriter sw, int NoOfSegs, int lines)
+        {
+            try
+            {
+                sw.WriteLine("SE*" + NoOfSegs + "*transactionSetControlNo~");
+                sw.WriteLine("GE*" + NoOfSegs + "*GroupControlNo~");
+                sw.WriteLine("IEA*" + (lines + 3) + "*InterchancgeControlNo~");
+            }
+            catch (Exception ex)
+            {
+                SharedFunctions.Writefile("Write footer for Great Bear failed: " + ex.Message, "");
+                SharedFunctions.ErrorAlert("Write footer for GB", ex);
+            }
+        }
+        #endregion
+
+        #region Write Purchase Order
+        public static void WritePOGB(SqlConnection con, string id)
+        {
+            try
+            {
+                DataTable data = SharedFunctions.QueryDB(con, "OSP_GET_PO_DATA", id);
+                /**
+                 * Retrives the data from the database and then writes it line by line into a file.
+                 */
+                string file = ConfigurationManager.AppSettings["Test"] + "/PO" + id + ".txt";
+                FileStream f = new FileStream(file, FileMode.Create);
+                Encoding utf8WithoutBom = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false);
+                StreamWriter streamWriter = new StreamWriter(f, utf8WithoutBom);
+                string fileName = "PO" + id + ".txt";
+                int counter = 1;
+
+                WritePLHeader(streamWriter, fileName);
+
+                foreach (DataRow row in data.Rows)
+                {
+                    streamWriter.WriteLine("BSN*00*ReciptNumber*" + row["OrderRequestedDate"] + "~");
+                    streamWriter.WriteLine("N1****" + row["SuppAccRef"] + "~");
+                    streamWriter.WriteLine("HL*" + counter + "~");
+                    streamWriter.WriteLine("LIN*1**" + row["StockItemCode"] + "~");
+                    streamWriter.WriteLine("SN1**" + row["Quantity"] + "*" + "row[EAN]" + "~");
+                    streamWriter.WriteLine("CTT*" + counter + "*" + (counter * 6) + "~");
+                    counter++;
+                }
+
+                WritePLFooter(streamWriter, data.Rows.Count, 8);
+                streamWriter.Close();
+            }
+            catch (Exception ex)
+            {
+                SharedFunctions.Writefile("Write PO for Great Bear failed: " + ex.Message, "");
+                SharedFunctions.ErrorAlert("Write PO for GB", ex);
+            }
+        }
         #endregion
         #endregion
     }

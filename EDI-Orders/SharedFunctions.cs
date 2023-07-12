@@ -399,26 +399,33 @@ namespace EDI_Orders
                     foreach (var file in files)
                     {
                         string name = Path.GetFileName(file);
-                        try
+                        if (CompleteCheck(file))
                         {
-                            if (file.Substring(3, 0) == "WEB")
+                            try
                             {
-                                File.Move(file, ConfigurationManager.AppSettings["KTNSTKMVTProcessed"] + "/" + name);
-                                Console.WriteLine(file + " Was Processed and moved to EU network Successfully.");
+                                if (file.Substring(3, 0) == "WEB")
+                                {
+                                    File.Move(file, ConfigurationManager.AppSettings["KTNSTKMVTProcessed"] + "/" + name);
+                                    Console.WriteLine(file + " Was Processed and moved to EU network Successfully.");
+                                }
+                                else
+                                {
+                                    Console.WriteLine(file);
+                                    KTN.ProcessKTN(file, Orbis);
+                                    File.Move(file, ConfigurationManager.AppSettings["KTNSTKMVTProcessed"] + "/" + name);
+                                    Console.WriteLine(file + " Was Processed Successfully.");
+                                }
                             }
-                            else
+                            catch (Exception ex)
                             {
-                                Console.WriteLine(file);
-                                KTN.ProcessKTN(file, Orbis);
-                                File.Move(file, ConfigurationManager.AppSettings["KTNSTKMVTProcessed"] + "/" + name);
-                                Console.WriteLine(file + " Was Processed Successfully.");
+                                Writefile("File Quarantined: " + name, ex.Message);
+                                ErrorAlert("Read STKMVT", ex);
+                                File.Move(file, ConfigurationManager.AppSettings["KTNSTKMVTQuarantined"] + "/" + name + "&" + DateTime.Now);
                             }
                         }
-                        catch (Exception ex)
+                        else
                         {
-                            Writefile("File Quarantined: " + name, ex.Message);
-                            ErrorAlert("Read STKMVT", ex);
-                            File.Move(file, ConfigurationManager.AppSettings["KTNSTKMVTQuarantined"] + "/" + name);
+                            File.Move(file, ConfigurationManager.AppSettings["KTNSTKMVTQuarantined"] + "/" + name + "&" + DateTime.Now);
                         }
                     }
                     break;
@@ -429,26 +436,33 @@ namespace EDI_Orders
                     foreach (var file in files)
                     {
                         string name = Path.GetFileName(file);
-                        try
-                        {
-                            if (file.Substring(3, 0) == "WEB")
+                        if (CompleteCheck(file))
+                        { 
+                            try
                             {
-                                File.Move(file, ConfigurationManager.AppSettings["KTNPPLCONProcessed"] + "/" + name);
-                                Console.WriteLine(file + " Was Processed and moved to EU network Successfully.");
+                                if (file.Substring(3, 0) == "WEB")
+                                {
+                                    File.Move(file, ConfigurationManager.AppSettings["KTNPPLCONProcessed"] + "/" + name);
+                                    Console.WriteLine(file + " Was Processed and moved to EU network Successfully.");
+                                }
+                                else
+                                {
+                                    Console.WriteLine(file);
+                                    KTN.ProcessKTN(file, Orbis);
+                                    File.Move(file, ConfigurationManager.AppSettings["KTNPPLCONProcessed"] + "/" + name);
+                                    Console.WriteLine(file + " Was Processed Successfully.");
+                                }
                             }
-                            else
+                            catch (Exception ex)
                             {
-                                Console.WriteLine(file);
-                                KTN.ProcessKTN(file, Orbis);
-                                File.Move(file, ConfigurationManager.AppSettings["KTNPPLCONProcessed"] + "/" + name);
-                                Console.WriteLine(file + " Was Processed Successfully.");
+                                Writefile("File Quarantined: " + name, ex.Message);
+                                ErrorAlert("Read PPLCON", ex);
+                                File.Move(file, ConfigurationManager.AppSettings["KTNPPLCONQuarantined"] + "/" + name + "&" + DateTime.Now);
                             }
                         }
-                        catch (Exception ex)
+                        else
                         {
-                            Writefile("File Quarantined: " + name, ex.Message);
-                            ErrorAlert("Read PPLCON", ex);
-                            File.Move(file, ConfigurationManager.AppSettings["KTNPPLCONQuarantined"] + "/" + name);
+                            File.Move(file, ConfigurationManager.AppSettings["KTNPPLCONQuarantined"] + "/" + name + "&" + DateTime.Now);
                         }
                     }
                     break;
@@ -459,26 +473,33 @@ namespace EDI_Orders
                     foreach (var file in files)
                     {
                         string name = Path.GetFileName(file);
-                        try
+                        if (CompleteCheck(file))
                         {
-                            if (file.Substring(3, 0) == "WEB")
+                            try
                             {
-                                File.Move(file, ConfigurationManager.AppSettings["KTNRECCONProcessed"] + "/" + name);
-                                Console.WriteLine(file + " Was Processed and moved to EU network Successfully.");
+                                if (file.Substring(3, 0) == "WEB")
+                                {
+                                    File.Move(file, ConfigurationManager.AppSettings["KTNRECCONProcessed"] + "/" + name);
+                                    Console.WriteLine(file + " Was Processed and moved to EU network Successfully.");
+                                }
+                                else
+                                {
+                                    Console.WriteLine(file);
+                                    KTN.ProcessKTN(file, Orbis);
+                                    File.Move(file, ConfigurationManager.AppSettings["KTNRECCONProcessed"] + "/" + name);
+                                    Console.WriteLine(file + " Was Processed Successfully.");
+                                }
                             }
-                            else
+                            catch (Exception ex)
                             {
-                                Console.WriteLine(file);
-                                KTN.ProcessKTN(file, Orbis);
-                                File.Move(file, ConfigurationManager.AppSettings["KTNRECCONProcessed"] + "/" + name);
-                                Console.WriteLine(file + " Was Processed Successfully.");
+                                Writefile("File Quarantined: " + name, ex.Message);
+                                ErrorAlert("Read RECCON", ex);
+                                File.Move(file, ConfigurationManager.AppSettings["KTNRECCONQuarantined"] + "/" + name + "&" + DateTime.Now);
                             }
                         }
-                        catch (Exception ex)
+                        else
                         {
-                            Writefile("File Quarantined: " + name, ex.Message);
-                            ErrorAlert("Read RECCON", ex);
-                            File.Move(file, ConfigurationManager.AppSettings["KTNRECCONQuarantined"] + "/" + name);
+                            File.Move(file, ConfigurationManager.AppSettings["KTNRECCONQuarantined"] + "/" + name + "&" + DateTime.Now);
                         }
                     }
                     break;
@@ -532,6 +553,32 @@ namespace EDI_Orders
             return true;
         }
 
+        #endregion
+
+        #region Complete File Check
+        public static bool CompleteCheck (string file)
+        {
+            int last  = File.ReadAllLines(file).Count();
+            bool Complete = false;
+
+            var temp = File.ReadLines(file).Skip(last-1).Take(1).First();
+
+            Console.WriteLine(temp);
+
+            if (temp.Substring(6,3).Equals("UNT"))
+            {
+                Complete = true;
+            }
+
+            Console.WriteLine(Complete);
+
+            if (Complete == false)
+            {
+                Writefile("File Quaarintined " + file, ": Incomplete File.");
+                ErrorAlert("CompleteCheck,  " + file, new Exception("Incomplete File"));
+            }
+            return Complete;
+        }
         #endregion
     }
 }
