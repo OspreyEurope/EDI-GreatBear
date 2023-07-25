@@ -371,9 +371,9 @@ namespace EDI_Orders
                                 {
                                     BoxID = lines[i].Substring(12,10).Trim();
                                 }
-                                else if (lines[i].PadRight(13).Substring(6, 6) == "QTYRLO")
+                                else if (lines[i].PadRight(13).Substring(6, 6) == "QTYSLO")
                                 {
-                                    PalletQty = lines[i].Substring(12, 15);
+                                    PalletQty = (Int32.Parse(PalletQty) + Int32.Parse(lines[i].Substring(12, 15))).ToString();
                                 }
                                 else if (lines[i].PadRight(13).Substring(6,6) == "TRACTR")
                                 {
