@@ -334,7 +334,10 @@ namespace EDI_Orders
                     text = "";
 
                     text = row["Incoterms"].ToString();                                //Section reserved for incoterms
-                    text = text.PadRight(67, ' ');
+                    text = text.PadRight(10, ' ');
+                    text = text + row["DelCity"].ToString().PadRight(173, ' ');
+                    text = text + row["DelCountryCode"].ToString().PadRight( 196, ' ');
+
                     streamWriter.WriteLine("000012ALI" + text.PadLeft(204, ' ') + "");
                     text = "";
 
