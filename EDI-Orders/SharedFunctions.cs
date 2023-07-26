@@ -574,7 +574,7 @@ namespace EDI_Orders
 
             if (Complete == false)
             {
-                Writefile("File Quaarintined " + file, ": Incomplete File.");
+                Writefile("File Quarantined " + file, ": Incomplete File.");
                 ErrorAlert("CompleteCheck,  " + file, new Exception("Incomplete File"));
             }
             return Complete;
