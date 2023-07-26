@@ -1054,7 +1054,7 @@ namespace EDI_Orders
             }
             catch (Exception ex)
             {
-                SharedFunctions.Writefile("Error in ASDV insert");
+                SharedFunctions.Writefile("Error in ASDV insert", "Check logs");
                 SharedFunctions.ErrorAlert("Quarantined due to error in the ASDV: ", ex);
             }
         }
