@@ -450,18 +450,14 @@ namespace EDI_Orders
                                             UpdateTracker.Parameters.AddWithValue("DateShipped", DateShipped);
                                             UpdateTracker.Parameters.AddWithValue("FileName", OriginalFileName);
                                             UpdateTracker.Parameters.AddWithValue("ItemNumber", ItemNumber);
-                                            Console.WriteLine("D");
                                             UpdateTracker.ExecuteNonQuery();
-                                            Console.WriteLine("E");
                                             UpdateTracker.Parameters.Clear();
-                                            Console.WriteLine("C");
                                         }
 
 
 
                                         else if (lines[0].Substring(69, 4) == "PACK")
                                         {
-                                            Console.WriteLine("B.5");
                                             SqlCommand UpdateTracker = new SqlCommand("OSP_UPDATE_TRACKER_PACK", con)
                                             {
                                                 CommandType = CommandType.StoredProcedure
@@ -477,7 +473,6 @@ namespace EDI_Orders
 
                                             UpdateTracker.ExecuteNonQuery();
                                             UpdateTracker.Parameters.Clear();
-                                            Console.WriteLine("C.5");
                                         }
                                     }
                                     catch (Exception ex) { SharedFunctions.Writefile("There was an issue in the updating of the tracker: " + ex.Message, "File Quarantined."); }
@@ -1059,7 +1054,7 @@ namespace EDI_Orders
             }
             catch (Exception ex)
             {
-                SharedFunctions.Writefile("There was an issue: " + ex.Message, "File Moved to PKTN" + type + "Quarantined");
+                SharedFunctions.Writefile("Error in ASDV insert");
                 SharedFunctions.ErrorAlert("Quarantined due to error in the ASDV: ", ex);
             }
         }
