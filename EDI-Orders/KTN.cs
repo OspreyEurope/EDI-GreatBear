@@ -266,7 +266,7 @@ namespace EDI_Orders
                         string BarcodeOnLabel = "";
                         string Carrier = "";
                         string PL = "";
-                        string PalletQty = "";
+                        string PalletQty = "0";
                         string ASDV = "";
                         string SSCC = "";
                         string BoxID = "";
@@ -383,7 +383,7 @@ namespace EDI_Orders
                                     if (PalletQty != "" && ASDV == "AMAZON" && SSCC != "")
                                     {
                                         InsertDESADV(OrderNumber, ItemNumber, PalletQty, SSCC, BoxID, con);
-                                        PalletQty = "";
+                                        PalletQty = "0";
                                         SSCC = "";
                                         BoxID = "";
                                     }
@@ -433,47 +433,56 @@ namespace EDI_Orders
                                         BoxID = "";
                                     }
 
-                                    if (lines[0].Substring(69, 4) == "LOAD")
+                                    try
                                     {
-                                        SqlCommand UpdateTracker = new SqlCommand("OSP_UPDATE_TRACKER_LOAD", con)
+                                        if (lines[0].Substring(69, 4) == "LOAD")
                                         {
-                                            CommandType = CommandType.StoredProcedure
-                                        };
-                                        UpdateTracker.Parameters.AddWithValue("OrderNumber", OrderNumber.Substring(0, 10));
-                                        UpdateTracker.Parameters.AddWithValue("WHOrderNumber", OrderNumber.Substring(10, 6));
-                                        UpdateTracker.Parameters.AddWithValue("ConNumber", ConNumber);
-                                        UpdateTracker.Parameters.AddWithValue("PackedQty", PQty);
-                                        UpdateTracker.Parameters.AddWithValue("Transport", Transporter);
-                                        UpdateTracker.Parameters.AddWithValue("DateShipped", DateShipped);
-                                        UpdateTracker.Parameters.AddWithValue("FileName", OriginalFileName);
-                                        UpdateTracker.Parameters.AddWithValue("ItemNumber", ItemNumber);
+                                            Console.WriteLine("B");
+                                            SqlCommand UpdateTracker = new SqlCommand("OSP_UPDATE_TRACKER_LOAD", con)
+                                            {
+                                                CommandType = CommandType.StoredProcedure
+                                            };
+                                            UpdateTracker.Parameters.AddWithValue("OrderNumber", OrderNumber.Substring(0, 10));
+                                            UpdateTracker.Parameters.AddWithValue("WHOrderNumber", OrderNumber.Substring(10, 6));
+                                            UpdateTracker.Parameters.AddWithValue("ConNumber", ConNumber);
+                                            UpdateTracker.Parameters.AddWithValue("PackedQty", PQty);
+                                            UpdateTracker.Parameters.AddWithValue("Transport", Transporter);
+                                            UpdateTracker.Parameters.AddWithValue("DateShipped", DateShipped);
+                                            UpdateTracker.Parameters.AddWithValue("FileName", OriginalFileName);
+                                            UpdateTracker.Parameters.AddWithValue("ItemNumber", ItemNumber);
+                                            Console.WriteLine("D");
+                                            UpdateTracker.ExecuteNonQuery();
+                                            Console.WriteLine("E");
+                                            UpdateTracker.Parameters.Clear();
+                                            Console.WriteLine("C");
+                                        }
 
-                                        UpdateTracker.ExecuteNonQuery();
-                                        UpdateTracker.Parameters.Clear();
-                                    }
 
-                                    
 
-                                    else if (lines[0].Substring(69, 4) == "PACK")
-                                    {
-
-                                        SqlCommand UpdateTracker = new SqlCommand("OSP_UPDATE_TRACKER_PACK", con)
+                                        else if (lines[0].Substring(69, 4) == "PACK")
                                         {
-                                            CommandType = CommandType.StoredProcedure
-                                        };
-                                        UpdateTracker.Parameters.AddWithValue("OrderNumber", OrderNumber.Substring(0, 10));
-                                        UpdateTracker.Parameters.AddWithValue("WHOrderNumber", OrderNumber.Substring(10, 6));
-                                        UpdateTracker.Parameters.AddWithValue("ConNumber", ConNumber);
-                                        UpdateTracker.Parameters.AddWithValue("PNPQty", PQty);
-                                        UpdateTracker.Parameters.AddWithValue("Transport", Transporter);
-                                        UpdateTracker.Parameters.AddWithValue("DatePNP", DatePacked);
-                                        UpdateTracker.Parameters.AddWithValue("FileName", OriginalFileName);
-                                        UpdateTracker.Parameters.AddWithValue("ItemNumber", ItemNumber);
+                                            Console.WriteLine("B.5");
+                                            SqlCommand UpdateTracker = new SqlCommand("OSP_UPDATE_TRACKER_PACK", con)
+                                            {
+                                                CommandType = CommandType.StoredProcedure
+                                            };
+                                            UpdateTracker.Parameters.AddWithValue("OrderNumber", OrderNumber.Substring(0, 10));
+                                            UpdateTracker.Parameters.AddWithValue("WHOrderNumber", OrderNumber.Substring(10, 6));
+                                            UpdateTracker.Parameters.AddWithValue("ConNumber", ConNumber);
+                                            UpdateTracker.Parameters.AddWithValue("PNPQty", PQty);
+                                            UpdateTracker.Parameters.AddWithValue("Transport", Transporter);
+                                            UpdateTracker.Parameters.AddWithValue("DatePNP", DatePacked);
+                                            UpdateTracker.Parameters.AddWithValue("FileName", OriginalFileName);
+                                            UpdateTracker.Parameters.AddWithValue("ItemNumber", ItemNumber);
 
-                                        UpdateTracker.ExecuteNonQuery();
-                                        UpdateTracker.Parameters.Clear();
+                                            UpdateTracker.ExecuteNonQuery();
+                                            UpdateTracker.Parameters.Clear();
+                                            Console.WriteLine("C.5");
+                                        }
                                     }
-                                    
+                                    catch (Exception ex) { SharedFunctions.Writefile("There was an issue in the updating of the tracker: " + ex.Message, "File Quarantined."); }
+
+
 
                                 }
                             }
@@ -1031,19 +1040,28 @@ namespace EDI_Orders
         #region PPLCON_ASDV
         public static void InsertDESADV (string orderNumber, string Item, string palletQty, string SSCC, string BoxID, SqlConnection con)
         {
-            SqlCommand InsertPallet = new SqlCommand("OSP_INSERT_PPLCON_PALLET", con)
+            try
             {
-                CommandType = CommandType.StoredProcedure
-            };
+                SqlCommand InsertPallet = new SqlCommand("OSP_INSERT_PPLCON_PALLET", con)
+                {
+                    CommandType = CommandType.StoredProcedure
+                };
+                Console.WriteLine("Here");
 
-            InsertPallet.Parameters.AddWithValue("OrderNumber",orderNumber);
-            InsertPallet.Parameters.AddWithValue("ItemNumber",Item);
-            InsertPallet.Parameters.AddWithValue("PalletQty",palletQty);
-            InsertPallet.Parameters.AddWithValue("SSCC", SSCC);
-            InsertPallet.Parameters.AddWithValue("BoxID", BoxID);
+                InsertPallet.Parameters.AddWithValue("OrderNumber", orderNumber);
+                InsertPallet.Parameters.AddWithValue("ItemNumber", Item);
+                InsertPallet.Parameters.AddWithValue("PalletQty", palletQty);
+                InsertPallet.Parameters.AddWithValue("SSCC", SSCC);
+                InsertPallet.Parameters.AddWithValue("BoxID", BoxID);
 
-            InsertPallet.ExecuteNonQuery();
-            InsertPallet.Parameters.Clear();
+                InsertPallet.ExecuteNonQuery();
+                InsertPallet.Parameters.Clear();
+            }
+            catch (Exception ex)
+            {
+                SharedFunctions.Writefile("There was an issue: " + ex.Message, "File Moved to PKTN" + type + "Quarantined");
+                SharedFunctions.ErrorAlert("Quarantined due to error in the ASDV: ", ex);
+            }
         }
         #endregion
     }
