@@ -428,7 +428,7 @@ namespace EDI_Orders
                                     if (PalletQty != "" && ASDV == "AMAZON" && SSCC != "")
                                     {
                                         InsertDESADV(OrderNumber, ItemNumber, PalletQty, SSCC, BoxID, con);
-                                        PalletQty = "";
+                                        PalletQty = "0";
                                         SSCC = "";
                                         BoxID = "";
                                     }
