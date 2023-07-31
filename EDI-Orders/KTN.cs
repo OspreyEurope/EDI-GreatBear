@@ -380,7 +380,7 @@ namespace EDI_Orders
                                     Carrier = lines[i].Substring(12, 35);
                                     Console.WriteLine(PalletQty != "" && ASDV == "AMAZON" && SSCC != "");
 
-                                    if (PalletQty != "0" && ASDV == "AMAZON" && SSCC != "")
+                                    if (PalletQty != "0" && ASDV == "AMAZON" && SSCC != "" && PL == "LOAD")
                                     {
                                         InsertDESADV(OrderNumber, ItemNumber, PalletQty, SSCC, BoxID, con);
                                         PalletQty = "0";
