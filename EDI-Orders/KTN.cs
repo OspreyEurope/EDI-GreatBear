@@ -423,15 +423,7 @@ namespace EDI_Orders
 
 
                                     storedProcedure.ExecuteNonQuery();
-                                    storedProcedure.Parameters.Clear();
-
-                                    if (PalletQty != "0" && ASDV == "AMAZON" && SSCC != "")
-                                    {
-                                        InsertDESADV(OrderNumber, ItemNumber, PalletQty, SSCC, BoxID, con);
-                                        PalletQty = "0";
-                                        SSCC = "";
-                                        BoxID = "";
-                                    }
+                                    storedProcedure.Parameters.Clear()
 
                                     try
                                     {
