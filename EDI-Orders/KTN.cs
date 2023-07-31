@@ -380,7 +380,7 @@ namespace EDI_Orders
                                     Carrier = lines[i].Substring(12, 35);
                                     Console.WriteLine(PalletQty != "" && ASDV == "AMAZON" && SSCC != "");
 
-                                    if (PalletQty != "" && ASDV == "AMAZON" && SSCC != "")
+                                    if (PalletQty != "0" && ASDV == "AMAZON" && SSCC != "")
                                     {
                                         InsertDESADV(OrderNumber, ItemNumber, PalletQty, SSCC, BoxID, con);
                                         PalletQty = "0";
@@ -425,7 +425,7 @@ namespace EDI_Orders
                                     storedProcedure.ExecuteNonQuery();
                                     storedProcedure.Parameters.Clear();
 
-                                    if (PalletQty != "" && ASDV == "AMAZON" && SSCC != "")
+                                    if (PalletQty != "0" && ASDV == "AMAZON" && SSCC != "")
                                     {
                                         InsertDESADV(OrderNumber, ItemNumber, PalletQty, SSCC, BoxID, con);
                                         PalletQty = "0";
