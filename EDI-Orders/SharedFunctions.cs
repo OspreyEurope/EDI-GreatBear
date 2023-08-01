@@ -418,13 +418,13 @@ namespace EDI_Orders
                         {
                             Writefile("File Quarantined: " + name, ex.Message);
                             ErrorAlert("Read STKMVT", ex);
-                            File.Move(file, ConfigurationManager.AppSettings["KTNSTKMVTQuarantined"] + "/" + name);
+                            File.Move(file, ConfigurationManager.AppSettings["KTNSTKMVTQuarantined"] + "/" + name + "&" + DateTime.Now);
                         }
                     }
                     break;
 
                 case "PPLCON":
-                    files = Directory.GetFiles(ConfigurationManager.AppSettings["KTNPPLCONHolding"]); //Temp for testing
+                    files = Directory.GetFiles(ConfigurationManager.AppSettings["Test"]); //Temp for testing
                     Console.WriteLine(files.Length);
                     foreach (var file in files)
                     {
@@ -433,14 +433,14 @@ namespace EDI_Orders
                         {
                             if (file.Substring(3, 0) == "WEB")
                             {
-                                File.Move(file, ConfigurationManager.AppSettings["KTNPPLCONProcessed"] + "/" + name);
+                                File.Move(file, ConfigurationManager.AppSettings["Test"] + "/" + name);
                                 Console.WriteLine(file + " Was Processed and moved to EU network Successfully.");
                             }
                             else
                             {
                                 Console.WriteLine(file);
                                 KTN.ProcessKTN(file, Orbis);
-                                File.Move(file, ConfigurationManager.AppSettings["KTNPPLCONProcessed"] + "/" + name);
+                                File.Move(file, ConfigurationManager.AppSettings["Test"] + "/" + name);
                                 Console.WriteLine(file + " Was Processed Successfully.");
                             }
                         }
@@ -448,7 +448,7 @@ namespace EDI_Orders
                         {
                             Writefile("File Quarantined: " + name, ex.Message);
                             ErrorAlert("Read PPLCON", ex);
-                            File.Move(file, ConfigurationManager.AppSettings["KTNPPLCONQuarantined"] + "/" + name);
+                            File.Move(file, ConfigurationManager.AppSettings["Test"] + "/" + name + "&" + DateTime.Now);
                         }
                     }
                     break;
@@ -478,7 +478,7 @@ namespace EDI_Orders
                         {
                             Writefile("File Quarantined: " + name, ex.Message);
                             ErrorAlert("Read RECCON", ex);
-                            File.Move(file, ConfigurationManager.AppSettings["KTNRECCONQuarantined"] + "/" + name);
+                            File.Move(file, ConfigurationManager.AppSettings["KTNRECCONQuarantined"] + "/" + name + "&" + DateTime.Now);
                         }
                     }
                     break;
@@ -523,7 +523,7 @@ namespace EDI_Orders
                     EnableSsl = false,
                     Port = 25
                 };
-                smtp.Send(mail);
+                //smtp.Send(mail);
             }
         }
 

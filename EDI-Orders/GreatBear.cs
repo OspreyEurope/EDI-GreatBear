@@ -4,15 +4,17 @@ using System.Data;
 using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace EDI_Orders
 {
     internal class GreatBear
     {
         #region Process GreatBear
-        public static void ProcessGreatBear (string file, SqlConnection con)
+        public static void ProcessGreatBear(string file, SqlConnection con)
         {
             try
             {
@@ -23,138 +25,22 @@ namespace EDI_Orders
                 {
                     #region 846 - STKBAL
                     case "846":    //Items Message
-                        foreach (string[] s in File)
-                        {
-                            foreach (string l in s)
-                            {
-                                Console.WriteLine(l);
-                            }
-                            Console.WriteLine("Next Line");
-                        }
+                        WriteSTKBAL(con, File);
                         break;
                     #endregion
                     #region 944 - RECCON
                     case "944":    //Inbound Receipt Confirmation Message
-                        foreach (string[] s in File)
-                        {
-                            foreach (string l in s)
-                            {
-                                Console.WriteLine(l);
-                            }
-                            Console.WriteLine("Next Line");
-                        }
+                        WriteRECCON(con, File, file);
                         break;
                     #endregion
                     #region 945 - PPLCON
                     case "945":    //Assembly Order Message
-                        con.Open();
-                        SqlCommand storedProcedure = new SqlCommand("OSP_INSERT_PPLCON", con);
-                        storedProcedure.CommandType = CommandType.StoredProcedure;
-                        int p = 0;
-                        string Warehouse = "";
-                        string DateRecieved = "";
-                        string OrderNumber = "";
-                        string Dateshipped = "";
-                        string CustomerOrderNumber = "";
-                        string transporter = "";
-                        string ID = "";
-
-                        foreach (string[] s in File)
-                        {
-                            string header = s[0].Trim();
-                            switch (header)
-                            {
-                                case "ISA":
-                                    Warehouse = s[6];
-                                    DateRecieved = s[9];
-                                    ID = s[10];
-                                    break;
-                                case "W27":
-                                    transporter = s[1];
-                                    break;
-                                case "W06":
-                                    OrderNumber = s[2];
-                                    Dateshipped = s[3];
-                                    CustomerOrderNumber = s[6];
-                                    break;
-                            }
-
-                            if ((header == "LX" && p > 0) || header == "W03")
-                            {
-                                Console.WriteLine("Now hits insert");
-                                storedProcedure.Parameters.AddWithValue("Warehouse", Warehouse);
-                                storedProcedure.Parameters.AddWithValue("DateReceived", DateRecieved);
-                                storedProcedure.Parameters.AddWithValue("OrderNumber", OrderNumber);
-                                storedProcedure.Parameters.AddWithValue("Dateshipped", Dateshipped);
-                                //storedProcedure.Parameters.AddWithValue("CustomerOrderNumber", CustomerOrderNumber);
-                                storedProcedure.Parameters.AddWithValue("transporter", transporter);
-                                storedProcedure.Parameters.AddWithValue("OriginalFileName", file);
-                                storedProcedure.Parameters.AddWithValue("PL", "PACK");
-                                storedProcedure.Parameters.AddWithValue("ID", ID);
-                                storedProcedure.Parameters.AddWithValue("MessageType", "PPLCON");
-
-                                storedProcedure.ExecuteNonQuery();
-                                storedProcedure.Parameters.Clear();
-                                p++;
-                            }
-                            if (header == "LX")
-                            {
-                                p++;
-                            }
-                            if (header == "N9")
-                            {
-                                if (storedProcedure.Parameters.Contains("CarriertrackingNo"))
-                                {
-
-                                }
-                                else
-                                {
-                                    string[][] info = HandleLine(s);
-                                    foreach (string[] t in info)
-                                    {
-                                        storedProcedure.Parameters.AddWithValue(t[0], t[1]);
-                                    }
-                                }
-                            }
-                            else if (header == "W12")
-                            {
-                                if (storedProcedure.Parameters.Contains("PackedQuantity"))
-                                {
-
-                                }
-                                else
-                                {
-                                    string[][] info = HandleLine(s);
-                                    foreach (string[] t in info)
-                                    {
-                                        storedProcedure.Parameters.AddWithValue(t[0], t[1]);
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                string[][] info = HandleLine(s);
-                                foreach (string[] t in info)
-                                {
-                                    storedProcedure.Parameters.AddWithValue(t[0], t[1]);
-                                }
-                            }
-                        }
-
-
-                        con.Close();
+                        WritePPLCON(con, File, file);
                         break;
                     #endregion
                     #region 947 - STKMVT
                     case "947":     //Stock adjust and status checks
-                        foreach (string[] s in File)
-                        {
-                            foreach (string l in s)
-                            {
-                                Console.WriteLine(l);
-                            }
-                            Console.WriteLine("Next Line");
-                        }
+                        WriteSTKMVT(con, File, file);
                         break;
                     #endregion
                     #region 997
@@ -174,7 +60,7 @@ namespace EDI_Orders
 
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine("Error: " + ex);
             }
@@ -195,7 +81,7 @@ namespace EDI_Orders
             string[][] result = new string[15][];
             Console.WriteLine(line[0].Trim());
             string header = line[0].Trim();
-            switch(header)
+            switch (header)
             {
                 case "ISA":
                     //result[0] = new string[] { "Warehouse", line[6]};
@@ -217,13 +103,13 @@ namespace EDI_Orders
                     result[0] = new string[] { "Quantity", line[2] };
                     break;
                 case "CTT":
-                                                                                       
+
                     break;
                 case "W17":
 
                     break;
                 case "W07":
-                    result[0] = new string[] {"QuantityReceived", line[1] };
+                    result[0] = new string[] { "QuantityReceived", line[1] };
                     break;
                 case "N1":
 
@@ -300,6 +186,314 @@ namespace EDI_Orders
             }
 
             return vals;
+        }
+        #endregion
+
+        #region Write PPLCON
+        public static void WritePPLCON(SqlConnection con, string[][] File, string file)
+        {
+            con.Open();
+            SqlCommand storedProcedure = new SqlCommand("OSP_INSERT_PPLCON", con)
+            {
+                CommandType = CommandType.StoredProcedure
+            };
+            int p = 0;
+            string Warehouse = "";
+            string DateRecieved = "";
+            string OrderNumber = "";
+            string Dateshipped = "";
+            string CustomerOrderNumber = "";
+            string transporter = "";
+            string ID = "";
+
+            foreach (string[] s in File)
+            {
+                string header = s[0].Trim();
+                switch (header)
+                {
+                    case "ISA":
+                        Warehouse = s[6];
+                        if (Warehouse.Equals("GreatBear"))
+                        {
+                            Warehouse = "GBD";
+                        }
+                        DateRecieved = s[9];
+                        ID = s[10];
+                        break;
+                    case "W27":
+                        transporter = s[1];
+                        break;
+                    case "W06":
+                        OrderNumber = s[2];
+                        Dateshipped = s[3];
+                        CustomerOrderNumber = s[6];
+                        break;
+                }
+
+                if ((header == "LX" && p > 0) || header == "W03")
+                {
+                    Console.WriteLine("Now hits insert");
+                    storedProcedure.Parameters.AddWithValue("Warehouse", Warehouse);
+                    storedProcedure.Parameters.AddWithValue("DateReceived", DateRecieved);
+                    storedProcedure.Parameters.AddWithValue("OrderNumber", OrderNumber);
+                    storedProcedure.Parameters.AddWithValue("Dateshipped", Dateshipped);
+                    //storedProcedure.Parameters.AddWithValue("CustomerOrderNumber", CustomerOrderNumber);
+                    storedProcedure.Parameters.AddWithValue("transporter", transporter);
+                    storedProcedure.Parameters.AddWithValue("OriginalFileName", file);
+                    storedProcedure.Parameters.AddWithValue("PL", "PACK");
+                    storedProcedure.Parameters.AddWithValue("ID", ID);
+                    storedProcedure.Parameters.AddWithValue("MessageType", "PPLCON");
+
+                    storedProcedure.ExecuteNonQuery();
+                    storedProcedure.Parameters.Clear();
+                    p++;
+                }
+                if (header == "LX")
+                {
+                    p++;
+                }
+                if (header == "N9")
+                {
+                    if (storedProcedure.Parameters.Contains("CarriertrackingNo"))
+                    {
+
+                    }
+                    else
+                    {
+                        string[][] info = HandleLine(s);
+                        foreach (string[] t in info)
+                        {
+                            storedProcedure.Parameters.AddWithValue(t[0], t[1]);
+                        }
+                    }
+                }
+                else if (header == "W12")
+                {
+                    if (storedProcedure.Parameters.Contains("PackedQuantity"))
+                    {
+
+                    }
+                    else
+                    {
+                        string[][] info = HandleLine(s);
+                        foreach (string[] t in info)
+                        {
+                            storedProcedure.Parameters.AddWithValue(t[0], t[1]);
+                        }
+                    }
+                }
+                else
+                {
+                    string[][] info = HandleLine(s);
+                    foreach (string[] t in info)
+                    {
+                        storedProcedure.Parameters.AddWithValue(t[0], t[1]);
+                    }
+                }
+            }
+            con.Close();
+        }
+        #endregion
+
+        #region Write STKBAL
+        public static void WriteSTKBAL(SqlConnection con, string[][] File)
+        {
+            con.Open();
+            SqlCommand storedProcedure = new SqlCommand("OSP_INSERT_STKBAL", con)
+            {
+                CommandType = CommandType.StoredProcedure
+            };
+
+            string ItemNumber = "";
+            string ItemDescription = "";
+            string Qty = "";
+            string date = "";
+
+            foreach (string[] s in File)
+            {
+                if ((ItemNumber != "") && (Qty != ""))
+                {
+                    storedProcedure.Parameters.AddWithValue("ItemDescription", ItemDescription);
+                    storedProcedure.Parameters.AddWithValue("Qty", Qty);
+                    storedProcedure.Parameters.AddWithValue("ItemNumber", ItemNumber);
+                    storedProcedure.Parameters.AddWithValue("DateOfMovement", date);
+                    storedProcedure.Parameters.AddWithValue("Warehouse", "GBD");
+                    storedProcedure.ExecuteNonQuery();
+                    storedProcedure.Parameters.Clear();
+
+                    ItemNumber = "";
+                    ItemDescription = "";
+                    Qty = "";
+                    date = "";
+                }
+                else
+                {
+                    switch (s[0])
+                    {
+                        case "ISA":
+                            date = s[9].ToString();
+                            break;
+                        case "LIN":
+                            ItemNumber = s[3].ToString();
+                            break;
+                        case "QTY":
+                            Qty = s[2].ToString();
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+        }
+        #endregion
+
+        #region Write STKMVT
+        public static void WriteSTKMVT(SqlConnection con, string[][] File, string file)
+        {
+            con.Open();
+            SqlCommand storedProcedure = new SqlCommand("OSP_INSERT_STOCK_MOVEMENT", con)
+            {
+                CommandType = CommandType.StoredProcedure
+            };
+
+            string Warehouse = File[0][6];
+            string DateRecieved = File[1][4];
+            string MessageType = File[2][1];
+
+            storedProcedure.Parameters.AddWithValue("MessageType", MessageType);
+            storedProcedure.Parameters.AddWithValue("DateRecieved", DateRecieved);
+            storedProcedure.Parameters.AddWithValue("Warehouse", Warehouse);
+
+            storedProcedure.ExecuteNonQuery();
+            storedProcedure.Parameters.Clear();
+
+            WRiteSTKMVTItems(con, File, DateRecieved);
+        }
+        #endregion
+
+        #region STKMVT Items
+        public static void WRiteSTKMVTItems(SqlConnection con, string[][] File, string Date)
+        {
+            con.Open();
+            SqlCommand storedProcedure = new SqlCommand("OSP_INSERT_ITEMS_FOR_STKMVT", con)
+            {
+                CommandType = CommandType.StoredProcedure
+            };
+
+            string ItemNumber = "";
+            string Quantity = "";
+            string StockMovementType = "";
+            string TypeOfOperation = "";
+            string Reason = "";
+
+            foreach (string[] s in File)
+            {
+                if ((ItemNumber != "") && (Quantity != ""))
+                {
+                    storedProcedure.Parameters.AddWithValue("ItemNumber", ItemNumber);
+                    storedProcedure.Parameters.AddWithValue("Quantity", Quantity);
+                    storedProcedure.Parameters.AddWithValue("StockMovementType", StockMovementType);
+                    storedProcedure.Parameters.AddWithValue("TypeOfOperation", TypeOfOperation);
+                    storedProcedure.Parameters.AddWithValue("Reason", Reason);
+                    storedProcedure.Parameters.AddWithValue("DateOfMovement", Date);
+
+                    storedProcedure.ExecuteNonQuery();
+                    storedProcedure.Parameters.Clear();
+
+                    ItemNumber = "";
+                    Quantity = "";
+                    StockMovementType = "";
+                    TypeOfOperation = "";
+                    Reason = "";
+                }
+
+                switch (s[0])
+                {
+                    case "W19":
+                        ItemNumber = s[6];
+                        Quantity = s[2];
+                        TypeOfOperation = s[1];
+                        break;
+                    case "N9":
+                        switch (s[1])
+                        {
+                            case "ZZ":
+                                StockMovementType = s[2];
+                                break;
+                            case "TD":
+                                Reason = s[2];
+                                break;
+                        }
+                        break;
+                }
+            }
+        }    
+        #endregion
+
+        #region Write RECCON
+        public static void WriteRECCON(SqlConnection con, string[][] File, string file)
+        {
+            con.Open();
+            SqlCommand storedProcedure = new SqlCommand("OSP_INSERT_RECCON", con)
+            {
+                CommandType = CommandType.StoredProcedure
+            };
+
+            string Warehouse = File[0][6];
+            string DateRecieved = File[0][9];
+            string MessageType = File[2][1];
+            string CustomerReferenceTransport = File[3][8];
+            //string TransportInbound = "";
+            //string InboundDeliveryType = "";
+            //string TransporterName = "";
+            //string SupplierName = "";
+
+
+            storedProcedure.Parameters.AddWithValue("MessageType", MessageType);
+            storedProcedure.Parameters.AddWithValue("DateRecieved", DateRecieved);
+            storedProcedure.Parameters.AddWithValue("Warehouse", Warehouse);
+            storedProcedure.Parameters.AddWithValue("OriginalFileName", file);
+            storedProcedure.Parameters.AddWithValue("CustomerReferenceTransport", CustomerReferenceTransport);
+
+            storedProcedure.ExecuteNonQuery();
+            storedProcedure.Parameters.Clear();
+        }
+        #endregion
+
+        #region RECCON Items
+        public static void WriteRECCONITEMS(SqlConnection con, string[][] File)
+        {
+            con.Open();
+            SqlCommand storedProcedure = new SqlCommand("OSP_INSERT_ITEMS_FOR_RECCON", con)
+            {
+                CommandType = CommandType.StoredProcedure
+            };
+            string ItemNumber = "";
+            //string ItemDescription = "";
+            string RecievedQuantity = "";
+            foreach (string[] s in File)
+            {
+                switch (s[0])
+                {
+                    case "W07":
+                        ItemNumber = s[4];
+                        RecievedQuantity = s[1];
+                        break;
+                } 
+
+                if ((ItemNumber != "") && (RecievedQuantity != ""))
+                {
+                    storedProcedure.Parameters.AddWithValue("ItemNumber", ItemNumber);
+                    storedProcedure.Parameters.AddWithValue("RecievedQuantity", RecievedQuantity);
+
+                    storedProcedure.ExecuteNonQuery();
+                    storedProcedure.Parameters.Clear();
+
+                    ItemNumber = "";
+                    //ItemDescription = "";
+                    RecievedQuantity = "";
+                }
+            }
         }
         #endregion
     }

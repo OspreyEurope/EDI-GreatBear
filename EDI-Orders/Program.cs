@@ -70,7 +70,7 @@ namespace EDI_Orders
                     {
                         #region Testing Wite File
                         case "WriteOrder":
-                            EDIWrite.WriteOrder(Orbis, "0000467716"); 
+                            EDIWrite.WriteOrder(Orbis, "0000504308"); 
                             break;
                         case "WriteProductList":
                             EDIWrite.WriteProductList(OERA, "100994002");
@@ -100,7 +100,18 @@ namespace EDI_Orders
                             SharedFunctions.FileCheck(choice);
                             break;
                         #endregion
-
+                        #region GBD
+                        case "940":
+                            EDIWrite.WriteOrderGB(Orbis, "0000410684");
+                            EDIWrite.WriteOrderGB(Orbis, "0000460384");
+                            break;
+                        case "846":
+                            EDIWrite.WriteProductListGB(OERA, "60019798");
+                            break;
+                        case "856":
+                            EDIWrite.WritePOGB(Orbis, "0000024386");
+                            break;
+                        #endregion
                         #region GBD
                         case "944":
                             GreatBear.ProcessGreatBear("C:\\Bespoke\\EDI\\GreatBearSamples\\944.txt", Orbis);
