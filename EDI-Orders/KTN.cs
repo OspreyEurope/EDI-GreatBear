@@ -17,12 +17,12 @@ namespace EDI_Orders
     internal class KTN
     {
         #region ProcessKTN
-        public static void ProcessKTN (string file,SqlConnection con)
+        public static void ProcessKTN(string file, SqlConnection con)
         {
-            
+
             string SP = "";
             string OrderType = File.ReadAllLines(file)[0];
-            string Decision = OrderType.Substring(29,20);
+            string Decision = OrderType.Substring(29, 20);
             string type = "";
 
             /**
@@ -184,7 +184,7 @@ namespace EDI_Orders
                                 //storedProcedure.Parameters.Clear();
                                 con.Close();
                                 break;
-                            #endregion
+                                #endregion
                         }
                         break;
                     #endregion
@@ -208,16 +208,16 @@ namespace EDI_Orders
                             switch (segment)
                             {
                                 case "FAC":
-                                    temp = WriteRECCONHeader(con, storedProcedure,lines,linePos,file,SP);
+                                    temp = WriteRECCONHeader(con, storedProcedure, lines, linePos, file, SP);
                                     break;
                                 case "LIN":
-                                    linePos = WriteRECCONItems(con,lines,linePos,temp);
+                                    linePos = WriteRECCONItems(con, lines, linePos, temp);
                                     break;
                                 case "UNT":
                                     Console.WriteLine("Made it to the end of the file");
-                                        break;
+                                    break;
                                 default:
-                                    
+
                                     break;
                             }
                             linePos++;
@@ -276,7 +276,7 @@ namespace EDI_Orders
                         /**
                          * This gets the length of the file and then cycles through the file reading each line.
                          */
-                        
+
                         for (int i = 0; i < (lineCount - 1); i++)
                         {
                             string[][] t = ReadKTN(lines[i]);
@@ -357,7 +357,7 @@ namespace EDI_Orders
                                 }
                                 else if (lines[i].PadRight(13).Substring(6, 5) == "MEANW")
                                 {
-                                   
+
                                 }
                                 else if (lines[i].PadRight(13).Substring(6, 6) == "NADDES")
                                 {
@@ -367,21 +367,24 @@ namespace EDI_Orders
                                 {
                                     SSCC = lines[i].Substring(12, 35).Trim();
                                 }
-                                else if (lines[i].PadRight(13).Substring(6,6) == "TRACOL")
+                                else if (lines[i].PadRight(13).Substring(6, 6) == "TRACOL")
                                 {
-                                    BoxID = lines[i].Substring(12,10).Trim();
+                                    BoxID = lines[i].Substring(12, 10).Trim();
                                 }
                                 else if (lines[i].PadRight(13).Substring(6, 6) == "QTYSLO")
                                 {
                                     PalletQty = (Int32.Parse(PalletQty) + Int32.Parse(lines[i].Substring(12, 15))).ToString();
                                 }
-                                else if (lines[i].PadRight(13).Substring(6,6) == "TRACTR")
+                                else if (lines[i].PadRight(13).Substring(6, 6) == "TRACTR")
                                 {
                                     Carrier = lines[i].Substring(12, 35);
-                                    Console.WriteLine(PalletQty != "" && ASDV == "AMAZON" && SSCC != "");
+                                    //Console.WriteLine(ASDV + " " + PalletQty + " " + PL + " " + SSCC + " " + ItemNumber);
+                                    //Console.WriteLine(PalletQty != "0" && ASDV == "AMAZON" && SSCC != "" && PL == "LOAD ");
 
-                                    if (PalletQty != "0" && ASDV == "AMAZON" && SSCC != "" && PL == "LOAD")
+
+                                    if ((PalletQty != "0" && ASDV == "AMAZON" && SSCC != "" && PL == "LOAD ") == true)
                                     {
+                                        Console.WriteLine(ASDV + " " + PalletQty + " " + PL + " " + SSCC + " " + ItemNumber);
                                         InsertDESADV(OrderNumber, ItemNumber, PalletQty, SSCC, BoxID, con);
                                         PalletQty = "0";
                                         SSCC = "";
@@ -393,10 +396,10 @@ namespace EDI_Orders
                                  * It adds all the header style information previously gathered and adds it to the stored procedure.
                                  * It then clears the values ready for the next section of data.
                                  */
-                                if ((lines[i].Substring(6, 5) == "MEANW" && (lines[i + 1].Substring(6, 3) == "LIN" || lines[i + 1].Substring(6, 3) == "ALI" || lines[i + 1].Substring(6,3) == "FAC")) || lines[i + 1].Substring(6, 3) == "UNT")
+                                if ((lines[i].Substring(6, 5) == "MEANW" && (lines[i + 1].Substring(6, 3) == "LIN" || lines[i + 1].Substring(6, 3) == "ALI" || lines[i + 1].Substring(6, 3) == "FAC")) || lines[i + 1].Substring(6, 3) == "UNT")
                                 {
                                     storedProcedure.Parameters.AddWithValue("ID", ID);
-                                    storedProcedure.Parameters.AddWithValue("ItemNumber",ItemNumber);
+                                    storedProcedure.Parameters.AddWithValue("ItemNumber", ItemNumber);
                                     storedProcedure.Parameters.AddWithValue("ItemDescrtiption", ItemDescrtiption);
                                     storedProcedure.Parameters.AddWithValue("MessageType", MessageType);
                                     storedProcedure.Parameters.AddWithValue("Warehouse", Warehouse);
@@ -419,17 +422,18 @@ namespace EDI_Orders
                                     storedProcedure.Parameters.AddWithValue("TrackingNo2", TrackingNo2);
                                     storedProcedure.Parameters.AddWithValue("BarcodeOnLabel", BarcodeOnLabel);
                                     storedProcedure.Parameters.AddWithValue("CarrierTrackingNo", Carrier);
-                                    storedProcedure.Parameters.AddWithValue("PL",PL);
+                                    storedProcedure.Parameters.AddWithValue("PL", PL);
 
 
                                     storedProcedure.ExecuteNonQuery();
-                                    storedProcedure.Parameters.Clear()
+                                    storedProcedure.Parameters.Clear();
+
+                                    PalletQty = "0";
 
                                     try
                                     {
                                         if (lines[0].Substring(69, 4) == "LOAD")
                                         {
-                                            Console.WriteLine("B");
                                             SqlCommand UpdateTracker = new SqlCommand("OSP_UPDATE_TRACKER_LOAD", con)
                                             {
                                                 CommandType = CommandType.StoredProcedure
@@ -502,7 +506,7 @@ namespace EDI_Orders
         #endregion
 
         #region Write RECCON Header
-        public static string WriteRECCONHeader (SqlConnection con, SqlCommand storedProcedure, string[] lines, int linePos, string file, string SP)
+        public static string WriteRECCONHeader(SqlConnection con, SqlCommand storedProcedure, string[] lines, int linePos, string file, string SP)
         {
             con.Open();
             /**
@@ -529,7 +533,7 @@ namespace EDI_Orders
             row = lines[linePos + 2];
             result[7] = new string[] { "CustomerReferenceInbound", row.Substring(12, 80) };
             row = lines[linePos + 3];
-            if(row.Substring(6,6) == "RFFCR2")
+            if (row.Substring(6, 6) == "RFFCR2")
             {
                 row = lines[linePos + 4];
                 result[8] = new string[] { "InboundDeliveryType", row.Substring(12, 80) };
@@ -583,7 +587,7 @@ namespace EDI_Orders
                 row = lines[linePos + y];
                 result[18] = new string[] { "ArrivedDate", row.Substring(12, 35) };
             }
-            
+
             /**
              * This section cycles through the array and adds the values to the stored procedure.
              * It then inserts the data into the headers table in the database.
@@ -618,7 +622,7 @@ namespace EDI_Orders
         #endregion
 
         #region Write Items for RECCON
-        public static int WriteRECCONItems (SqlConnection con, string[] lines, int lineCount, string ID)
+        public static int WriteRECCONItems(SqlConnection con, string[] lines, int lineCount, string ID)
         {
             /**
                          * This is the start of the stored procedure to add the items to their table.
@@ -634,8 +638,8 @@ namespace EDI_Orders
              * Write the line items to a seperate table
              */
             int i = lineCount;
-            while (!((lines[i+1].Substring(6,3) == "FAC") || (lines[i+1].Substring(6,3) == "UNT")))
-            { 
+            while (!((lines[i + 1].Substring(6, 3) == "FAC") || (lines[i + 1].Substring(6, 3) == "UNT")))
+            {
                 string[][] t = ReadKTN(lines[i]);
                 if (t != null)
                 {
@@ -648,7 +652,7 @@ namespace EDI_Orders
                      */
                     if (lines[i + 1].Substring(6, 3) == "LIN" || lines[i + 2].Substring(6, 3) == "FAC" || lines[i + 2].Substring(6, 3) == "UNT")
                     {
-                        Console.WriteLine(lines[i+1].Substring(6,3));
+                        Console.WriteLine(lines[i + 1].Substring(6, 3));
                         StoredProcedure2.Parameters.AddWithValue("ID", ID);
                         StoredProcedure2.ExecuteNonQuery();
                         StoredProcedure2.Parameters.Clear();
@@ -691,7 +695,7 @@ namespace EDI_Orders
                     result[0] = new string[] { "OrderType", row.Substring(92, 10) };
                     break;
                 case "RFF":
-                    string RFFSeg =  row.Substring(9, 3);
+                    string RFFSeg = row.Substring(9, 3);
                     switch (RFFSeg)
                     {
                         case "CR1":
@@ -865,14 +869,14 @@ namespace EDI_Orders
                             PIAParty = "Campaign";
                             break;
                     }
-                    result[0] = new string[] { PIAParty + "ItemNumber", row.Substring(12, 25 ) };
+                    result[0] = new string[] { PIAParty + "ItemNumber", row.Substring(12, 25) };
                     result[1] = new string[] { PIAParty + "ItemDescripin", row.Substring(37, 80) };
                     break;
                 case "PAC":
                     string PACSeg = row.Substring(9, 3);
                     string PACParty = "";
                     if (PACSeg == "CUS")
-                    { 
+                    {
                         PACParty = "Customer";
                     }
                     result[0] = new string[] { PACParty + "PackagingCoded", row.Substring(40, 25) };
@@ -1015,7 +1019,7 @@ namespace EDI_Orders
             }
             string[][] vals = new string[counter][];
             int count = 0;
-            for(int y = 0; y < counter; y++)
+            for (int y = 0; y < counter; y++)
             {
                 vals[count] = result[count];
                 count++;
@@ -1025,7 +1029,7 @@ namespace EDI_Orders
         #endregion
 
         #region PPLCON_ASDV
-        public static void InsertDESADV (string orderNumber, string Item, string palletQty, string SSCC, string BoxID, SqlConnection con)
+        public static void InsertDESADV(string orderNumber, string Item, string palletQty, string SSCC, string BoxID, SqlConnection con)
         {
             try
             {
