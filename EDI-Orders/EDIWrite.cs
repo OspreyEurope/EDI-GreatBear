@@ -96,7 +96,6 @@ namespace EDI_Orders
                 int counter = 13;
                 bool flag = false;
                 con.Open();
-                Console.WriteLine(data.Rows.Count);
                 for (int i = 0; i < data.Rows.Count; i++)
                 {
                     DataRow row = data.Rows[i];
@@ -415,7 +414,7 @@ namespace EDI_Orders
                 /**
                  * Retrives the data from the database and then writes it line by line into a file.
                  */
-                string file = ConfigurationManager.AppSettings["Test"] + "/PO" + id + ".txt";
+                string file = ConfigurationManager.AppSettings["KTNASN"] + "/PO" + id + ".txt";
                 FileStream f = new FileStream(file, FileMode.Create);
                 Encoding utf8WithoutBom = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false);
                 StreamWriter streamWriter = new StreamWriter(f, utf8WithoutBom);
@@ -519,7 +518,7 @@ namespace EDI_Orders
                 /**
                  * Retrives the data from the database and then writes it line by line into a file.
                  */
-                string file = ConfigurationManager.AppSettings["Test"] + "/" + id + "_Product_List.txt";
+                string file = ConfigurationManager.AppSettings["KTNItems"] + "/" + id + "_Product_List.txt";
                 FileStream f = new FileStream(file, FileMode.Create);
                 Encoding utf8WithoutBom = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false);
                 StreamWriter streamWriter = new StreamWriter(f, utf8WithoutBom);
@@ -636,7 +635,7 @@ namespace EDI_Orders
                 /**
                  * Retrives the data from the database and then writes it line by line into a file.
                  */
-                string file = ConfigurationManager.AppSettings["Test"] + "TRUCK" + id + ".txt";
+                string file = ConfigurationManager.AppSettings["KTNASN"] + "TRUCK" + id + ".txt";
                 FileStream f = new FileStream(file, FileMode.Create);
                 Encoding utf8WithoutBom = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false);
                 StreamWriter streamWriter = new StreamWriter(f, utf8WithoutBom);
@@ -721,7 +720,7 @@ namespace EDI_Orders
                 /**
                  * Retrives the data from the database and then writes it line by line into a file.
                  */
-                string file = ConfigurationManager.AppSettings["Test"] + "/RETURN" + id + ".txt";
+                string file = ConfigurationManager.AppSettings["KTNASN"] + "/RETURN" + id + ".txt";
                 FileStream f = new FileStream(file, FileMode.Create);
                 Encoding utf8WithoutBom = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false);
                 StreamWriter streamWriter = new StreamWriter(f, utf8WithoutBom);
@@ -771,7 +770,6 @@ namespace EDI_Orders
                 for (int i = 0; i < data.Rows.Count; i++)
                 {
                     DataRow row = data.Rows[i];
-
 
                     text = (i + 1).ToString();
                     text = text.PadRight(30, ' ');
@@ -1021,6 +1019,5 @@ namespace EDI_Orders
         }
         #endregion
         #endregion
-
     }
 }
