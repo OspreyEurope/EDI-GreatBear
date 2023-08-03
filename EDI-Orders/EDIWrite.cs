@@ -96,6 +96,7 @@ namespace EDI_Orders
                 int counter = 13;
                 bool flag = false;
                 con.Open();
+                Console.WriteLine(data.Rows.Count);
                 for (int i = 0; i < data.Rows.Count; i++)
                 {
                     DataRow row = data.Rows[i];
@@ -335,8 +336,8 @@ namespace EDI_Orders
 
                     text = row["Incoterms"].ToString();                                //Section reserved for incoterms
                     text = text.PadRight(10, ' ');
-                    string temp = row["DelCity"].ToString().Substring(0, 25);
-                    text = text + temp.PadRight(25, ' ');
+                    string IncoTermsCity = row["DelCity"].ToString().PadRight(50, ' ').Substring(0, 25);
+                    text = text + IncoTermsCity.PadRight(25, ' ');
                     text = text + row["DelCountryCode"].ToString().PadRight(3, ' ');
                     text = text.PadLeft(175, ' ');
 
@@ -414,7 +415,7 @@ namespace EDI_Orders
                 /**
                  * Retrives the data from the database and then writes it line by line into a file.
                  */
-                string file = ConfigurationManager.AppSettings["KTNASN"] + "/PO" + id + ".txt";
+                string file = ConfigurationManager.AppSettings["Test"] + "/PO" + id + ".txt";
                 FileStream f = new FileStream(file, FileMode.Create);
                 Encoding utf8WithoutBom = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false);
                 StreamWriter streamWriter = new StreamWriter(f, utf8WithoutBom);
@@ -518,7 +519,7 @@ namespace EDI_Orders
                 /**
                  * Retrives the data from the database and then writes it line by line into a file.
                  */
-                string file = ConfigurationManager.AppSettings["KTNItems"] + "/" + id + "_Product_List.txt";
+                string file = ConfigurationManager.AppSettings["Test"] + "/" + id + "_Product_List.txt";
                 FileStream f = new FileStream(file, FileMode.Create);
                 Encoding utf8WithoutBom = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false);
                 StreamWriter streamWriter = new StreamWriter(f, utf8WithoutBom);
@@ -635,7 +636,7 @@ namespace EDI_Orders
                 /**
                  * Retrives the data from the database and then writes it line by line into a file.
                  */
-                string file = ConfigurationManager.AppSettings["KTNASN"] + "TRUCK" + id + ".txt";
+                string file = ConfigurationManager.AppSettings["Test"] + "TRUCK" + id + ".txt";
                 FileStream f = new FileStream(file, FileMode.Create);
                 Encoding utf8WithoutBom = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false);
                 StreamWriter streamWriter = new StreamWriter(f, utf8WithoutBom);
@@ -720,7 +721,7 @@ namespace EDI_Orders
                 /**
                  * Retrives the data from the database and then writes it line by line into a file.
                  */
-                string file = ConfigurationManager.AppSettings["KTNASN"] + "/RETURN" + id + ".txt";
+                string file = ConfigurationManager.AppSettings["Test"] + "/RETURN" + id + ".txt";
                 FileStream f = new FileStream(file, FileMode.Create);
                 Encoding utf8WithoutBom = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false);
                 StreamWriter streamWriter = new StreamWriter(f, utf8WithoutBom);
@@ -770,6 +771,7 @@ namespace EDI_Orders
                 for (int i = 0; i < data.Rows.Count; i++)
                 {
                     DataRow row = data.Rows[i];
+
 
                     text = (i + 1).ToString();
                     text = text.PadRight(30, ' ');
@@ -849,13 +851,13 @@ namespace EDI_Orders
                     /**
                      * Writes the delivery information for the an order in the X12 format.
                      */
-                    streamWriter.WriteLine("W05*C*" + row["OrderNumber"] + "******" + row["OrderType"] + "~");
+                    streamWriter.WriteLine("W05*C*" + row["OrderNumber"] + "*" + row["OrderReference"] + "*****" + row["OrderType"] + "-" + row["Priority"] + "~");
                     streamWriter.WriteLine("N1*DE*Osprey Europe*9*Our GLN~");
                     streamWriter.WriteLine("N1*BP*" + row["InvoicePostalAddress"] + "*91*" + row["CustomerAccountRef"] + "~");
-                    streamWriter.WriteLine("N1*BT*" + row["InvoicePostalAddress"] + "*91*CustomerAccountRefAgain?~");
+                    streamWriter.WriteLine("N1*BT*" + row["InvoicePostalAddress"] + "*91*" + row["CustomerAccountRef"] + "~");
                     streamWriter.WriteLine("N3*" + row["InvoiceAddressLine1"] + "*" + row["InvoiceAddressLine2"] + "~");
                     streamWriter.WriteLine("N4*" + row["InvoiceAddressLine3"] + "*" + row["InvoiceAddressLine4"] + "*" + row["InvoicePostCode"] + "*" + row["InvoiceCountry"] + "~");
-                    streamWriter.WriteLine("N1*ST*" + row["DelPostalName"] + "*91*CustomerAccountRefAgain?~");
+                    streamWriter.WriteLine("N1*ST*" + row["DelPostalName"] + "*91*" + row["CustomerAccountRef"] + "~");
                     streamWriter.WriteLine("N3*" + row["DelAddressLine1"] + "*" + row["DelAddressLine2"] + "~");
                     streamWriter.WriteLine("N4*" + row["DelAddressLine3"] + "*" + row["DelAddressLine4"] + "*" + row["DelPostCode"] + "*" + row["DelCountryCode"] + "~");
                     streamWriter.WriteLine("G62*02*" + row["OrderRequestedDate"] + "~");
@@ -949,8 +951,8 @@ namespace EDI_Orders
         {
             try
             {
-                sw.WriteLine("ISA*00*          *00*          *01*Osprey Europe  *ZZ*GreatBear      *" + DateTime.Now.ToString("dd/MM/yy") + "*" + DateTime.Now.ToString("hh:mm") + "*U*InterchangeControlVersionNo*InterchangeControlNo*0*P~");
-                sw.WriteLine("GS*IB*Osprey Europe*GreatBear*" + DateTime.Now.ToString("yyyy/MM/dd") + "*" + DateTime.Now.ToString("hh:mm") + "*GroupControl*X*VersionRelease~");
+                sw.WriteLine("ISA*00*          *00*          *01*Osprey Europe  *ZZ*GreatBear      *" + DateTime.Now.ToString("dd/MM/yy") + "*" + DateTime.Now.ToString("hh:mm") + "*U*00401*InterchangeControlNo*0*P~");
+                sw.WriteLine("GS*IB*Osprey Europe*GreatBear*" + DateTime.Now.ToString("yyyy/MM/dd") + "*" + DateTime.Now.ToString("hh:mm") + "*GroupControl*X*00401~");
                 sw.WriteLine("ST*" + MessageType + "*transactionSetControlNo~");
                 sw.WriteLine("BIA*C~");
             }
@@ -1019,5 +1021,6 @@ namespace EDI_Orders
         }
         #endregion
         #endregion
+
     }
 }
