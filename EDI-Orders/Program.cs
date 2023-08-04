@@ -70,7 +70,7 @@ namespace EDI_Orders
                     {
                         #region Testing Wite File
                         case "WriteOrder":
-                            EDIWrite.WriteOrder(Orbis, "0000507274"); 
+                            EDIWrite.WriteOrder(Orbis, "0000507521"); 
                             break;
                         case "WriteProductList":
                             EDIWrite.WriteProductList(OERA, "100994002");

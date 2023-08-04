@@ -337,7 +337,7 @@ namespace EDI_Orders
                     text = text.PadRight(10, ' ');
                     text = text + row["IncoCity"].ToString().PadRight(25, ' ');
                     text = text + row["DelCountryCode"].ToString().PadRight(3, ' ');
-                    text = text.PadLeft(185, ' ');
+                    text = text.PadLeft(175, ' ');
 
                     streamWriter.WriteLine("000012ALI" + text.PadRight(204, ' ') + "");
                     text = "";
