@@ -335,8 +335,7 @@ namespace EDI_Orders
 
                     text = row["Incoterms"].ToString();                                //Section reserved for incoterms
                     text = text.PadRight(10, ' ');
-                    text = text + row["IncoCity"];
-                    text = text.PadRight(25, ' ');
+                    text = text + row["IncoCity"].ToString().PadRight(25, ' ');
                     text = text + row["DelCountryCode"].ToString().PadRight(3, ' ');
                     text = text.PadLeft(185, ' ');
 
