@@ -381,8 +381,8 @@ namespace EDI_Orders
                                 }
                                 else if (lines[i].Substring(6, 3) == "SEQ")
                                 {
-                                    Console.WriteLine(ASDV + " " + PalletQty + " " + PL + " " + SSCC + " " + ItemNumber);
-                                    Console.WriteLine(PalletQty != "0" && ASDV == "AMAZON" && SSCC != "" && PL == "LOAD ");
+                                    //Console.WriteLine(ASDV + " " + PalletQty + " " + PL + " " + SSCC + " " + ItemNumber);
+                                    //Console.WriteLine(PalletQty != "0" && ASDV == "AMAZON" && SSCC != "" && PL == "LOAD ");
 
 
                                     if ((PalletQty != "0" && ASDV == "AMAZON" && SSCC != "" && PL == "LOAD ") == true)
