@@ -517,106 +517,111 @@ namespace EDI_Orders
                 /**
                  * Retrives the data from the database and then writes it line by line into a file.
                  */
-                string file = ConfigurationManager.AppSettings["KTNItems"] + "/" + id + "_Product_List.txt";
-                FileStream f = new FileStream(file, FileMode.Create);
-                Encoding utf8WithoutBom = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false);
-                StreamWriter streamWriter = new StreamWriter(f, utf8WithoutBom);
-                string fileName = id + "_Product_List.txt";
-                fileName = fileName.PadRight(35, ' ');
-                streamWriter.WriteLine("000001UNH00000001            ITEMS               R4        KTN                                          ITEMS                                                                      OSPREY     KTN        " + DateTime.Now.ToString("yyyyMMddHHmmss").PadRight(35, ' ') + "204" + fileName.PadRight(50, ' ') + "");
-
-                int counter = 2;
-
-                for (int i = 0; i < data.Rows.Count; i++)
+                if (data.Rows.Count > 0)
                 {
-                    DataRow row = data.Rows[i];
+                    string file = ConfigurationManager.AppSettings["KTNItems"] + "/" + id + "_Product_List.txt";
+                    FileStream f = new FileStream(file, FileMode.Create);
+                    Encoding utf8WithoutBom = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false);
+                    StreamWriter streamWriter = new StreamWriter(f, utf8WithoutBom);
+                    string fileName = id + "_Product_List.txt";
+                    fileName = fileName.PadRight(35, ' ');
+                    streamWriter.WriteLine("000001UNH00000001            ITEMS               R4        KTN                                          ITEMS                                                                      OSPREY     KTN        " + DateTime.Now.ToString("yyyyMMddHHmmss").PadRight(35, ' ') + "204" + fileName.PadRight(50, ' ') + "");
 
-                    string text = row["StockCode"].ToString();
-                    text = text.PadRight(25, ' ');
-                    streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "LIN" + (i + 1).ToString().PadRight(30) + text + "");
-                    text = "";
-                    counter++;
+                    int counter = 2;
 
-                    streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "ACTC".PadRight(10, ' '));
-                    counter++;
-
-                    streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "NADCUSOSPREY              ".PadRight(80, ' '));
-                    counter++;
-
-                    text = row["Name"].ToString();
-                    text = text.PadRight(161, ' ');
-                    streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "IMD" + text + "");
-                    text = "";
-                    counter++;
-
-                    text = row["Category"].ToString();
-                    text = text.PadRight(70, ' ');
-                    streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "GRIITG" + text + "");
-                    text = "";
-                    counter++;
-
-                    text = row["CountryOrigin"].ToString();     //Country Of origin field to be added
-                    text = text.PadRight(42, ' ');
-                    text += "YY";
-                    text = text.PadRight(50, ' ');
-                    streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "TRACOU" + text + "");
-                    text = "";
-                    counter++;
-
-                    text = row["Colour"].ToString();      //This is the color field being added
-                    text = text.PadRight(113, ' ');
-                    streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "CHACOL" + text + "");
-                    text = "";
-                    counter++;
-
-                    text = row["StyleCode"].ToString();      //This is the color field being added
-                    text = text.PadRight(113, ' ');
-                    streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "CHADES" + text + "");
-                    text = "";
-                    counter++;
-
-                    text = row["PartNumber"].ToString();  //Barcode
-                    text = text.PadRight(35, ' ');
-                    streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "TRAEAN" + text + "");
-                    text = "";
-                    counter++;
-
-                    text = row["BoxUPCCode"].ToString();  //Barcode for the Box
-                    text = text.PadRight(35, ' ');
-                    streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "TRABC " + text + "");
-                    counter++;
-
-                    text = row["HSCode"].ToString();  //Barcode for the Box
-                    text = text.PadRight(35, ' ');
-                    streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "TRACUS" + text + "");
-                    counter++;
-
-                    streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "CFGCONFIG1             YNEW         ");
-                    counter++;
-
-                    streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "PADPCS                      Y Y   Y");
-                    counter++;
-
-                    streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "QTYSU 1                 ");
-                    counter++;
-
-                    if (row["BoxQuantity"].ToString() != "0")
+                    for (int i = 0; i < data.Rows.Count; i++)
                     {
-                        streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "PADBOX                             ");
+                        DataRow row = data.Rows[i];
+
+                        string text = row["StockCode"].ToString();
+                        text = text.PadRight(25, ' ');
+                        streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "LIN" + (i + 1).ToString().PadRight(30) + text + "");
+                        text = "";
                         counter++;
 
-                        text = row["BoxQuantity"].ToString().PadRight(15, ' ');
-                        streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "QTYSU " + text.PadRight(18, ' '));
+                        streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "ACTC".PadRight(10, ' '));
                         counter++;
+
+                        streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "NADCUSOSPREY              ".PadRight(80, ' '));
+                        counter++;
+
+                        text = row["Name"].ToString();
+                        text = text.PadRight(161, ' ');
+                        streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "IMD" + text + "");
+                        text = "";
+                        counter++;
+
+                        text = row["Category"].ToString();
+                        text = text.PadRight(70, ' ');
+                        streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "GRIITG" + text + "");
+                        text = "";
+                        counter++;
+
+                        text = row["CountryOrigin"].ToString();     //Country Of origin field to be added
+                        text = text.PadRight(42, ' ');
+                        text += "YY";
+                        text = text.PadRight(50, ' ');
+                        streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "TRACOU" + text + "");
+                        text = "";
+                        counter++;
+
+                        text = row["Colour"].ToString();      //This is the color field being added
+                        text = text.PadRight(113, ' ');
+                        streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "CHACOL" + text + "");
+                        text = "";
+                        counter++;
+
+                        text = row["StyleCode"].ToString();      //This is the color field being added
+                        text = text.PadRight(113, ' ');
+                        streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "CHADES" + text + "");
+                        text = "";
+                        counter++;
+
+                        text = row["PartNumber"].ToString();  //Barcode
+                        text = text.PadRight(35, ' ');
+                        streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "TRAEAN" + text + "");
+                        text = "";
+                        counter++;
+
+                        text = row["BoxUPCCode"].ToString();  //Barcode for the Box
+                        text = text.PadRight(35, ' ');
+                        streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "TRABC " + text + "");
+                        counter++;
+
+                        text = row["HSCode"].ToString();  //Barcode for the Box
+                        text = text.PadRight(35, ' ');
+                        streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "TRACUS" + text + "");
+                        counter++;
+
+                        streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "CFGCONFIG1             YNEW         ");
+                        counter++;
+
+                        streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "PADPCS                      Y Y   Y");
+                        counter++;
+
+                        streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "QTYSU 1                 ");
+                        counter++;
+
+                        if (row["BoxQuantity"].ToString() != "0")
+                        {
+                            streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "PADBOX                             ");
+                            counter++;
+
+                            text = row["BoxQuantity"].ToString().PadRight(15, ' ');
+                            streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "QTYSU " + text.PadRight(18, ' '));
+                            counter++;
+                        }
                     }
+                    streamWriter.Close();
+                    var lineCount = File.ReadLines(file).Count();
+                    File.AppendAllText(file, counter.ToString().PadLeft(6, '0') + "UNT" + (lineCount + 1).ToString().PadRight(6, ' ') + "00000001            ");
+
+                    SharedFunctions.QueryDB(con, "OSP_UPDATE_WH_PRODUCTLIST_SENT", id);
                 }
-                streamWriter.Close();
-                var lineCount = File.ReadLines(file).Count();
-                File.AppendAllText(file, counter.ToString().PadLeft(6, '0') + "UNT" + (lineCount + 1).ToString().PadRight(6, ' ') + "00000001            ");
             }
             catch (Exception ex)
             {
-                SharedFunctions.Writefile("Write Produc List Failed to process, error message is: " + ex.Message, "");
+                SharedFunctions.Writefile("Write Product List Failed to process, error message is: " + ex.Message, "");
                 SharedFunctions.ErrorAlert("Write Product List", ex);
             }
         }
