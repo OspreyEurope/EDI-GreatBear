@@ -375,11 +375,14 @@ namespace EDI_Orders
                                 {
                                     PalletQty = (Int32.Parse(PalletQty) + Int32.Parse(lines[i].Substring(12, 15))).ToString();
                                 }
-                                else if (lines[i].PadRight(13).Substring(6, 3) == "SEQ")
+                                else if (lines[i].PadRight(13).Substring(6, 6) == "TRACTR")
                                 {
                                     Carrier = lines[i].Substring(12, 35);
-                                    //Console.WriteLine(ASDV + " " + PalletQty + " " + PL + " " + SSCC + " " + ItemNumber);
-                                    //Console.WriteLine(PalletQty != "0" && ASDV == "AMAZON" && SSCC != "" && PL == "LOAD ");
+                                }
+                                else if (lines[i].Substring(6, 3) == "SEQ")
+                                {
+                                    Console.WriteLine(ASDV + " " + PalletQty + " " + PL + " " + SSCC + " " + ItemNumber);
+                                    Console.WriteLine(PalletQty != "0" && ASDV == "AMAZON" && SSCC != "" && PL == "LOAD ");
 
 
                                     if ((PalletQty != "0" && ASDV == "AMAZON" && SSCC != "" && PL == "LOAD ") == true)
