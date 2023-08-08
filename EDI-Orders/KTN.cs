@@ -375,7 +375,7 @@ namespace EDI_Orders
                                 {
                                     PalletQty = (Int32.Parse(PalletQty) + Int32.Parse(lines[i].Substring(12, 15))).ToString();
                                 }
-                                else if (lines[i].PadRight(13).Substring(6, 6) == "TRACTR")
+                                else if (lines[i].PadRight(13).Substring(6, 3) == "SEQ")
                                 {
                                     Carrier = lines[i].Substring(12, 35);
                                     //Console.WriteLine(ASDV + " " + PalletQty + " " + PL + " " + SSCC + " " + ItemNumber);
