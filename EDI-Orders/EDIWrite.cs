@@ -102,7 +102,7 @@ namespace EDI_Orders
                     /**
                      * * Retrives the data from the database and then writes it line by line into a file.
                      */
-                    string file = ConfigurationManager.AppSettings["Generating"] + "/" + row["OrderNumber"].ToString() + ".txt";
+                    string file = ConfigurationManager.AppSettings["Generating"] + "/" + row["OrderNumber"].ToString() + row["WHOrderNumber"].ToString() + ".txt";
                     string fileName = row["OrderNumber"].ToString() + ".txt";
                     fileName = fileName.PadRight((35 - fileName.Length), ' ');
                     FileStream f = new FileStream(file, FileMode.Create);
