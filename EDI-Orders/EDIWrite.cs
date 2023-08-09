@@ -894,7 +894,7 @@ namespace EDI_Orders
                 foreach (DataRow row in data.Rows)
                 {
                     sw.WriteLine("LX*" + counter + "~");
-                    sw.WriteLine("W01*" + row["Quantity"] + "*Each*" + "row[EAN]" + "*VN*" + row["ProductCode"] + "*BP*******~");
+                    sw.WriteLine("W01*" + row["Quantity"] + "*Each*" + row["PartNumber"] + "*VN*" + row["ProductCode"] + "*BP*******~");
                     sw.WriteLine("N9*KK*" + counter + "~");
                     counter += 3;
                 }
