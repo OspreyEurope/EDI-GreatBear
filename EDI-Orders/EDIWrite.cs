@@ -132,7 +132,7 @@ namespace EDI_Orders
                     streamWriter.WriteLine("000006RFFCR3" + text + "");
                     text = "";
 
-                    text = row["OrderDate"].ToString();
+                    text = row["OrderRequestedDate"].ToString();
                     DateTime dateTime = DateTime.ParseExact(text, "dd/MM/yyyy hh:mm:ss", null);
                     text = dateTime.ToString("yyyyMMdd");
                     streamWriter.WriteLine("000007DTMDEL" + text.PadRight(35, ' ') + "102");     //Currently hardcoded as we do not have an eqevilant field
