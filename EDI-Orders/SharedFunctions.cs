@@ -533,5 +533,33 @@ namespace EDI_Orders
         }
 
         #endregion
+
+        #region PPLCON_ASDV
+        public static void InsertDESADV(string orderNumber, string Item, string palletQty, string SSCC, SqlConnection con, string BoxID = null)
+        {
+            try
+            {
+                SqlCommand InsertPallet = new SqlCommand("OSP_INSERT_PPLCON_PALLET", con)
+                {
+                    CommandType = CommandType.StoredProcedure
+                };
+                Console.WriteLine("Here");
+
+                InsertPallet.Parameters.AddWithValue("OrderNumber", orderNumber);
+                InsertPallet.Parameters.AddWithValue("ItemNumber", Item);
+                InsertPallet.Parameters.AddWithValue("PalletQty", palletQty);
+                InsertPallet.Parameters.AddWithValue("SSCC", SSCC);
+                InsertPallet.Parameters.AddWithValue("BoxID", BoxID);
+
+                InsertPallet.ExecuteNonQuery();
+                InsertPallet.Parameters.Clear();
+            }
+            catch (Exception ex)
+            {
+                SharedFunctions.Writefile("Error in ASDV insert", "Check logs");
+                SharedFunctions.ErrorAlert("Quarantined due to error in the ASDV: ", ex);
+            }
+        }
+        #endregion
     }
 }

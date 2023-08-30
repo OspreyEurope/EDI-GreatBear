@@ -5,6 +5,7 @@ using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Runtime.Remoting.Messaging;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
@@ -205,6 +206,11 @@ namespace EDI_Orders
             string CustomerOrderNumber = "";
             string transporter = "";
             string ID = "";
+            string ConNumber = "";
+            string SSCC = "";
+            string PalletQty = "";
+            string ItemNumber = "";
+            string PackedQty = "";
 
             foreach (string[] s in File)
             {
@@ -243,10 +249,17 @@ namespace EDI_Orders
                     storedProcedure.Parameters.AddWithValue("PL", "PACK");
                     storedProcedure.Parameters.AddWithValue("ID", ID);
                     storedProcedure.Parameters.AddWithValue("MessageType", "PPLCON");
+                    storedProcedure.Parameters.AddWithValue("ConNumber", ConNumber);
 
                     storedProcedure.ExecuteNonQuery();
                     storedProcedure.Parameters.Clear();
                     p++;
+
+                    if (SSCC != "")
+                    {
+                        SharedFunctions.InsertDESADV(OrderNumber, ItemNumber, PalletQty, SSCC, con);
+                        SSCC = "";
+                    }
                 }
                 if (header == "LX")
                 {
@@ -269,17 +282,27 @@ namespace EDI_Orders
                 }
                 else if (header == "W12")
                 {
-                    if (storedProcedure.Parameters.Contains("PackedQuantity"))
-                    {
+                    PackedQty = s[2];
+                    PalletQty = s[2];
+                    ItemNumber = s[7];
+                }
+                else if (header == "MAN")
+                {
+                    
 
-                    }
-                    else
+                    switch (s[1])
                     {
-                        string[][] info = HandleLine(s);
-                        foreach (string[] t in info)
-                        {
-                            storedProcedure.Parameters.AddWithValue(t[0], t[1]);
-                        }
+                        case "CP":
+                            ConNumber = s[2];
+                            //Consignment number
+                            break;
+                        case "AA":
+                            SSCC = s[2];
+                            //SSCC
+                            break;
+                        default:
+                            //Error
+                            break;
                     }
                 }
                 else

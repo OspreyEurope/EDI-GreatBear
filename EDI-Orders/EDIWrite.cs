@@ -309,9 +309,7 @@ namespace EDI_Orders
                         text += row["Currency"].ToString();
                         text = text.PadRight(846, ' ');
                         text += GDPR["AddressLine2"].ToString();
-
                         flag = true;
-
                     }
                     else
                     {
@@ -335,7 +333,8 @@ namespace EDI_Orders
 
                     text = row["Incoterms"].ToString();                                //Section reserved for incoterms
                     text = text.PadRight(10, ' ');
-                    text = text + row["DelCity"].ToString().PadRight(25, ' ');
+                    string temp = row["DelCity"].ToString().Substring(0, 25);
+                    text = text + temp.PadRight(25, ' ');
                     text = text + row["DelCountryCode"].ToString().PadRight(3, ' ');
                     text = text.PadLeft(175, ' ');
 
@@ -770,6 +769,7 @@ namespace EDI_Orders
                 {
                     DataRow row = data.Rows[i];
 
+
                     text = (i + 1).ToString();
                     text = text.PadRight(30, ' ');
                     text += row["StockItemCode"].ToString();
@@ -848,7 +848,7 @@ namespace EDI_Orders
                     /**
                      * Writes the delivery information for the an order in the X12 format.
                      */
-                    streamWriter.WriteLine("W05*C*" + row["OrderNumber"] + "*" + row["OrderReference"] + "*****" + row["Priority"] + "~");
+                    streamWriter.WriteLine("W05*C*" + row["OrderNumber"] + "*" + row["OrderReference"] + "*****" + row["OrderImporttype"] + "-" + row["Priority"] + "~");
                     streamWriter.WriteLine("N1*DE*Osprey Europe*9*Our GLN~");
                     streamWriter.WriteLine("N1*BP*" + row["InvoicePostalAddress"] + "*91*" + row["CustomerAccountRef"] + "~");
                     streamWriter.WriteLine("N1*BT*" + row["InvoicePostalAddress"] + "*91*" + row["CustomerAccountRef"] + "~");
@@ -889,7 +889,7 @@ namespace EDI_Orders
                 foreach (DataRow row in data.Rows)
                 {
                     sw.WriteLine("LX*" + counter + "~");
-                    sw.WriteLine("W01*" + row["Quantity"] + "*Each*" + "row[EAN]" + "*VN*" + row["ProductCode"] + "*BP*******~" );
+                    sw.WriteLine("W01*" + row["Quantity"] + "*Each*" + row["PartNumber"] + "*VN*" + row["ProductCode"] + "*BP*******~" );
                     sw.WriteLine("N9*KK*" + counter + "~");
                     counter += 3;
                 }
@@ -921,7 +921,7 @@ namespace EDI_Orders
             fileName = fileName.PadRight(35, ' ');
 
             //int counter = 2;
-
+            Console.WriteLine(data.Rows.Count);
                 foreach (DataRow r in data.Rows)
                 {
                     WritePLHeader(streamWriter, "846");
@@ -1002,7 +1002,7 @@ namespace EDI_Orders
                     streamWriter.WriteLine("N1****" + row["SuppAccRef"] + "~");
                     streamWriter.WriteLine("HL*" + counter + "~");
                     streamWriter.WriteLine("LIN*1**" + row["StockItemCode"] + "~");
-                    streamWriter.WriteLine("SN1**" + row["Quantity"] + "*" + "row[EAN]" + "~");
+                    streamWriter.WriteLine("SN1**" + row["Quantity"] + "*" + row["PartNumber"] + "~");
                     streamWriter.WriteLine("CTT*" + counter + "*" + (counter*6) + "~");
                     counter++;
                 }
