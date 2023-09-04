@@ -109,7 +109,7 @@ namespace EDI_Orders
                             EDIWrite.WriteProductListGB(OERA, "60019798");
                             break;
                         case "856":
-                            EDIWrite.WritePOGB(Orbis, "0000024386");
+                            EDIWrite.WritePOGB(Orbis, "0000025061");
                             break;
                         #endregion
                         #region GBD
