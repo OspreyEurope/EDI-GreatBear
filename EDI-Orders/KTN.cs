@@ -384,9 +384,8 @@ namespace EDI_Orders
 
                                     if ((PalletQty != "0" && ASDV == "AMAZON" && SSCC != "" && PL == "LOAD ") == true)
                                     {
-                                        Console.WriteLine(ASDV + " " + PalletQty + " " + PL + " " + SSCC + " " + ItemNumber);
-                                        SharedFunctions.InsertDESADV(OrderNumber, ItemNumber, PalletQty, SSCC, con, BoxID);
-                                        PalletQty = "0";
+                                        InsertDESADV(OrderNumber, ItemNumber, PalletQty, SSCC, BoxID, con);
+                                        PalletQty = "";
                                         SSCC = "";
                                         BoxID = "";
                                     }
@@ -1025,6 +1024,25 @@ namespace EDI_Orders
                 count++;
             }
             return vals;
+        }
+        #endregion
+
+        #region PPLCON_ASDV
+        public static void InsertDESADV (string orderNumber, string Item, string palletQty, string SSCC, string BoxID, SqlConnection con)
+        {
+            SqlCommand InsertPallet = new SqlCommand("OSP_INSERT_PPLCON_PALLET", con)
+            {
+                CommandType = CommandType.StoredProcedure
+            };
+
+            InsertPallet.Parameters.AddWithValue("OrderNumber",orderNumber);
+            InsertPallet.Parameters.AddWithValue("ItemNumber",Item);
+            InsertPallet.Parameters.AddWithValue("PalletQty",palletQty);
+            InsertPallet.Parameters.AddWithValue("SSCC", SSCC);
+            InsertPallet.Parameters.AddWithValue("BoxID", BoxID);
+
+            InsertPallet.ExecuteNonQuery();
+            InsertPallet.Parameters.Clear();
         }
         #endregion
     }
