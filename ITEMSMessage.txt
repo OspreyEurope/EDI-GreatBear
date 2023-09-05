@@ -1,4 +1,4 @@
-ASN are writted as a WareHouseID_Product_List.txt file to the output files location.
+Product lists are writted as a WareHouseID_Product_List.txt file to the output files location.
 This location is currently localy hosted so will need to be redirected to a new file location:
 - "C:\\Bespoke\\EDI\\OutputFiles\\" + id + "_Product_List.txt";
 - Line 595 in EDIWrite.cs
