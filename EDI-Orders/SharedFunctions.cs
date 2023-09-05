@@ -379,7 +379,7 @@ namespace EDI_Orders
          * This function takes whichever vender the message is coming from adn will handle the information as required.
          * This will read the correct file location, gather an array of files and then process all the gathered files.
          */
-        public static void FileCheck (string A)
+        public static void FileCheck(string A)
         {
             #region Dev Connections
             SqlConnection OERA = new SqlConnection
@@ -433,14 +433,14 @@ namespace EDI_Orders
                         {
                             if (file.Substring(3, 0) == "WEB")
                             {
-                                File.Move(file, ConfigurationManager.AppSettings["KTNPPLCONProcessed"] + "/" + name);
+                                File.Move(file, ConfigurationManager.AppSettings["Test"] + "/" + name);
                                 Console.WriteLine(file + " Was Processed and moved to EU network Successfully.");
                             }
                             else
                             {
                                 Console.WriteLine(file);
                                 KTN.ProcessKTN(file, Orbis);
-                                File.Move(file, ConfigurationManager.AppSettings["KTNPPLCONProcessed"] + "/" + name);
+                                File.Move(file, ConfigurationManager.AppSettings["Test"] + "/" + name);
                                 Console.WriteLine(file + " Was Processed Successfully.");
                             }
                         }
@@ -448,7 +448,7 @@ namespace EDI_Orders
                         {
                             Writefile("File Quarantined: " + name, ex.Message);
                             ErrorAlert("Read PPLCON", ex);
-                            File.Move(file, ConfigurationManager.AppSettings["KTNPPLCONQuarantined"] + "/" + name);
+                            File.Move(file, ConfigurationManager.AppSettings["Test"] + "/" + name + "&" + DateTime.Now);
                         }
                     }
                     break;
@@ -478,7 +478,7 @@ namespace EDI_Orders
                         {
                             Writefile("File Quarantined: " + name, ex.Message);
                             ErrorAlert("Read RECCON", ex);
-                            File.Move(file, ConfigurationManager.AppSettings["KTNRECCONQuarantined"] + "/" + name);
+                            File.Move(file, ConfigurationManager.AppSettings["KTNRECCONQuarantined"] + "/" + name + "&" + DateTime.Now);
                         }
                     }
                     break;
@@ -512,7 +512,7 @@ namespace EDI_Orders
                 mail.To.Add(ConfigurationManager.AppSettings["AlertEmail3"]);
                 mail.From = new MailAddress(ConfigurationManager.AppSettings["FromAddress"]);
                 mail.Subject = "EDI handling program:";
-                mail.Body = DateTime.Now + " Error in " + v + ": "+ ex.Message;
+                mail.Body = DateTime.Now + " Error in " + v + ": " + ex.Message;
                 mail.IsBodyHtml = true;
 
                 System.Net.ServicePointManager.ServerCertificateValidationCallback = new System.Net.Security.RemoteCertificateValidationCallback(RemoteServerCertificateValidationCallback);
@@ -559,32 +559,6 @@ namespace EDI_Orders
                 SharedFunctions.Writefile("Error in ASDV insert", "Check logs");
                 SharedFunctions.ErrorAlert("Quarantined due to error in the ASDV: ", ex);
             }
-        }
-        #endregion
-
-        #region Complete File Check
-        public static bool CompleteCheck (string file)
-        {
-            int last  = File.ReadAllLines(file).Count();
-            bool Complete = false;
-
-            var temp = File.ReadLines(file).Skip(last-1).Take(1).First();
-
-            Console.WriteLine(temp);
-
-            if (temp.Substring(6,3).Equals("UNT"))
-            {
-                Complete = true;
-            }
-
-            Console.WriteLine(Complete);
-
-            if (Complete == false)
-            {
-                Writefile("File Quarantined " + file, ": Incomplete File.");
-                ErrorAlert("CompleteCheck,  " + file, new Exception("Incomplete File"));
-            }
-            return Complete;
         }
         #endregion
     }

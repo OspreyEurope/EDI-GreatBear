@@ -288,7 +288,7 @@ namespace EDI_Orders
                 }
                 else if (header == "MAN")
                 {
-                    
+
 
                     switch (s[1])
                     {
@@ -450,7 +450,7 @@ namespace EDI_Orders
                         break;
                 }
             }
-        }    
+        }
         #endregion
 
         #region Write RECCON
@@ -502,7 +502,7 @@ namespace EDI_Orders
                         ItemNumber = s[4];
                         RecievedQuantity = s[1];
                         break;
-                } 
+                }
 
                 if ((ItemNumber != "") && (RecievedQuantity != ""))
                 {

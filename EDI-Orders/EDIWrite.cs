@@ -132,7 +132,7 @@ namespace EDI_Orders
                     streamWriter.WriteLine("000006RFFCR3" + text + "");
                     text = "";
 
-                    text = row["OrderRequestedDate"].ToString();
+                    text = row["OrderDate"].ToString();
                     DateTime dateTime = DateTime.ParseExact(text, "dd/MM/yyyy hh:mm:ss", null);
                     text = dateTime.ToString("yyyyMMdd");
                     streamWriter.WriteLine("000007DTMDEL" + text.PadRight(35, ' ') + "102");     //Currently hardcoded as we do not have an eqevilant field
@@ -215,8 +215,8 @@ namespace EDI_Orders
                         text = text.PadRight(653, ' ');
                         text += row["CustomerVATCode"].ToString();
                         text = text.PadRight(846, ' ');
-                        text = text + GDPR["AddressLine2"].ToString(); // GDPR[""].ToString();  //Del add 2
-                        
+                        text += GDPR["AddressLine2"].ToString(); // GDPR[""].ToString();  //Del add 2
+
                         flag = true;
 
                     }
@@ -308,8 +308,7 @@ namespace EDI_Orders
                         text = text.PadRight(743, ' ');
                         text += row["Currency"].ToString();
                         text = text.PadRight(846, ' ');
-                        text = text + GDPR["AddressLine2"].ToString();
-
+                        text += GDPR["AddressLine2"].ToString();
                         flag = true;
                     }
                     else
@@ -333,8 +332,13 @@ namespace EDI_Orders
                     text = "";
 
                     text = row["Incoterms"].ToString();                                //Section reserved for incoterms
-                    text = text.PadRight(67, ' ');
-                    streamWriter.WriteLine("000012ALI" + text.PadLeft(204, ' ') + "");
+                    text = text.PadRight(10, ' ');
+                    string temp = row["DelCity"].ToString().Substring(0, 25);
+                    text = text + temp.PadRight(25, ' ');
+                    text = text + row["DelCountryCode"].ToString().PadRight(3, ' ');
+                    text = text.PadLeft(175, ' ');
+
+                    streamWriter.WriteLine("000012ALI" + text.PadRight(204, ' ') + "");
                     text = "";
 
                     con.Close();
@@ -512,7 +516,7 @@ namespace EDI_Orders
                 /**
                  * Retrives the data from the database and then writes it line by line into a file.
                  */
-                string file = ConfigurationManager.AppSettings["KTNItems"] +"/"+ id + "_Product_List.txt";
+                string file = ConfigurationManager.AppSettings["Test"] + "/" + id + "_Product_List.txt";
                 FileStream f = new FileStream(file, FileMode.Create);
                 Encoding utf8WithoutBom = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false);
                 StreamWriter streamWriter = new StreamWriter(f, utf8WithoutBom);
@@ -520,101 +524,98 @@ namespace EDI_Orders
                 fileName = fileName.PadRight(35, ' ');
                 streamWriter.WriteLine("000001UNH00000001            ITEMS               R4        KTN                                          ITEMS                                                                      OSPREY     KTN        " + DateTime.Now.ToString("yyyyMMddHHmmss").PadRight(35, ' ') + "204" + fileName.PadRight(50, ' ') + "");
 
-                    int counter = 2;
+                int counter = 2;
 
-                    for (int i = 0; i < data.Rows.Count; i++)
-                    {
-                        DataRow row = data.Rows[i];
+                for (int i = 0; i < data.Rows.Count; i++)
+                {
+                    DataRow row = data.Rows[i];
 
-                        string text = row["StockCode"].ToString();
-                        text = text.PadRight(25, ' ');
-                        streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "LIN" + (i + 1).ToString().PadRight(30) + text + "");
-                        text = "";
-                        counter++;
+                    string text = row["StockCode"].ToString();
+                    text = text.PadRight(25, ' ');
+                    streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "LIN" + (i + 1).ToString().PadRight(30) + text + "");
+                    text = "";
+                    counter++;
 
-                        streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "ACTC".PadRight(10, ' '));
-                        counter++;
+                    streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "ACTC".PadRight(10, ' '));
+                    counter++;
 
-                        streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "NADCUSOSPREY              ".PadRight(80, ' '));
-                        counter++;
+                    streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "NADCUSOSPREY              ".PadRight(80, ' '));
+                    counter++;
 
-                        text = row["Name"].ToString();
-                        text = text.PadRight(161, ' ');
-                        streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "IMD" + text + "");
-                        text = "";
-                        counter++;
+                    text = row["Name"].ToString();
+                    text = text.PadRight(161, ' ');
+                    streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "IMD" + text + "");
+                    text = "";
+                    counter++;
 
-                        text = row["Category"].ToString();
-                        text = text.PadRight(70, ' ');
-                        streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "GRIITG" + text + "");
-                        text = "";
-                        counter++;
+                    text = row["Category"].ToString();
+                    text = text.PadRight(70, ' ');
+                    streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "GRIITG" + text + "");
+                    text = "";
+                    counter++;
 
                     text = row["CountryOrigin"].ToString();     //Country Of origin field to be added
                     text = text.PadRight(42, ' ');
-                    text = text + "YY";
+                    text += "YY";
                     text = text.PadRight(50, ' ');
                     streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "TRACOU" + text + "");
                     text = "";
                     counter++;
 
-                        text = row["Colour"].ToString();      //This is the color field being added
-                        text = text.PadRight(113, ' ');
-                        streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "CHACOL" + text + "");
-                        text = "";
+                    text = row["Colour"].ToString();      //This is the color field being added
+                    text = text.PadRight(113, ' ');
+                    streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "CHACOL" + text + "");
+                    text = "";
+                    counter++;
+
+                    text = row["StyleCode"].ToString();      //This is the color field being added
+                    text = text.PadRight(113, ' ');
+                    streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "CHADES" + text + "");
+                    text = "";
+                    counter++;
+
+                    text = row["PartNumber"].ToString();  //Barcode
+                    text = text.PadRight(35, ' ');
+                    streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "TRAEAN" + text + "");
+                    text = "";
+                    counter++;
+
+                    text = row["BoxUPCCode"].ToString();  //Barcode for the Box
+                    text = text.PadRight(35, ' ');
+                    streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "TRABC " + text + "");
+                    counter++;
+
+                    text = row["HSCode"].ToString();  //Barcode for the Box
+                    text = text.PadRight(35, ' ');
+                    streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "TRACUS" + text + "");
+                    counter++;
+
+                    streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "CFGCONFIG1             YNEW         ");
+                    counter++;
+
+                    streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "PADPCS                      Y Y   Y");
+                    counter++;
+
+                    streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "QTYSU 1                 ");
+                    counter++;
+
+                    if (row["BoxQuantity"].ToString() != "0")
+                    {
+                        streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "PADBOX                             ");
                         counter++;
 
-                        text = row["StyleCode"].ToString();      //This is the color field being added
-                        text = text.PadRight(113, ' ');
-                        streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "CHADES" + text + "");
-                        text = "";
+                        text = row["BoxQuantity"].ToString().PadRight(15, ' ');
+                        streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "QTYSU " + text.PadRight(18, ' '));
                         counter++;
-
-                        text = row["PartNumber"].ToString();  //Barcode
-                        text = text.PadRight(35, ' ');
-                        streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "TRAEAN" + text + "");
-                        text = "";
-                        counter++;
-
-                        text = row["BoxUPCCode"].ToString();  //Barcode for the Box
-                        text = text.PadRight(35, ' ');
-                        streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "TRABC " + text + "");
-                        counter++;
-
-                        text = row["HSCode"].ToString();  //Barcode for the Box
-                        text = text.PadRight(35, ' ');
-                        streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "TRACUS" + text + "");
-                        counter++;
-
-                        streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "CFGCONFIG1             YNEW         ");
-                        counter++;
-
-                        streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "PADPCS                      Y Y   Y");
-                        counter++;
-
-                        streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "QTYSU 1                 ");
-                        counter++;
-
-                        if (row["BoxQuantity"].ToString() != "0")
-                        {
-                            streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "PADBOX                             ");
-                            counter++;
-
-                            text = row["BoxQuantity"].ToString().PadRight(15, ' ');
-                            streamWriter.WriteLine(counter.ToString().PadLeft(6, '0') + "QTYSU " + text.PadRight(18, ' '));
-                            counter++;
-                        }
                     }
-                    streamWriter.Close();
-                    var lineCount = File.ReadLines(file).Count();
-                    File.AppendAllText(file, counter.ToString().PadLeft(6, '0') + "UNT" + (lineCount + 1).ToString().PadRight(6, ' ') + "00000001            ");
-
-                    SharedFunctions.QueryDB(con, "OSP_UPDATE_WH_PRODUCTLIST_SENT", id);
                 }
+                streamWriter.Close();
+                var lineCount = File.ReadLines(file).Count();
+                File.AppendAllText(file, counter.ToString().PadLeft(6, '0') + "UNT" + (lineCount + 1).ToString().PadRight(6, ' ') + "00000001            ");
             }
             catch (Exception ex)
             {
-                SharedFunctions.Writefile("Write Product List Failed to process, error message is: " + ex.Message, "");
+                SharedFunctions.Writefile("Write Produc List Failed to process, error message is: " + ex.Message, "");
                 SharedFunctions.ErrorAlert("Write Product List", ex);
             }
         }
@@ -820,22 +821,191 @@ namespace EDI_Orders
 
         #region Great Bear
         #region Write Order Header
-        public static void WriteOrderGB (SqlConnection con, string id)
+        public static void WriteOrderGB(SqlConnection con, string id)
         {
+            try
+            {
+                DataTable data = SharedFunctions.QueryDB(con, "OSP_WRITE_HEADER_EDI", id);
 
+                for (int i = 0; i < data.Rows.Count; i++)
+                {
+                    con.Open();
+                    DataRow row = data.Rows[i];
+                    /**
+                     * * Retrives the data from the database and then writes it line by line into a file.
+                     */
+                    string file = ConfigurationManager.AppSettings["Test"] + "/" + row["OrderNumber"].ToString() + ".txt";
+                    string fileName = row["OrderNumber"].ToString() + ".txt";
+                    FileStream f = new FileStream(file, FileMode.Create);
+                    Encoding utf8WithoutBom = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false);
+                    StreamWriter streamWriter = new StreamWriter(f, utf8WithoutBom);
+
+                    Console.WriteLine(data.Rows.Count);
+                    Console.WriteLine(row["OrderNumber"]);
+
+                    WritePLHeader(streamWriter, "940");
+
+                    /**
+                     * Writes the delivery information for the an order in the X12 format.
+                     */
+                    streamWriter.WriteLine("W05*C*" + row["OrderNumber"] + "*" + row["OrderReference"] + "*****" + row["OrderImporttype"] + "-" + row["Priority"] + "~");
+                    streamWriter.WriteLine("N1*DE*Osprey Europe*9*Our GLN~");
+                    streamWriter.WriteLine("N1*BP*" + row["InvoicePostalAddress"] + "*91*" + row["CustomerAccountRef"] + "~");
+                    streamWriter.WriteLine("N1*BT*" + row["InvoicePostalAddress"] + "*91*" + row["CustomerAccountRef"] + "~");
+                    streamWriter.WriteLine("N3*" + row["InvoiceAddressLine1"] + "*" + row["InvoiceAddressLine2"] + "~");
+                    streamWriter.WriteLine("N4*" + row["InvoiceAddressLine3"] + "*" + row["InvoiceAddressLine4"] + "*" + row["InvoicePostCode"] + "*" + row["InvoiceCountry"] + "~");
+                    streamWriter.WriteLine("N1*ST*" + row["DelPostalName"] + "*91*" + row["CustomerAccountRef"] + "~");
+                    streamWriter.WriteLine("N3*" + row["DelAddressLine1"] + "*" + row["DelAddressLine2"] + "~");
+                    streamWriter.WriteLine("N4*" + row["DelAddressLine3"] + "*" + row["DelAddressLine4"] + "*" + row["DelPostCode"] + "*" + row["DelCountryCode"] + "~");
+                    streamWriter.WriteLine("G62*02*" + row["OrderRequestedDate"] + "~");
+                    con.Close();
+
+                    int total = WriteItemsGB(con, streamWriter, id, row["WHOrderNumber"].ToString());
+                    streamWriter.WriteLine("W79*" + total + "~");
+
+                    WritePLFooter(streamWriter, data.Rows.Count, total + 15);
+
+                    streamWriter.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                SharedFunctions.Writefile("Write order body for Great Bear failed: " + ex.Message, "");
+                SharedFunctions.ErrorAlert("Write order body for GB ", ex);
+            }
         }
         #endregion
 
         #region Write Order Lines
+        public static int WriteItemsGB(SqlConnection con, StreamWriter sw, string id, string id2)
+        {
+            try
+            {
+
+                DataTable data = SharedFunctions.QueryDB(con, "OSP_WRITE_PRODUCTS_EDI", id, id2);
+                int total = 0;
+                int counter = 1;
+                Console.WriteLine(data.Rows.Count);
+                foreach (DataRow row in data.Rows)
+                {
+                    sw.WriteLine("LX*" + counter + "~");
+                    sw.WriteLine("W01*" + row["Quantity"] + "*Each*" + row["PartNumber"] + "*VN*" + row["ProductCode"] + "*BP*******~");
+                    sw.WriteLine("N9*KK*" + counter + "~");
+                    counter += 3;
+                }
+                return total;
+            }
+            catch (Exception ex)
+            {
+                SharedFunctions.Writefile("Write items for Great Bear order failed: " + ex.Message, "");
+                SharedFunctions.ErrorAlert("Write items for GB order ", ex);
+                return -1;
+            }
+        }
+        #endregion
+
+        #region Write Product List
+        public static void WriteProductListGB(SqlConnection con, string id)
+        {
+            try
+            {
+                DataTable data = SharedFunctions.QueryDB(con, "OSP_Get_Product_List", id);
+                /**
+                 * Retrives the data from the database and then writes it line by line into a file.
+                 */
+                string file = ConfigurationManager.AppSettings["Test"] + "/" + id + "_Product_List.txt";
+                FileStream f = new FileStream(file, FileMode.Create);
+                Encoding utf8WithoutBom = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false);
+                StreamWriter streamWriter = new StreamWriter(f, utf8WithoutBom);
+                string fileName = id + "_Product_List.txt";
+                fileName = fileName.PadRight(35, ' ');
+
+                //int counter = 2;
+                Console.WriteLine(data.Rows.Count);
+                foreach (DataRow r in data.Rows)
+                {
+                    WritePLHeader(streamWriter, "846");
+
+                    streamWriter.WriteLine("LIN***" + r[0].ToString() + "~");
+                    streamWriter.WriteLine("PID*****" + r[1].ToString() + "~");
+                    streamWriter.WriteLine("QTY**" + r[2].ToString() + "EA~");
+
+                    WritePLFooter(streamWriter, data.Rows.Count, 8);
+                }
+                streamWriter.Close();
+            }
+            catch (Exception ex)
+            {
+                SharedFunctions.Writefile("Write Product List Failed to process, error message is: " + ex.Message, "");
+                SharedFunctions.ErrorAlert("Write Product List", ex);
+            }
 
         }
         #endregion
 
-        #region Write ASN
-
+        #region Product List Header
+        public static void WritePLHeader(StreamWriter sw, string MessageType)
+        {
+            try
+            {
+                sw.WriteLine("ISA*00*          *00*          *01*Osprey Europe  *ZZ*GreatBear      *" + DateTime.Now.ToString("dd/MM/yy") + "*" + DateTime.Now.ToString("hh:mm") + "*U*00401*InterchangeControlNo*0*P~");
+                sw.WriteLine("GS*IB*Osprey Europe*GreatBear*" + DateTime.Now.ToString("yyyy/MM/dd") + "*" + DateTime.Now.ToString("hh:mm") + "*GroupControl*X*00401~");
+                sw.WriteLine("ST*" + MessageType + "*transactionSetControlNo~");
+                sw.WriteLine("BIA*C~");
+            }
+            catch (Exception ex)
+            {
+                SharedFunctions.Writefile("Write header for Great Bear failed: " + ex.Message, "");
+                SharedFunctions.ErrorAlert("Write Header for GB", ex);
+            }
+        }
         #endregion
 
-        #region Write Product List
+        #region Product List Footer
+        public static void WritePLFooter(StreamWriter sw, int NoOfSegs, int lines)
+        {
+            try
+            {
+                sw.WriteLine("SE*" + NoOfSegs + "*transactionSetControlNo~");
+                sw.WriteLine("GE*" + NoOfSegs + "*GroupControlNo~");
+                sw.WriteLine("IEA*" + (lines + 3) + "*InterchancgeControlNo~");
+            }
+            catch (Exception ex)
+            {
+                SharedFunctions.Writefile("Write footer for Great Bear failed: " + ex.Message, "");
+                SharedFunctions.ErrorAlert("Write footer for GB", ex);
+            }
+        }
+        #endregion
+
+        #region Write Purchase Order
+        public static void WritePOGB(SqlConnection con, string id)
+        {
+            try
+            {
+                DataTable data = SharedFunctions.QueryDB(con, "OSP_GET_PO_DATA", id);
+                /**
+                 * Retrives the data from the database and then writes it line by line into a file.
+                 */
+                string file = ConfigurationManager.AppSettings["Test"] + "/PO" + id + ".txt";
+                FileStream f = new FileStream(file, FileMode.Create);
+                Encoding utf8WithoutBom = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false);
+                StreamWriter streamWriter = new StreamWriter(f, utf8WithoutBom);
+                string fileName = "PO" + id + ".txt";
+                int counter = 1;
+
+                WritePLHeader(streamWriter, fileName);
+
+                foreach (DataRow row in data.Rows)
+                {
+                    streamWriter.WriteLine("BSN*00*ReciptNumber*" + row["OrderRequestedDate"] + "~");
+                    streamWriter.WriteLine("N1****" + row["SuppAccRef"] + "~");
+                    streamWriter.WriteLine("HL*" + counter + "~");
+                    streamWriter.WriteLine("LIN*1**" + row["StockItemCode"] + "~");
+                    streamWriter.WriteLine("SN1**" + row["Quantity"] + "*" + row["PartNumber"] + "~");
+                    streamWriter.WriteLine("CTT*" + counter + "*" + (counter * 6) + "~");
+                    counter++;
+                }
 
                 WritePLFooter(streamWriter, data.Rows.Count, 8);
                 streamWriter.Close();

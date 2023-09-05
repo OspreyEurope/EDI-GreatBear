@@ -46,7 +46,7 @@
         #endregion
 
         #region ASN Lookup
-        public static string ASNLookup (string Header)
+        public static string ASNLookup(string Header)
         {
             switch (Header)
             {
@@ -76,7 +76,7 @@
                     return ""; //Not sure if this is needed/wanted and how to map it if so
                 case "StockItemCode":
                     return "LIN";
-                default :
+                default:
                     return null;
             }
         }

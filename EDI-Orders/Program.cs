@@ -28,12 +28,12 @@ namespace EDI_Orders
                 string choice = args[0];
                 switch (choice)
                 {
-                    #region KTN Write File
+                    #region KTN Wite File
                     case "WriteOrder":
                         EDIWrite.WriteOrder(Orbis, args[1]);
                         break;
                     case "WriteProductList":
-                        EDIWrite.WriteProductList(OERA, args[1]);
+                        EDIWrite.WriteProductList(OERA, "100994002");
                         break;
                     case "PO":
                         EDIWrite.WriteASNFile(Orbis, args[1]);
@@ -68,9 +68,9 @@ namespace EDI_Orders
                     string choice = Console.ReadLine();
                     switch (choice)
                     {
-                        #region Testing Write File
+                        #region Testing Wite File
                         case "WriteOrder":
-                            EDIWrite.WriteOrder(Orbis, "0000419040"); 
+                            EDIWrite.WriteOrder(Orbis, "0000419040");
                             break;
                         case "WriteProductList":
                             EDIWrite.WriteProductList(OERA, "100994002");
