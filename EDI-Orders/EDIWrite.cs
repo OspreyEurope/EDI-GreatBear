@@ -913,7 +913,7 @@ namespace EDI_Orders
                 /**
                  * Retrives the data from the database and then writes it line by line into a file.
                  */
-                string file = ConfigurationManager.AppSettings["Test"] + "/" + id + "_Product_List.txt";
+                string file = ConfigurationManager.AppSettings["Test"] + "/" + "GREATBEAR" + "_Product_List.txt";
                 FileStream f = new FileStream(file, FileMode.Create);
                 Encoding utf8WithoutBom = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false);
                 StreamWriter streamWriter = new StreamWriter(f, utf8WithoutBom);
@@ -926,10 +926,28 @@ namespace EDI_Orders
                 {
                     WritePLHeader(streamWriter, "846");
 
-                    streamWriter.WriteLine("LIN***" + r[0].ToString() + "~");
+                    streamWriter.WriteLine("LIN**VN*" + r[0].ToString() + "~");
                     streamWriter.WriteLine("PID*****" + r[1].ToString() + "~");
-                    streamWriter.WriteLine("QTY**" + r[2].ToString() + "EA~");
-
+                    streamWriter.WriteLine("RFF*LEV*");
+                    streamWriter.WriteLine("RFF*EAN*");
+                    streamWriter.WriteLine("RFF*UWT*");
+                    streamWriter.WriteLine("RFF*UHM*");
+                    streamWriter.WriteLine("RFF*UWM*");
+                    streamWriter.WriteLine("RFF*ULM*");
+                    streamWriter.WriteLine("RFF*LEV*");
+                    streamWriter.WriteLine("RFF*EAN*");
+                    streamWriter.WriteLine("RFF*IWT*");
+                    streamWriter.WriteLine("RFF*IHM*");
+                    streamWriter.WriteLine("RFF*IWM*");
+                    streamWriter.WriteLine("RFF*ILM*");
+                    streamWriter.WriteLine("RFF*IPQ*" + r[2].ToString() + "EA~");
+                    streamWriter.WriteLine("RFF*LEV*");
+                    streamWriter.WriteLine("RFF*EAN*");
+                    streamWriter.WriteLine("RFF*CGW*");
+                    streamWriter.WriteLine("RFF*CHM*");
+                    streamWriter.WriteLine("RFF*CWM*");
+                    streamWriter.WriteLine("RFF*CLM*");
+                    streamWriter.WriteLine("RFF*CQT*");
                     WritePLFooter(streamWriter, data.Rows.Count, 8);
                 }
                 streamWriter.Close();
@@ -948,8 +966,8 @@ namespace EDI_Orders
         {
             try
             {
-                sw.WriteLine("ISA*00*          *00*          *01*Osprey Europe  *ZZ*GreatBear      *" + DateTime.Now.ToString("dd/MM/yy") + "*" + DateTime.Now.ToString("hh:mm") + "*U*00401*InterchangeControlNo*0*P~");
-                sw.WriteLine("GS*IB*Osprey Europe*GreatBear*" + DateTime.Now.ToString("yyyy/MM/dd") + "*" + DateTime.Now.ToString("hh:mm") + "*GroupControl*X*00401~");
+                sw.WriteLine("ISA*00*          *00*          *01*Osprey Europe  *ZZ*GreatBear      *" + DateTime.Now.ToString("ddMMyy") + "*" + DateTime.Now.ToString("hhmm") + "*U*00401*InterchangeControlNo*0*P~");
+                sw.WriteLine("GS*IB*Osprey Europe*GreatBear*" + DateTime.Now.ToString("yyyyMMdd") + "*" + DateTime.Now.ToString("hhmm") + "*GroupControl*X*00401~");
                 sw.WriteLine("ST*" + MessageType + "*transactionSetControlNo~");
                 sw.WriteLine("BIA*C~");
             }
