@@ -928,26 +928,16 @@ namespace EDI_Orders
 
                     streamWriter.WriteLine("LIN**VN*" + r[0].ToString() + "~");
                     streamWriter.WriteLine("PID*****" + r[1].ToString() + "~");
-                    streamWriter.WriteLine("RFF*LEV*");
-                    streamWriter.WriteLine("RFF*EAN*");
-                    streamWriter.WriteLine("RFF*UWT*");
-                    streamWriter.WriteLine("RFF*UHM*");
-                    streamWriter.WriteLine("RFF*UWM*");
-                    streamWriter.WriteLine("RFF*ULM*");
-                    streamWriter.WriteLine("RFF*LEV*");
-                    streamWriter.WriteLine("RFF*EAN*");
-                    streamWriter.WriteLine("RFF*IWT*");
-                    streamWriter.WriteLine("RFF*IHM*");
-                    streamWriter.WriteLine("RFF*IWM*");
-                    streamWriter.WriteLine("RFF*ILM*");
-                    streamWriter.WriteLine("RFF*IPQ*" + r[2].ToString() + "EA~");
-                    streamWriter.WriteLine("RFF*LEV*");
-                    streamWriter.WriteLine("RFF*EAN*");
-                    streamWriter.WriteLine("RFF*CGW*");
-                    streamWriter.WriteLine("RFF*CHM*");
-                    streamWriter.WriteLine("RFF*CWM*");
-                    streamWriter.WriteLine("RFF*CLM*");
-                    streamWriter.WriteLine("RFF*CQT*");
+                    streamWriter.WriteLine("RFF*LEV*1*EA~");
+                    streamWriter.WriteLine("RFF*EAN*" + r[3].ToString() + "~");
+                    streamWriter.WriteLine("RFF*LEV*2*EA~");
+                    streamWriter.WriteLine("RFF*LEV*3*EA~");
+                    streamWriter.WriteLine("RFF*EAN*" + r[4].ToString() + "~");
+                    streamWriter.WriteLine("RFF*CGW*" + r[10].ToString() + "~");
+                    streamWriter.WriteLine("RFF*CHM*" + r[5].ToString() + "~");
+                    streamWriter.WriteLine("RFF*CWM*" + r[7].ToString() + "~");
+                    streamWriter.WriteLine("RFF*CLM*" + r[6].ToString() + "~");
+                    streamWriter.WriteLine("RFF*CQT*" + r[2].ToString() + "EA~");
                     WritePLFooter(streamWriter, data.Rows.Count, 8);
                 }
                 streamWriter.Close();
