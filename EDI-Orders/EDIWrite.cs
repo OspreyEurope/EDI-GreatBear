@@ -930,13 +930,13 @@ namespace EDI_Orders
                     streamWriter.WriteLine("PID*****" + r[1].ToString() + "~");
                     streamWriter.WriteLine("RFF*LEV*1*EA~");
                     streamWriter.WriteLine("RFF*EAN*" + r[3].ToString() + "~");
-                    streamWriter.WriteLine("RFF*LEV*2*EA~");
-                    streamWriter.WriteLine("RFF*LEV*3*EA~");
-                    streamWriter.WriteLine("RFF*EAN*" + r[4].ToString() + "~");
-                    streamWriter.WriteLine("RFF*CGW*" + r[10].ToString() + "~");
-                    streamWriter.WriteLine("RFF*CHM*" + r[5].ToString() + "~");
-                    streamWriter.WriteLine("RFF*CWM*" + r[7].ToString() + "~");
-                    streamWriter.WriteLine("RFF*CLM*" + r[6].ToString() + "~");
+                    streamWriter.WriteLine("RFF*LEV*2*IP~");
+                    streamWriter.WriteLine("RFF*LEV*3*CAS~");
+                    streamWriter.WriteLine("RFF*EAN*" + r[4].ToString() + "*3~");
+                    streamWriter.WriteLine("RFF*CGW*" + r[10].ToString() + "*KG~");
+                    streamWriter.WriteLine("RFF*CHM*" + r[5].ToString() + "CM~");
+                    streamWriter.WriteLine("RFF*CWM*" + r[7].ToString() + "CM~");
+                    streamWriter.WriteLine("RFF*CLM*" + r[6].ToString() + "CM~");
                     streamWriter.WriteLine("RFF*CQT*" + r[2].ToString() + "EA~");
                     WritePLFooter(streamWriter, data.Rows.Count, 8);
                 }
