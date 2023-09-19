@@ -934,10 +934,10 @@ namespace EDI_Orders
                     streamWriter.WriteLine("RFF*LEV*3*CAS~");
                     streamWriter.WriteLine("RFF*EAN*" + r[4].ToString() + "*3~");
                     streamWriter.WriteLine("RFF*CGW*" + r[10].ToString() + "*KG~");
-                    streamWriter.WriteLine("RFF*CHM*" + r[5].ToString() + "CM~");
-                    streamWriter.WriteLine("RFF*CWM*" + r[7].ToString() + "CM~");
-                    streamWriter.WriteLine("RFF*CLM*" + r[6].ToString() + "CM~");
-                    streamWriter.WriteLine("RFF*CQT*" + r[2].ToString() + "EA~");
+                    streamWriter.WriteLine("RFF*CHM*" + r[5].ToString() + "*CM~");
+                    streamWriter.WriteLine("RFF*CWM*" + r[7].ToString() + "*CM~");
+                    streamWriter.WriteLine("RFF*CLM*" + r[6].ToString() + "*CM~");
+                    streamWriter.WriteLine("RFF*CQT*" + r[2].ToString() + "*EA~");
                     WritePLFooter(streamWriter, data.Rows.Count, 8);
                 }
                 streamWriter.Close();
@@ -956,10 +956,11 @@ namespace EDI_Orders
         {
             try
             {
-                sw.WriteLine("ISA*00*          *00*          *01*Osprey Europe  *ZZ*GreatBear      *" + DateTime.Now.ToString("ddMMyy") + "*" + DateTime.Now.ToString("hhmm") + "*U*00401*InterchangeControlNo*0*P~");
-                sw.WriteLine("GS*IB*Osprey Europe*GreatBear*" + DateTime.Now.ToString("yyyyMMdd") + "*" + DateTime.Now.ToString("hhmm") + "*GroupControl*X*00401~");
-                sw.WriteLine("ST*" + MessageType + "*transactionSetControlNo~");
-                sw.WriteLine("BIA*C~");
+                sw.WriteLine("ISA*00*          *00*          *01*Osprey Europe  *ZZ*GreatBear      *" + DateTime.Now.ToString("ddMMyy") + "*" + DateTime.Now.ToString("hhmm") + "*U*00401*200*0*P~");
+                sw.WriteLine("GS*IB*Osprey Europe*GreatBear*" + DateTime.Now.ToString("yyyyMMdd") + "*" + DateTime.Now.ToString("hhmm") + "*1*X*00401~");
+                sw.WriteLine("ST*" + MessageType + "*1~");
+                //sw.WriteLine("BIA*C~");
+                //sw.WriteLine("BSN*00*1*" + DateTime.Now.ToString("yyyyMMdd") + "~");
             }
             catch (Exception ex)
             {
@@ -974,9 +975,9 @@ namespace EDI_Orders
         {
             try
             {
-                sw.WriteLine("SE*" + NoOfSegs + "*transactionSetControlNo~");
-                sw.WriteLine("GE*" + NoOfSegs + "*GroupControlNo~");
-                sw.WriteLine("IEA*" + (lines + 3) + "*InterchancgeControlNo~");
+                sw.WriteLine("SE*" + NoOfSegs + "*1~");
+                sw.WriteLine("GE*" + NoOfSegs + "*1~");
+                sw.WriteLine("IEA*" + (lines + 3) + "*200~");
             }
             catch (Exception ex)
             {
@@ -1006,9 +1007,16 @@ namespace EDI_Orders
 
                 foreach (DataRow row in data.Rows)
                 {
-                    streamWriter.WriteLine("BSN*00*ReciptNumber*" + row["OrderRequestedDate"] + "~");
-                    streamWriter.WriteLine("N1****" + row["SuppAccRef"] + "~");
-                    streamWriter.WriteLine("HL*" + counter + "~");
+                    string DateFormatting = row["OrderRequestedDate"].ToString();
+                    DateFormatting = DateFormatting.Substring(0, 10);
+                    string[] splitDate = DateFormatting.Split('/', '\t');
+                    DateFormatting = splitDate[2] + splitDate[1] + splitDate[0];
+                    streamWriter.WriteLine("BSN*00*1*" + DateFormatting + "~");                //DateTime.Now.ToString("yyyyMMdd")
+                    streamWriter.WriteLine("HL*" + counter + "**S~");
+                    streamWriter.WriteLine("N1****" + row["SuppAccRef"].ToString().Replace("$", "") + "~");                           //Replace $
+                    streamWriter.WriteLine("HL*2*" + counter + "*O~");
+                    streamWriter.WriteLine("PRF*" + id + "~");
+                    streamWriter.WriteLine("HL*3*" + counter + "*I~");
                     streamWriter.WriteLine("LIN*1**" + row["StockItemCode"] + "~");
                     streamWriter.WriteLine("SN1**" + row["Quantity"] + "*" + row["PartNumber"] + "~");
                     streamWriter.WriteLine("CTT*" + counter + "*" + (counter * 6) + "~");
