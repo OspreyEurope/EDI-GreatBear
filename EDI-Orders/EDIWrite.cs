@@ -1011,7 +1011,7 @@ namespace EDI_Orders
                     DateFormatting = DateFormatting.Substring(0, 10);
                     string[] splitDate = DateFormatting.Split('/', '\t');
                     DateFormatting = splitDate[2] + splitDate[1] + splitDate[0];
-                    streamWriter.WriteLine("BSN*00*1*" + DateFormatting + "~");                //DateTime.Now.ToString("yyyyMMdd")
+                    streamWriter.WriteLine("BSN*00*1*" + DateFormatting + "~");
                     streamWriter.WriteLine("HL*" + counter + "**S~");
                     streamWriter.WriteLine("N1****" + row["SuppAccRef"].ToString().Replace("$", "") + "~");                           //Replace $
                     streamWriter.WriteLine("HL*2*" + counter + "*O~");
