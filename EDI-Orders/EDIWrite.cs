@@ -958,7 +958,7 @@ namespace EDI_Orders
             {
                 sw.WriteLine("ISA*00*          *00*          *01*Osprey Europe  *ZZ*GreatBear      *" + DateTime.Now.ToString("ddMMyy") + "*" + DateTime.Now.ToString("hhmm") + "*U*00401*200*0*P~");
                 sw.WriteLine("GS*IB*Osprey Europe*GreatBear*" + DateTime.Now.ToString("yyyyMMdd") + "*" + DateTime.Now.ToString("hhmm") + "*1*X*00401~");
-                sw.WriteLine("ST*" + MessageType + "*1~");
+                //sw.WriteLine("ST*" + MessageType + "*1~");
                 //sw.WriteLine("BIA*C~");
                 //sw.WriteLine("BSN*00*1*" + DateTime.Now.ToString("yyyyMMdd") + "~");
             }
@@ -975,7 +975,7 @@ namespace EDI_Orders
         {
             try
             {
-                sw.WriteLine("SE*" + NoOfSegs + "*1~");
+                //sw.WriteLine("SE*" + NoOfSegs + "*1~");
                 sw.WriteLine("GE*" + NoOfSegs + "*1~");
                 sw.WriteLine("IEA*" + (lines + 3) + "*200~");
             }
@@ -1011,9 +1011,9 @@ namespace EDI_Orders
                     DateFormatting = DateFormatting.Substring(0, 10);
                     string[] splitDate = DateFormatting.Split('/', '\t');
                     DateFormatting = splitDate[2] + splitDate[1] + splitDate[0];
-                    streamWriter.WriteLine("ST*856*1~");
+                    streamWriter.WriteLine("ST*856*" + id + "~");
                     streamWriter.WriteLine("BSN*00*1*" + DateFormatting + "~");
-                    streamWriter.WriteLine("HL*" + counter + "**S~");
+                    streamWriter.WriteLine("HL*1**S~");
                     streamWriter.WriteLine("N1****" + row["SuppAccRef"].ToString().Replace("$", "") + "~");                           //Replace $
                     streamWriter.WriteLine("HL*2*" + counter + "*O~");
                     streamWriter.WriteLine("PRF*" + id + "~");
