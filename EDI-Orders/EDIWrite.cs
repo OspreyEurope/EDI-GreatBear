@@ -1011,6 +1011,7 @@ namespace EDI_Orders
                     DateFormatting = DateFormatting.Substring(0, 10);
                     string[] splitDate = DateFormatting.Split('/', '\t');
                     DateFormatting = splitDate[2] + splitDate[1] + splitDate[0];
+                    streamWriter.WriteLine("ST*856*1~");
                     streamWriter.WriteLine("BSN*00*1*" + DateFormatting + "~");
                     streamWriter.WriteLine("HL*" + counter + "**S~");
                     streamWriter.WriteLine("N1****" + row["SuppAccRef"].ToString().Replace("$", "") + "~");                           //Replace $
@@ -1018,8 +1019,10 @@ namespace EDI_Orders
                     streamWriter.WriteLine("PRF*" + id + "~");
                     streamWriter.WriteLine("HL*3*" + counter + "*I~");
                     streamWriter.WriteLine("LIN*1**" + row["StockItemCode"] + "~");
+                    streamWriter.WriteLine("REF*ZZ*" + row["PurchaseOrderNumber"] + "~");
                     streamWriter.WriteLine("SN1**" + row["Quantity"] + "*" + row["PartNumber"] + "~");
                     streamWriter.WriteLine("CTT*" + counter + "*" + (counter * 6) + "~");
+                    streamWriter.WriteLine("SE*12*1~");
                     counter++;
                 }
 
