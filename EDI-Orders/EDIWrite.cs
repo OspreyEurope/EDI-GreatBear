@@ -840,7 +840,7 @@ namespace EDI_Orders
                     Encoding utf8WithoutBom = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false);
                     StreamWriter streamWriter = new StreamWriter(f, utf8WithoutBom);
 
-                    string DateFormatting = DateFormatting(row["OrderRequestedDate"].ToString());
+                    string DateFormatting = DateFormatter(row["OrderRequestedDate"].ToString());
 
                     Console.WriteLine(data.Rows.Count);
                     Console.WriteLine(row["OrderNumber"]);
@@ -853,6 +853,7 @@ namespace EDI_Orders
 
                     streamWriter.WriteLine("W05*C*" + row["OrderNumber"] + "*" + row["OrderReference"] + "*****" + row["OrderImporttype"] + "-" + row["Priority"] + "~");
                     streamWriter.WriteLine("N1*DE*Osprey Europe*9*5056302200001~");
+                    #region GDPR data insert
                     if ((row["DelPostalName"].ToString() == "DTC Customer") || (row["DelPostalName"].ToString() == "Ecommerce"))
                     {
                         SqlConnection conDTC = new SqlConnection
@@ -881,7 +882,7 @@ namespace EDI_Orders
                         streamWriter.WriteLine("N3*" + row["DelAddressLine1"] + "*" + row["DelAddressLine2"] + "~");
                         streamWriter.WriteLine("N4*" + row["DelAddressLine3"] + "*" + row["DelAddressLine4"] + "*" + row["DelPostCode"] + "*" + row["DelCountryCode"] + "~");
                     }
-
+                    #endregion
                     streamWriter.WriteLine("N9*BR*~");
                     streamWriter.WriteLine("G62*02*" + DateFormatting + "~");
                     streamWriter.WriteLine("W66*M*~");
@@ -929,7 +930,7 @@ namespace EDI_Orders
                 {
                     sw.WriteLine("LX*" + counter + "~");
                     sw.WriteLine("W01*" + row["Quantity"] + "*Each*" + row["PartNumber"] + "*VN*" + row["ProductCode"] + "*BP*******~");
-                    totalQty = totalQty + (Int32.Parse(row["Quantity"]));
+                    totalQty = totalQty + (Int32.Parse(row["Quantity"].ToString()));
                     sw.WriteLine("N9*KK*" + totalQty + "~");
                     counter += 3;
                 }
@@ -1047,7 +1048,7 @@ namespace EDI_Orders
 
                 foreach (DataRow row in data.Rows)
                 {
-                    string DateFormatting = DateFormatting(row["OrderRequestedDate"].ToString());
+                    string DateFormatting = DateFormatter(row["OrderRequestedDate"].ToString());
                     streamWriter.WriteLine("ST*856*" + id + "~");
                     streamWriter.WriteLine("BSN*00*1*" + DateFormatting + "~");
                     streamWriter.WriteLine("HL*1**S~");
