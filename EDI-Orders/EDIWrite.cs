@@ -866,10 +866,10 @@ namespace EDI_Orders
                         streamWriter.WriteLine("N1*BP*" + GDPR["PostalName"] + "*91*" + row["CustomerAccountRef"] + "~");
                         streamWriter.WriteLine("N1*BT*" + GDPR["PostalName"] + "*91*" + row["CustomerAccountRef"] + "~");
                         streamWriter.WriteLine("N3*" + GDPR["AddressLine1"] + "*" + GDPR["AddressLine2"] + "~");
-                        streamWriter.WriteLine("N4*" + GDPR["DelCity"] + "*" + GDPR["DelCounty"] + "*" + GDPR["DelPostCode"] + "*" + GDPR["DelCountry"] + "~");
+                        streamWriter.WriteLine("N4*" + row["DelCity"] + "**" + row["DelPostCode"] + "*" + row["DelCountryCode"] + "~");
                         streamWriter.WriteLine("N1*ST*" + GDPR["PostalName"] + "*91*" + row["CustomerAccountRef"] + "~");
                         streamWriter.WriteLine("N3*" + GDPR["AddressLine1"] + "*" + GDPR["AddressLine2"] + "~");
-                        streamWriter.WriteLine("N4*" + GDPR["AddressLine3"] + "*" + GDPR["AddressLine4"] + "*" + GDPR["DelPostCode"] + "*" + GDPR["DelCountryCode"] + "~");
+                        streamWriter.WriteLine("N4*" + GDPR["AddressLine3"] + "*" + GDPR["AddressLine4"] + "*" + row["DelPostCode"] + "*" + row["DelCountryCode"] + "~");
 
                     }
                     else
@@ -877,7 +877,7 @@ namespace EDI_Orders
                         streamWriter.WriteLine("N1*BP*" + row["InvoicePostalAddress"] + "*91*" + row["CustomerAccountRef"] + "~");
                         streamWriter.WriteLine("N1*BT*" + row["InvoicePostalAddress"] + "*91*" + row["CustomerAccountRef"] + "~");
                         streamWriter.WriteLine("N3*" + row["InvoiceAddressLine1"] + "*" + row["InvoiceAddressLine2"] + "~");
-                        streamWriter.WriteLine("N4*" + row["InvoiceCity"] + "*" + row["InvoiceCounty"] + "*" + row["InvoicePostCode"] + "*" + row["InvoiceCountry"] + "~");
+                        streamWriter.WriteLine("N4*" + row["InvoiceCity"] + "**" + row["InvoicePostCode"] + "*" + row["InvoiceCountry"] + "~");
                         streamWriter.WriteLine("N1*ST*" + row["DelPostalName"] + "*91*" + row["CustomerAccountRef"] + "~");
                         streamWriter.WriteLine("N3*" + row["DelAddressLine1"] + "*" + row["DelAddressLine2"] + "~");
                         streamWriter.WriteLine("N4*" + row["DelAddressLine3"] + "*" + row["DelAddressLine4"] + "*" + row["DelPostCode"] + "*" + row["DelCountryCode"] + "~");
@@ -889,6 +889,7 @@ namespace EDI_Orders
                     con.Close();
 
                     int total = WriteItemsGB(con, streamWriter, id, row["WHOrderNumber"].ToString());
+                    //WriteItemsGB(con, streamWriter, id, row["WHOrderNumber"].ToString());
                     streamWriter.WriteLine("W79*" + total + "~");
 
                     WritePLFooter(streamWriter, data.Rows.Count, total + 15);
@@ -920,7 +921,7 @@ namespace EDI_Orders
         {
             try
             {
-
+                Console.WriteLine("Start of wrte lines");
                 DataTable data = SharedFunctions.QueryDB(con, "OSP_WRITE_PRODUCTS_EDI", id, id2);
                 int total = 0;
                 int counter = 1;
@@ -931,9 +932,10 @@ namespace EDI_Orders
                     sw.WriteLine("LX*" + counter + "~");
                     sw.WriteLine("W01*" + row["Quantity"] + "*Each*" + row["PartNumber"] + "*VN*" + row["ProductCode"] + "*BP*******~");
                     totalQty = totalQty + (Int32.Parse(row["Quantity"].ToString()));
-                    sw.WriteLine("N9*KK*" + totalQty + "~");
+                    sw.WriteLine("N9*KK*" + row["SageLineID"] + "~");
                     counter += 3;
                 }
+                Console.WriteLine("End of wrte lines");
                 return total;
             }
             catch (Exception ex)
