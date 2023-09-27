@@ -870,7 +870,6 @@ namespace EDI_Orders
                         streamWriter.WriteLine("N1*ST*" + GDPR["PostalName"] + "*91*" + row["CustomerAccountRef"] + "~");
                         streamWriter.WriteLine("N3*" + GDPR["AddressLine1"] + "*" + GDPR["AddressLine2"] + "~");
                         streamWriter.WriteLine("N4*" + GDPR["AddressLine3"] + "*" + GDPR["AddressLine4"] + "*" + row["DelPostCode"] + "*" + row["DelCountryCode"] + "~");
-
                     }
                     else
                     {
