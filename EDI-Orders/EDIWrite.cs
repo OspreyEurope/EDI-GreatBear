@@ -1052,6 +1052,7 @@ namespace EDI_Orders
 
                 foreach (DataRow row in data.Rows)
                 {
+                    int QTY = convertToInt(row["Quantity"].ToString());
                     string DateFormatting = DateFormatter(row["OrderRequestedDate"].ToString());
                     streamWriter.WriteLine("ST*856*" + row["PrimaryKey"] + "~");
                     streamWriter.WriteLine("BSN*00*" + "PO" + id + "." + row["PrimaryKey"] + "*" + DateFormatting + "~");
@@ -1062,8 +1063,8 @@ namespace EDI_Orders
                     streamWriter.WriteLine("HL*3*" + row["PrimaryKey"] + "*I~");
                     streamWriter.WriteLine("LIN*1*VN*" + row["StockItemCode"] + "~");
                     streamWriter.WriteLine("REF*ZZ*~");
-                    streamWriter.WriteLine("SN1**" + row["Quantity"] + "*" + row["PartNumber"] + "~");
-                    streamWriter.WriteLine("CTT*3*" + row["Quantity"] + "~");
+                    streamWriter.WriteLine("SN1**" + QTY + "*EA~");
+                    streamWriter.WriteLine("CTT*3*" + QTY + "~");
                     streamWriter.WriteLine("SE*12*" + row["PrimaryKey"] + "~");
                     counter++;
                 }
@@ -1076,6 +1077,17 @@ namespace EDI_Orders
                 SharedFunctions.Writefile("Write PO for Great Bear failed: " + ex.Message, "");
                 SharedFunctions.ErrorAlert("Write PO for GB", ex);
             }
+        }
+        #endregion
+
+        #region Convert To Int
+        public static int convertToInt (string val)
+        {
+            int intVal = 0;
+            string[] splitVal = val.Split('.');
+            string trimmed = splitVal[0];
+            intVal = Int32.Parse(trimmed); 
+            return intVal;
         }
         #endregion
         #endregion
