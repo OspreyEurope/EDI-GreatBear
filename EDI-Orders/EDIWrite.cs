@@ -962,13 +962,13 @@ namespace EDI_Orders
                 string fileName = id + "_Product_List.txt";
                 fileName = fileName.PadRight(35, ' ');
 
-                //int counter = 2;
+                int counter = 1;
                 Console.WriteLine(data.Rows.Count);
                 foreach (DataRow r in data.Rows)
                 {
                     WritePLHeader(streamWriter, "846");
 
-                    streamWriter.WriteLine("ST*856*" + id + "~");
+                    streamWriter.WriteLine("ST*856*" + counter + "~");
                     streamWriter.WriteLine("LIN**VN*" + r[0].ToString() + "~");
                     streamWriter.WriteLine("PID*****" + r[1].ToString() + "~");
                     streamWriter.WriteLine("RFF*LEV*1*EA~");
@@ -981,8 +981,8 @@ namespace EDI_Orders
                     streamWriter.WriteLine("RFF*CWM*" + r[7].ToString() + "*CM~");
                     streamWriter.WriteLine("RFF*CLM*" + r[6].ToString() + "*CM~");
                     streamWriter.WriteLine("RFF*CQT*" + r[2].ToString() + "*EA~");
-                    streamWriter.WriteLine("SE*12*1~");
-
+                    streamWriter.WriteLine("SE*12*" + counter + "~");
+                    counter++;
                     WritePLFooter(streamWriter, data.Rows.Count, 8);
                 }
                 streamWriter.Close();
@@ -1057,9 +1057,9 @@ namespace EDI_Orders
                     streamWriter.WriteLine("BSN*00*" + "PO" + id + "." + row["PrimaryKey"] + "*" + DateFormatting + "~");
                     streamWriter.WriteLine("HL*1**S~");
                     streamWriter.WriteLine("N1*SF**ZZ*" + row["SuppAccRef"].ToString().Replace("$", "") + "~");                           //Replace $
-                    streamWriter.WriteLine("HL*2*" + counter + "*O~");
+                    streamWriter.WriteLine("HL*2*" + row["PrimaryKey"] + "*O~");
                     streamWriter.WriteLine("PRF*" + id + "~");
-                    streamWriter.WriteLine("HL*3*" + counter + "*I~");
+                    streamWriter.WriteLine("HL*3*" + row["PrimaryKey"] + "*I~");
                     streamWriter.WriteLine("LIN*1*VN*" + row["StockItemCode"] + "~");
                     streamWriter.WriteLine("REF*ZZ*~");
                     streamWriter.WriteLine("SN1**" + row["Quantity"] + "*" + row["PartNumber"] + "~");
