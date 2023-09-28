@@ -325,6 +325,23 @@ namespace EDI_Orders
 
             foreach (string[] s in File)
             {
+
+                switch (s[0].Trim())
+                {
+                    case "ISA":
+                        date = s[9].ToString();
+                        break;
+                    case "LIN":
+                        ItemNumber = s[3].ToString();
+                        Console.WriteLine(s[3].ToString());
+                        break;
+                    case "QTY":
+                        Qty = s[2].ToString();
+                        break;
+                    default:
+                        break;
+                }
+
                 if ((ItemNumber != "") && (Qty != ""))
                 {
                     storedProcedure.Parameters.AddWithValue("ItemDescription", ItemDescription);
@@ -338,26 +355,10 @@ namespace EDI_Orders
                     ItemNumber = "";
                     ItemDescription = "";
                     Qty = "";
-                    date = "";
-                }
-                else
-                {
-                    switch (s[0].Trim())
-                    {
-                        case "ISA":
-                            date = s[9].ToString();
-                            break;
-                        case "LIN":
-                            ItemNumber = s[3].ToString();
-                            break;
-                        case "QTY":
-                            Qty = s[2].ToString();
-                            break;
-                        default:
-                            break;
-                    }
+                    
                 }
             }
+            con.Close();
         }
         #endregion
 
