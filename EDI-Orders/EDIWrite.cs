@@ -1053,8 +1053,8 @@ namespace EDI_Orders
                 foreach (DataRow row in data.Rows)
                 {
                     string DateFormatting = DateFormatter(row["OrderRequestedDate"].ToString());
-                    streamWriter.WriteLine("ST*856*" + id + "~");
-                    streamWriter.WriteLine("BSN*00*1*" + DateFormatting + "~");
+                    streamWriter.WriteLine("ST*856*" + row["PrimaryKey"] + "~");
+                    streamWriter.WriteLine("BSN*00*" + "PO" + id + "." + row["PrimaryKey"] + "*" + DateFormatting + "~");
                     streamWriter.WriteLine("HL*1**S~");
                     streamWriter.WriteLine("N1*SF**ZZ*" + row["SuppAccRef"].ToString().Replace("$", "") + "~");                           //Replace $
                     streamWriter.WriteLine("HL*2*" + counter + "*O~");
@@ -1064,7 +1064,7 @@ namespace EDI_Orders
                     streamWriter.WriteLine("REF*ZZ*~");
                     streamWriter.WriteLine("SN1**" + row["Quantity"] + "*" + row["PartNumber"] + "~");
                     streamWriter.WriteLine("CTT*3*" + row["Quantity"] + "~");
-                    streamWriter.WriteLine("SE*12*1~");
+                    streamWriter.WriteLine("SE*12*" + row["PrimaryKey"] + "~");
                     counter++;
                 }
 

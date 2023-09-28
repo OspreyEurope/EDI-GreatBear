@@ -374,22 +374,34 @@ namespace EDI_Orders
             string Warehouse = File[0][6];
             string DateRecieved = File[1][4];
             string MessageType = File[2][1];
+            string ID = File[2][2];
+            string FileAction = "";
+            
+            foreach (string[] line in File)
+            {
+                if (line[0].Trim().Equals("N9") && line[1].Trim().Equals("ZZ"))
+                {
+                    FileAction = line[2];
+                }
+            }
 
+            storedProcedure.Parameters.AddWithValue("ID", ID);
             storedProcedure.Parameters.AddWithValue("MessageType", MessageType);
-            storedProcedure.Parameters.AddWithValue("DateRecieved", DateRecieved);
+            storedProcedure.Parameters.AddWithValue("DateReceived", DateRecieved);
             storedProcedure.Parameters.AddWithValue("Warehouse", Warehouse);
+            storedProcedure.Parameters.AddWithValue("OriginalFileName", file);
+            storedProcedure.Parameters.AddWithValue("FileAction", FileAction);
 
             storedProcedure.ExecuteNonQuery();
             storedProcedure.Parameters.Clear();
 
-            WRiteSTKMVTItems(con, File, DateRecieved);
+            WRiteSTKMVTItems(con, File, DateRecieved, ID);
         }
         #endregion
 
         #region STKMVT Items
-        public static void WRiteSTKMVTItems(SqlConnection con, string[][] File, string Date)
+        public static void WRiteSTKMVTItems(SqlConnection con, string[][] File, string Date, string ID)
         {
-            con.Open();
             SqlCommand storedProcedure = new SqlCommand("OSP_INSERT_ITEMS_FOR_STKMVT", con)
             {
                 CommandType = CommandType.StoredProcedure
@@ -403,8 +415,9 @@ namespace EDI_Orders
 
             foreach (string[] s in File)
             {
-                if ((ItemNumber != "") && (Quantity != ""))
+                if ((ItemNumber != "") && (Quantity != "" ) && (Reason != ""))
                 {
+                    storedProcedure.Parameters.AddWithValue("ID", ID);
                     storedProcedure.Parameters.AddWithValue("ItemNumber", ItemNumber);
                     storedProcedure.Parameters.AddWithValue("Quantity", Quantity);
                     storedProcedure.Parameters.AddWithValue("StockMovementType", StockMovementType);
@@ -422,7 +435,7 @@ namespace EDI_Orders
                     Reason = "";
                 }
 
-                switch (s[0])
+                switch (s[0].Trim())
                 {
                     case "W19":
                         ItemNumber = s[6];
@@ -430,12 +443,13 @@ namespace EDI_Orders
                         TypeOfOperation = s[1];
                         break;
                     case "N9":
-                        switch (s[1])
+                        switch (s[1].Trim())
                         {
                             case "ZZ":
                                 StockMovementType = s[2];
                                 break;
                             case "TD":
+                                Console.WriteLine(s[2]);
                                 Reason = s[2];
                                 break;
                         }
