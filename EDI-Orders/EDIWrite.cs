@@ -968,6 +968,7 @@ namespace EDI_Orders
                 {
                     WritePLHeader(streamWriter, "846");
 
+                    streamWriter.WriteLine("ST*856*" + id + "~");
                     streamWriter.WriteLine("LIN**VN*" + r[0].ToString() + "~");
                     streamWriter.WriteLine("PID*****" + r[1].ToString() + "~");
                     streamWriter.WriteLine("RFF*LEV*1*EA~");
@@ -980,6 +981,8 @@ namespace EDI_Orders
                     streamWriter.WriteLine("RFF*CWM*" + r[7].ToString() + "*CM~");
                     streamWriter.WriteLine("RFF*CLM*" + r[6].ToString() + "*CM~");
                     streamWriter.WriteLine("RFF*CQT*" + r[2].ToString() + "*EA~");
+                    streamWriter.WriteLine("SE*12*1~");
+
                     WritePLFooter(streamWriter, data.Rows.Count, 8);
                 }
                 streamWriter.Close();

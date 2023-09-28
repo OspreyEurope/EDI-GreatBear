@@ -318,7 +318,6 @@ namespace EDI_Orders
             {
                 CommandType = CommandType.StoredProcedure
             };
-            Console.WriteLine("Hello");
             string ItemNumber = "";
             string ItemDescription = "";
             string Qty = "";
@@ -329,7 +328,7 @@ namespace EDI_Orders
                 if ((ItemNumber != "") && (Qty != ""))
                 {
                     storedProcedure.Parameters.AddWithValue("ItemDescription", ItemDescription);
-                    storedProcedure.Parameters.AddWithValue("Qty", Qty);
+                    storedProcedure.Parameters.AddWithValue("Quantity", Qty);
                     storedProcedure.Parameters.AddWithValue("ItemNumber", ItemNumber);
                     storedProcedure.Parameters.AddWithValue("DateOfMovement", date);
                     storedProcedure.Parameters.AddWithValue("Warehouse", "GBD");
@@ -343,7 +342,7 @@ namespace EDI_Orders
                 }
                 else
                 {
-                    switch (s[0])
+                    switch (s[0].Trim())
                     {
                         case "ISA":
                             date = s[9].ToString();
