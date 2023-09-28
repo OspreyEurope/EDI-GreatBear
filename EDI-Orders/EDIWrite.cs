@@ -1053,14 +1053,14 @@ namespace EDI_Orders
                     streamWriter.WriteLine("ST*856*" + id + "~");
                     streamWriter.WriteLine("BSN*00*1*" + DateFormatting + "~");
                     streamWriter.WriteLine("HL*1**S~");
-                    streamWriter.WriteLine("N1****" + row["SuppAccRef"].ToString().Replace("$", "") + "~");                           //Replace $
+                    streamWriter.WriteLine("N1*SF**ZZ*" + row["SuppAccRef"].ToString().Replace("$", "") + "~");                           //Replace $
                     streamWriter.WriteLine("HL*2*" + counter + "*O~");
                     streamWriter.WriteLine("PRF*" + id + "~");
                     streamWriter.WriteLine("HL*3*" + counter + "*I~");
-                    streamWriter.WriteLine("LIN*1**" + row["StockItemCode"] + "~");
+                    streamWriter.WriteLine("LIN*1*VN*" + row["StockItemCode"] + "~");
                     streamWriter.WriteLine("REF*ZZ*~");
                     streamWriter.WriteLine("SN1**" + row["Quantity"] + "*" + row["PartNumber"] + "~");
-                    streamWriter.WriteLine("CTT*" + counter + "*" + (counter * 6) + "~");
+                    streamWriter.WriteLine("CTT*3*" + row["Quantity"] + "~");
                     streamWriter.WriteLine("SE*12*1~");
                     counter++;
                 }

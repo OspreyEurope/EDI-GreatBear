@@ -68,14 +68,6 @@ namespace EDI_Orders
         }
         #endregion
 
-        #region Write Recon Header
-
-        #endregion
-
-        #region Write Reccon Lines
-
-        #endregion
-
         #region Handle Line
         public static string[][] HandleLine(string[] line)
         {
@@ -326,7 +318,7 @@ namespace EDI_Orders
             {
                 CommandType = CommandType.StoredProcedure
             };
-
+            Console.WriteLine("Hello");
             string ItemNumber = "";
             string ItemDescription = "";
             string Qty = "";
@@ -462,31 +454,35 @@ namespace EDI_Orders
                 CommandType = CommandType.StoredProcedure
             };
 
+            
             string Warehouse = File[0][6];
             string DateRecieved = File[0][9];
             string MessageType = File[2][1];
-            string CustomerReferenceTransport = File[3][8];
+            string CustomerReferenceTransport = File[3][7];
+            string ID = File[3][4];
             //string TransportInbound = "";
             //string InboundDeliveryType = "";
             //string TransporterName = "";
             //string SupplierName = "";
 
-
+            storedProcedure.Parameters.AddWithValue("ID", ID);
             storedProcedure.Parameters.AddWithValue("MessageType", MessageType);
-            storedProcedure.Parameters.AddWithValue("DateRecieved", DateRecieved);
+            storedProcedure.Parameters.AddWithValue("DateReceived", DateRecieved);
             storedProcedure.Parameters.AddWithValue("Warehouse", Warehouse);
             storedProcedure.Parameters.AddWithValue("OriginalFileName", file);
             storedProcedure.Parameters.AddWithValue("CustomerReferenceTransport", CustomerReferenceTransport);
 
             storedProcedure.ExecuteNonQuery();
             storedProcedure.Parameters.Clear();
+
+            WriteRECCONITEMS(con, File, ID);
         }
         #endregion
 
         #region RECCON Items
-        public static void WriteRECCONITEMS(SqlConnection con, string[][] File)
+        public static void WriteRECCONITEMS(SqlConnection con, string[][] File, string ID)
         {
-            con.Open();
+            
             SqlCommand storedProcedure = new SqlCommand("OSP_INSERT_ITEMS_FOR_RECCON", con)
             {
                 CommandType = CommandType.StoredProcedure
@@ -494,18 +490,23 @@ namespace EDI_Orders
             string ItemNumber = "";
             //string ItemDescription = "";
             string RecievedQuantity = "";
+            
             foreach (string[] s in File)
             {
-                switch (s[0])
+                Console.WriteLine(s[0]);
+                switch (s[0].Trim())
                 {
                     case "W07":
-                        ItemNumber = s[4];
+                        ItemNumber = s[5];
                         RecievedQuantity = s[1];
+                        Console.WriteLine(ItemNumber);
                         break;
                 }
 
+                Console.WriteLine("If check for vals");
                 if ((ItemNumber != "") && (RecievedQuantity != ""))
                 {
+                    storedProcedure.Parameters.AddWithValue("ID", ID);
                     storedProcedure.Parameters.AddWithValue("ItemNumber", ItemNumber);
                     storedProcedure.Parameters.AddWithValue("RecievedQuantity", RecievedQuantity);
 
@@ -516,7 +517,9 @@ namespace EDI_Orders
                     //ItemDescription = "";
                     RecievedQuantity = "";
                 }
+                Console.WriteLine("End of foreach pass");
             }
+            con.Close();
         }
         #endregion
     }
