@@ -984,8 +984,8 @@ namespace EDI_Orders
                     streamWriter.WriteLine("SE*12*" + counter + "~");
                     counter++;
                     WritePLFooter(streamWriter, data.Rows.Count, 8);
+                    streamWriter.Close();
                 }
-                streamWriter.Close();
             }
             catch (Exception ex)
             {
