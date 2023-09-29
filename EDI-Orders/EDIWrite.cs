@@ -1001,7 +1001,7 @@ namespace EDI_Orders
         {
             try
             {
-                sw.WriteLine("ISA*00*          *00*          *01*Osprey Europe  *ZZ*GreatBear      *" + DateTime.Now.ToString("ddMMyy") + "*" + DateTime.Now.ToString("hhmm") + "*U*00401*200*0*P~");
+                sw.WriteLine("ISA*00*          *00*          *01*Osprey Europe  *ZZ*GreatBear      *" + DateTime.Now.ToString("ddMMyy") + "*" + DateTime.Now.ToString("hhmm") + "*U*004010*200*0*P~");
                 sw.WriteLine("GS*IB*Osprey Europe*GreatBear*" + DateTime.Now.ToString("yyyyMMdd") + "*" + DateTime.Now.ToString("hhmm") + "*1*X*00401~");
                 //sw.WriteLine("ST*" + MessageType + "*1~");
                 //sw.WriteLine("BIA*C~");
@@ -1054,7 +1054,7 @@ namespace EDI_Orders
                 {
                     int QTY = convertToInt(row["Quantity"].ToString());
                     string DateFormatting = DateFormatter(row["OrderRequestedDate"].ToString());
-                    streamWriter.WriteLine("ST*856*" + row["PrimaryKey"] + "~");
+                    streamWriter.WriteLine("ST*846*" + row["PrimaryKey"] + "~");
                     streamWriter.WriteLine("BSN*00*" + "PO" + id + "." + row["PrimaryKey"] + "*" + DateFormatting + "~");
                     streamWriter.WriteLine("HL*1**S~");
                     streamWriter.WriteLine("N1*SF**ZZ*" + row["SuppAccRef"].ToString().Replace("$", "") + "~");                           //Replace $
