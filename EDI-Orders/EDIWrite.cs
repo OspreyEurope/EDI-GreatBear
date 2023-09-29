@@ -946,6 +946,55 @@ namespace EDI_Orders
         }
         #endregion
 
+        #region Product List individual files
+        public static void WriteProductListGBItems (SqlConnection con, string id)
+        {
+            try
+            {
+                DataTable data = SharedFunctions.QueryDB(con, "OSP_Get_Product_List", id);
+                foreach (DataRow r in data.Rows)
+                {
+                    /**
+                     * Retrives the data from the database and then writes it line by line into a file.
+                     */
+                    string file = ConfigurationManager.AppSettings["Test"] + "/" + "GREATBEAR" + "_Product_List_Item" + r[0].ToString() + ".txt";
+                    FileStream f = new FileStream(file, FileMode.Create);
+                    Encoding utf8WithoutBom = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false);
+                    StreamWriter streamWriter = new StreamWriter(f, utf8WithoutBom);
+                    string fileName = id + "_Product_List.txt";
+                    fileName = fileName.PadRight(35, ' ');
+
+                    int counter = 1;
+
+                    WritePLHeader(streamWriter, "846");
+
+                    streamWriter.WriteLine("ST*846*" + counter + "~");
+                    streamWriter.WriteLine("LIN**VN*" + r[0].ToString() + "~");
+                    streamWriter.WriteLine("PID*****" + r[1].ToString() + "~");
+                    streamWriter.WriteLine("RFF*LEV*1*EA~");
+                    streamWriter.WriteLine("RFF*EAN*" + r[3].ToString() + "~");
+                    streamWriter.WriteLine("RFF*LEV*2*IP~");
+                    streamWriter.WriteLine("RFF*LEV*3*CAS~");
+                    streamWriter.WriteLine("RFF*EAN*" + r[4].ToString() + "*3~");
+                    streamWriter.WriteLine("RFF*CGW*" + r[10].ToString() + "*KG~");
+                    streamWriter.WriteLine("RFF*CHM*" + r[5].ToString() + "*CM~");
+                    streamWriter.WriteLine("RFF*CWM*" + r[7].ToString() + "*CM~");
+                    streamWriter.WriteLine("RFF*CLM*" + r[6].ToString() + "*CM~");
+                    streamWriter.WriteLine("RFF*CQT*" + r[2].ToString() + "*EA~");
+                    streamWriter.WriteLine("SE*12*" + counter + "~");
+                    counter++;
+                    WritePLFooter(streamWriter, data.Rows.Count, 8);
+                }
+                streamWriter.Close();
+            }
+            catch (Exception ex)
+            {
+                SharedFunctions.Writefile("Write Product List Failed to process, error message is: " + ex.Message, "");
+                SharedFunctions.ErrorAlert("Write Product List", ex);
+            }
+        }
+        #endregion
+
         #region Write Product List
         public static void WriteProductListGB(SqlConnection con, string id)
         {
@@ -968,7 +1017,7 @@ namespace EDI_Orders
                 {
                     WritePLHeader(streamWriter, "846");
 
-                    streamWriter.WriteLine("ST*856*" + counter + "~");
+                    streamWriter.WriteLine("ST*846*" + counter + "~");
                     streamWriter.WriteLine("LIN**VN*" + r[0].ToString() + "~");
                     streamWriter.WriteLine("PID*****" + r[1].ToString() + "~");
                     streamWriter.WriteLine("RFF*LEV*1*EA~");
@@ -1002,7 +1051,7 @@ namespace EDI_Orders
             try
             {
                 sw.WriteLine("ISA*00*          *00*          *01*Osprey Europe  *ZZ*GreatBear      *" + DateTime.Now.ToString("ddMMyy") + "*" + DateTime.Now.ToString("hhmm") + "*U*004010*200*0*P~");
-                sw.WriteLine("GS*IB*Osprey Europe*GreatBear*" + DateTime.Now.ToString("yyyyMMdd") + "*" + DateTime.Now.ToString("hhmm") + "*1*X*00401~");
+                sw.WriteLine("GS*IB*Osprey Europe*GreatBear*" + DateTime.Now.ToString("yyyyMMdd") + "*" + DateTime.Now.ToString("hhmm") + "*1*X*004010~");
                 //sw.WriteLine("ST*" + MessageType + "*1~");
                 //sw.WriteLine("BIA*C~");
                 //sw.WriteLine("BSN*00*1*" + DateTime.Now.ToString("yyyyMMdd") + "~");
