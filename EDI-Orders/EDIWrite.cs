@@ -817,7 +817,7 @@ namespace EDI_Orders
 
         #endregion
 
-
+       
 
         #region Great Bear
         #region Write Order Header
@@ -825,8 +825,16 @@ namespace EDI_Orders
         {
             try
             {
+                SqlConnection Orbis = new SqlConnection
+                {
+                    ConnectionString = ConfigurationManager.ConnectionStrings["Orbis"].ConnectionString
+                };
                 DataTable data = SharedFunctions.QueryDB(con, "OSP_WRITE_HEADER_EDI", id);
-
+                DataTable GBCounters = SharedFunctions.QueryDB(Orbis, "OSP_GET_GBITEMS_VALS", "1", "2");
+                DataRow GEGS = GBCounters.Rows[0];
+                DataRow SEST = GBCounters.Rows[1];
+                int GEGSVal = Int32.Parse(GEGS[2].ToString());
+                int SESTVal = Int32.Parse(SEST[2].ToString());
                 for (int i = 0; i < data.Rows.Count; i++)
                 {
                     con.Open();
@@ -845,7 +853,7 @@ namespace EDI_Orders
                     Console.WriteLine(data.Rows.Count);
                     Console.WriteLine(row["OrderNumber"]);
 
-                    WritePLHeader(streamWriter, "940");
+                    WritePLHeader(streamWriter, "940", GEGS[2].ToString());
 
                     /**
                      * Writes the delivery information for the an order in the X12 format.
@@ -891,10 +899,11 @@ namespace EDI_Orders
                     //WriteItemsGB(con, streamWriter, id, row["WHOrderNumber"].ToString());
                     streamWriter.WriteLine("W79*" + total + "~");
 
-                    WritePLFooter(streamWriter, data.Rows.Count, total + 15);
+                    WritePLFooter(streamWriter, data.Rows.Count, total + 15, GEGS[2].ToString());
 
                     streamWriter.Close();
                 }
+                SharedFunctions.UpdateCounters(Orbis, "OSP_UPDATE_GBITEMS_VALS", "1", "2", (GEGSVal+1).ToString(),(SESTVal+1).ToString());
             }
             catch (Exception ex)
             {
@@ -951,7 +960,16 @@ namespace EDI_Orders
         {
             try
             {
+                SqlConnection Orbis = new SqlConnection
+                {
+                    ConnectionString = ConfigurationManager.ConnectionStrings["Orbis"].ConnectionString
+                };
                 DataTable data = SharedFunctions.QueryDB(con, "OSP_Get_Product_List", id);
+                DataTable GBCounters = SharedFunctions.QueryDB(Orbis, "OSP_GET_GBITEMS_VALS", "1", "2");
+                DataRow GEGS = GBCounters.Rows[0];
+                DataRow SEST = GBCounters.Rows[1];
+                int GEGSVal = Int32.Parse(GEGS[2].ToString());
+                int SESTVal = Int32.Parse(SEST[2].ToString());
                 foreach (DataRow r in data.Rows)
                 {
                     /**
@@ -966,13 +984,14 @@ namespace EDI_Orders
 
                     int counter = 1;
 
-                    WritePLHeader(streamWriter, "846");
+                    WritePLHeader(streamWriter, "846", GEGSVal.ToString());
 
-                    streamWriter.WriteLine("ST*846*" + counter + "~");
+                    streamWriter.WriteLine("ST*846*" + SESTVal.ToString() + "~");
+                    streamWriter.WriteLine("BIA*C~");
                     streamWriter.WriteLine("LIN**VN*" + r[0].ToString() + "~");
                     streamWriter.WriteLine("PID*****" + r[1].ToString() + "~");
                     streamWriter.WriteLine("RFF*LEV*1*EA~");
-                    streamWriter.WriteLine("RFF*EAN*" + r[3].ToString() + "~");
+                    streamWriter.WriteLine("RFF*EAN*" + r[3].ToString() + "*1~");
                     streamWriter.WriteLine("RFF*LEV*2*IP~");
                     streamWriter.WriteLine("RFF*LEV*3*CAS~");
                     streamWriter.WriteLine("RFF*EAN*" + r[4].ToString() + "*3~");
@@ -981,11 +1000,14 @@ namespace EDI_Orders
                     streamWriter.WriteLine("RFF*CWM*" + r[7].ToString() + "*CM~");
                     streamWriter.WriteLine("RFF*CLM*" + r[6].ToString() + "*CM~");
                     streamWriter.WriteLine("RFF*CQT*" + r[2].ToString() + "*EA~");
-                    streamWriter.WriteLine("SE*12*" + counter + "~");
+                    streamWriter.WriteLine("SE*12*" + SESTVal.ToString() + "~");
                     counter++;
-                    WritePLFooter(streamWriter, data.Rows.Count, 8);
+                    WritePLFooter(streamWriter, 1, 8, GEGSVal.ToString());
                     streamWriter.Close();
+                    GEGSVal++;
+                    SESTVal++;
                 }
+                SharedFunctions.UpdateCounters(Orbis, "OSP_UPDATE_GBITEMS_VALS", "1", "2", (GEGSVal + 1).ToString(), (SESTVal + 1).ToString());
             }
             catch (Exception ex)
             {
@@ -995,63 +1017,70 @@ namespace EDI_Orders
         }
         #endregion
 
-        #region Write Product List
-        public static void WriteProductListGB(SqlConnection con, string id)
-        {
-            try
-            {
-                DataTable data = SharedFunctions.QueryDB(con, "OSP_Get_Product_List", id);
-                /**
-                 * Retrives the data from the database and then writes it line by line into a file.
-                 */
-                string file = ConfigurationManager.AppSettings["Test"] + "/" + "GREATBEAR" + "_Product_List.txt";
-                FileStream f = new FileStream(file, FileMode.Create);
-                Encoding utf8WithoutBom = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false);
-                StreamWriter streamWriter = new StreamWriter(f, utf8WithoutBom);
-                string fileName = id + "_Product_List.txt";
-                fileName = fileName.PadRight(35, ' ');
+        //#region Write Product List
+        //public static void WriteProductListGB(SqlConnection con, string id)
+        //{
+        //    try
+        //    {
+        //        SqlConnection Orbis = new SqlConnection
+        //        {
+        //            ConnectionString = ConfigurationManager.ConnectionStrings["Orbis"].ConnectionString
+        //        };
+        //        DataTable data = SharedFunctions.QueryDB(con, "OSP_Get_Product_List", id);
+        //        DataTable GBCounters = SharedFunctions.QueryDB(Orbis, "OSP_GET_GBITEMS_VALS", "1", "2");
+        //        DataRow GEGS = GBCounters.Rows[0];
+        //        DataRow SEST = GBCounters.Rows[1];
+        //        /**
+        //         * Retrives the data from the database and then writes it line by line into a file.
+        //         */
+        //        string file = ConfigurationManager.AppSettings["Test"] + "/" + "GREATBEAR" + "_Product_List.txt";
+        //        FileStream f = new FileStream(file, FileMode.Create);
+        //        Encoding utf8WithoutBom = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false);
+        //        StreamWriter streamWriter = new StreamWriter(f, utf8WithoutBom);
+        //        string fileName = id + "_Product_List.txt";
+        //        fileName = fileName.PadRight(35, ' ');
 
-                int counter = 1;
-                Console.WriteLine(data.Rows.Count);
-                foreach (DataRow r in data.Rows)
-                {
-                    WritePLHeader(streamWriter, "846");
+        //        int counter = 1;
+        //        Console.WriteLine(data.Rows.Count);
+        //        foreach (DataRow r in data.Rows)
+        //        {
+        //            WritePLHeader(streamWriter, "846", GEGS[2].ToString());
 
-                    streamWriter.WriteLine("ST*846*" + counter + "~");
-                    streamWriter.WriteLine("LIN**VN*" + r[0].ToString() + "~");
-                    streamWriter.WriteLine("PID*****" + r[1].ToString() + "~");
-                    streamWriter.WriteLine("RFF*LEV*1*EA~");
-                    streamWriter.WriteLine("RFF*EAN*" + r[3].ToString() + "~");
-                    streamWriter.WriteLine("RFF*LEV*2*IP~");
-                    streamWriter.WriteLine("RFF*LEV*3*CAS~");
-                    streamWriter.WriteLine("RFF*EAN*" + r[4].ToString() + "*3~");
-                    streamWriter.WriteLine("RFF*CGW*" + r[10].ToString() + "*KG~");
-                    streamWriter.WriteLine("RFF*CHM*" + r[5].ToString() + "*CM~");
-                    streamWriter.WriteLine("RFF*CWM*" + r[7].ToString() + "*CM~");
-                    streamWriter.WriteLine("RFF*CLM*" + r[6].ToString() + "*CM~");
-                    streamWriter.WriteLine("RFF*CQT*" + r[2].ToString() + "*EA~");
-                    streamWriter.WriteLine("SE*12*" + counter + "~");
-                    counter++;
-                    WritePLFooter(streamWriter, data.Rows.Count, 8);
-                }
-                streamWriter.Close();
-            }
-            catch (Exception ex)
-            {
-                SharedFunctions.Writefile("Write Product List Failed to process, error message is: " + ex.Message, "");
-                SharedFunctions.ErrorAlert("Write Product List", ex);
-            }
+        //            streamWriter.WriteLine("ST*846*" + SEST[2].ToString() + "~");
+        //            streamWriter.WriteLine("LIN**VN*" + r[0].ToString() + "~");
+        //            streamWriter.WriteLine("PID*****" + r[1].ToString() + "~");
+        //            streamWriter.WriteLine("RFF*LEV*1*EA~");
+        //            streamWriter.WriteLine("RFF*EAN*" + r[3].ToString() + "~");
+        //            streamWriter.WriteLine("RFF*LEV*2*IP~");
+        //            streamWriter.WriteLine("RFF*LEV*3*CAS~");
+        //            streamWriter.WriteLine("RFF*EAN*" + r[4].ToString() + "*3~");
+        //            streamWriter.WriteLine("RFF*CGW*" + r[10].ToString() + "*KG~");
+        //            streamWriter.WriteLine("RFF*CHM*" + r[5].ToString() + "*CM~");
+        //            streamWriter.WriteLine("RFF*CWM*" + r[7].ToString() + "*CM~");
+        //            streamWriter.WriteLine("RFF*CLM*" + r[6].ToString() + "*CM~");
+        //            streamWriter.WriteLine("RFF*CQT*" + r[2].ToString() + "*EA~");
+        //            streamWriter.WriteLine("SE*12*" + SEST[2].ToString() + "~");
+        //            counter++;
+        //            //WritePLFooter(streamWriter, r.Rows.Count, 8, GEGS[2].ToString());
+        //        }
+        //        streamWriter.Close();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        SharedFunctions.Writefile("Write Product List Failed to process, error message is: " + ex.Message, "");
+        //        SharedFunctions.ErrorAlert("Write Product List", ex);
+        //    }
 
-        }
-        #endregion
+        //}
+        //#endregion
 
         #region Product List Header
-        public static void WritePLHeader(StreamWriter sw, string MessageType)
+        public static void WritePLHeader(StreamWriter sw, string MessageType, string GSVal)
         {
             try
             {
-                sw.WriteLine("ISA*00*          *00*          *01*Osprey Europe  *ZZ*GreatBear      *" + DateTime.Now.ToString("ddMMyy") + "*" + DateTime.Now.ToString("hhmm") + "*U*004010*200*0*P~");
-                sw.WriteLine("GS*IB*Osprey Europe*GreatBear*" + DateTime.Now.ToString("yyyyMMdd") + "*" + DateTime.Now.ToString("hhmm") + "*1*X*004010~");
+                sw.WriteLine("ISA*00*          *00*          *01*Osprey Europe  *ZZ*GreatBear      *" + DateTime.Now.ToString("ddMMyy") + "*" + DateTime.Now.ToString("hhmm") + "*U*00401*8460*0*P*>~");
+                sw.WriteLine("GS*IB*Osprey Europe*GreatBear*" + DateTime.Now.ToString("yyyyMMdd") + "*" + DateTime.Now.ToString("hhmm") + "*" + GSVal + "*X*004010~");
                 //sw.WriteLine("ST*" + MessageType + "*1~");
                 //sw.WriteLine("BIA*C~");
                 //sw.WriteLine("BSN*00*1*" + DateTime.Now.ToString("yyyyMMdd") + "~");
@@ -1065,12 +1094,12 @@ namespace EDI_Orders
         #endregion
 
         #region Product List Footer
-        public static void WritePLFooter(StreamWriter sw, int NoOfSegs, int lines)
+        public static void WritePLFooter(StreamWriter sw, int NoOfSegs, int lines, string GEVal)
         {
             try
             {
                 //sw.WriteLine("SE*" + NoOfSegs + "*1~");
-                sw.WriteLine("GE*" + NoOfSegs + "*1~");
+                sw.WriteLine("GE*" + NoOfSegs + "*" + GEVal + "~");
                 sw.WriteLine("IEA*" + (lines + 3) + "*200~");
             }
             catch (Exception ex)
@@ -1086,7 +1115,16 @@ namespace EDI_Orders
         {
             try
             {
+                SqlConnection Orbis = new SqlConnection
+                {
+                    ConnectionString = ConfigurationManager.ConnectionStrings["Orbis"].ConnectionString
+                };
                 DataTable data = SharedFunctions.QueryDB(con, "OSP_GET_PO_DATA", id);
+                DataTable GBCounters = SharedFunctions.QueryDB(Orbis, "OSP_GET_GBITEMS_VALS", "1", "2");
+                DataRow GEGS = GBCounters.Rows[0];
+                DataRow SEST = GBCounters.Rows[1];
+                int GEGSVal = Int32.Parse(GEGS[2].ToString());
+                int SESTVal = Int32.Parse(SEST[2].ToString());
                 /**
                  * Retrives the data from the database and then writes it line by line into a file.
                  */
@@ -1097,7 +1135,7 @@ namespace EDI_Orders
                 string fileName = "PO" + id + ".txt";
                 int counter = 1;
 
-                WritePLHeader(streamWriter, fileName);
+                WritePLHeader(streamWriter, fileName, GEGS[2].ToString());
 
                 foreach (DataRow row in data.Rows)
                 {
@@ -1118,8 +1156,9 @@ namespace EDI_Orders
                     counter++;
                 }
 
-                WritePLFooter(streamWriter, data.Rows.Count, 8);
+                WritePLFooter(streamWriter, data.Rows.Count, 8, GEGS[2].ToString());
                 streamWriter.Close();
+                SharedFunctions.UpdateCounters(Orbis, "OSP_UPDATE_GBITEMS_VALS", "1", "2", (GEGSVal + 1).ToString(), (SESTVal + 1).ToString());
             }
             catch (Exception ex)
             {

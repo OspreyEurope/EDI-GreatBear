@@ -374,6 +374,22 @@ namespace EDI_Orders
         }
         #endregion
 
+        #region Counter Updater
+        public static void UpdateCounters (SqlConnection con, string SP, string id1, string id2, string val1, string val2)
+        {
+            con.Open();
+            SqlCommand dataQuery = new SqlCommand(SP, con)
+            {
+                CommandType = CommandType.StoredProcedure
+            };
+            dataQuery.Parameters.AddWithValue("id1", id1);
+            dataQuery.Parameters.AddWithValue("id2", id2);
+            dataQuery.Parameters.AddWithValue("val1", val1);
+            dataQuery.Parameters.AddWithValue("val2", val2);
+            dataQuery.ExecuteNonQuery();
+            con.Close();
+        }
+        #endregion
         #region Folder Checker
         /**
          * This function takes whichever vender the message is coming from adn will handle the information as required.
