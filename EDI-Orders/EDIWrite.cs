@@ -991,21 +991,21 @@ namespace EDI_Orders
 
                     WritePLHeader(streamWriter, "846", GEGSVal.ToString(), ISAIEAVal.ToString());
 
-                    streamWriter.WriteLine("ST*846*" + SESTVal.ToString() + "");
-                    streamWriter.WriteLine("BIA*C");
-                    streamWriter.WriteLine("LIN**VN*" + r[0].ToString() + "");
-                    streamWriter.WriteLine("PID*****" + r[1].ToString() + "");
-                    streamWriter.WriteLine("RFF*LEV*1*EA");
-                    streamWriter.WriteLine("RFF*EAN*" + r[3].ToString() + "*1");
-                    streamWriter.WriteLine("RFF*LEV*2*IP");
-                    streamWriter.WriteLine("RFF*LEV*3*CAS");
-                    streamWriter.WriteLine("RFF*EAN*" + r[4].ToString() + "*3");
-                    streamWriter.WriteLine("RFF*CGW*" + r[10].ToString() + "*KG");
-                    streamWriter.WriteLine("RFF*CHM*" + r[5].ToString() + "*CM");
-                    streamWriter.WriteLine("RFF*CWM*" + r[7].ToString() + "*CM");
-                    streamWriter.WriteLine("RFF*CLM*" + r[6].ToString() + "*CM");
-                    streamWriter.WriteLine("RFF*CQT*" + r[2].ToString() + "*EA");
-                    streamWriter.WriteLine("SE*12*" + SESTVal.ToString() + "");
+                    streamWriter.Write("ST*846*" + SESTVal.ToString() + "~");
+                    streamWriter.Write("BIA*C~");
+                    streamWriter.Write("LIN**VN*" + r[0].ToString() + "~");
+                    streamWriter.Write("PID*****" + r[1].ToString() + "~");
+                    streamWriter.Write("RFF*LEV*1*EA~");
+                    streamWriter.Write("RFF*EAN*" + r[3].ToString() + "*1~");
+                    streamWriter.Write("RFF*LEV*2*IP~");
+                    streamWriter.Write("RFF*LEV*3*CAS~");
+                    streamWriter.Write("RFF*EAN*" + r[4].ToString() + "*3~");
+                    streamWriter.Write("RFF*CGW*" + r[10].ToString() + "*KG~");
+                    streamWriter.Write("RFF*CHM*" + r[5].ToString() + "*CM~");
+                    streamWriter.Write("RFF*CWM*" + r[7].ToString() + "*CM~");
+                    streamWriter.Write("RFF*CLM*" + r[6].ToString() + "*CM~");
+                    streamWriter.Write("RFF*CQT*" + r[2].ToString() + "*EA~");
+                    streamWriter.Write("SE*12*" + SESTVal.ToString() + "~");
                     counter++;
                     WritePLFooter(streamWriter, 1, 8, GEGSVal.ToString(), ISAIEAVal.ToString());
                     streamWriter.Close();
@@ -1086,8 +1086,8 @@ namespace EDI_Orders
         {
             try
             {
-                sw.WriteLine("ISA*00*          *00*          *01*Osprey Europe  *ZZ*GreatBear      *" + DateTime.Now.ToString("ddMMyy") + "*" + DateTime.Now.ToString("hhmm") + "*U*00401*" + ISA + "*0*P*>");
-                sw.WriteLine("GS*IB*Osprey Europe*GreatBear*" + DateTime.Now.ToString("yyyyMMdd") + "*" + DateTime.Now.ToString("hhmm") + "*" + GSVal + "*X*004010");
+                sw.Write("ISA*00*          *00*          *01*Osprey Europe  *ZZ*GreatBear      *" + DateTime.Now.ToString("ddMMyy") + "*" + DateTime.Now.ToString("hhmm") + "*U*00401*" + ISA + "*0*P*>~");
+                sw.Write("GS*IB*Osprey Europe*GreatBear*" + DateTime.Now.ToString("yyyyMMdd") + "*" + DateTime.Now.ToString("hhmm") + "*" + GSVal + "*X*004010~");
                 //sw.WriteLine("ST*" + MessageType + "*1~");
                 //sw.WriteLine("BIA*C~");
                 //sw.WriteLine("BSN*00*1*" + DateTime.Now.ToString("yyyyMMdd") + "~");
@@ -1106,8 +1106,8 @@ namespace EDI_Orders
             try
             {
                 //sw.WriteLine("SE*" + NoOfSegs + "*1~");
-                sw.WriteLine("GE*" + NoOfSegs + "*" + GEVal + "");
-                sw.WriteLine("IEA*" + (lines + 3) + "*" + IEA + "");
+                sw.Write("GE*" + NoOfSegs + "*" + GEVal + "~");
+                sw.Write("IEA*" + (lines + 3) + "*" + IEA + "~");
             }
             catch (Exception ex)
             {
