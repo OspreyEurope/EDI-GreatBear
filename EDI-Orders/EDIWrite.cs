@@ -844,7 +844,7 @@ namespace EDI_Orders
                     /**
                      * * Retrives the data from the database and then writes it line by line into a file.
                      */
-                    string file = ConfigurationManager.AppSettings["Test"] + "/" + row["OrderNumber"].ToString() + ".txt";
+                    string file = ConfigurationManager.AppSettings["Test"] + "/" + row["OrderNumber"].ToString() + ".edi";
                     string fileName = row["OrderNumber"].ToString() + ".txt";
                     FileStream f = new FileStream(file, FileMode.Create);
                     Encoding utf8WithoutBom = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false);
@@ -980,7 +980,7 @@ namespace EDI_Orders
                     /**
                      * Retrives the data from the database and then writes it line by line into a file.
                      */
-                    string file = ConfigurationManager.AppSettings["Test"] + "/" + "GREATBEAR" + "_Product_List_Item_" + itemCount + ".txt";
+                    string file = ConfigurationManager.AppSettings["Test"] + "/" + "GREATBEAR" + "_Product_List_Item_" + itemCount + ".edi";
                     FileStream f = new FileStream(file, FileMode.Create);
                     Encoding utf8WithoutBom = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false);
                     StreamWriter streamWriter = new StreamWriter(f, utf8WithoutBom);
@@ -1137,7 +1137,7 @@ namespace EDI_Orders
                 /**
                  * Retrives the data from the database and then writes it line by line into a file.
                  */
-                string file = ConfigurationManager.AppSettings["Test"] + "/PO" + id + ".txt";
+                string file = ConfigurationManager.AppSettings["Test"] + "/PO" + id + ".edi";
                 FileStream f = new FileStream(file, FileMode.Create);
                 Encoding utf8WithoutBom = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false);
                 StreamWriter streamWriter = new StreamWriter(f, utf8WithoutBom);
