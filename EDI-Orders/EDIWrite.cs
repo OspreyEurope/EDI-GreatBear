@@ -931,7 +931,7 @@ namespace EDI_Orders
         {
             try
             {
-                Console.Write("Start of wrte lines");
+                Console.WriteLine("Start of wrte lines");
                 DataTable data = SharedFunctions.QueryDB(con, "OSP_WRITE_PRODUCTS_EDI", id, id2);
                 int total = 0;
                 int counter = 1;
@@ -1150,7 +1150,7 @@ namespace EDI_Orders
                 {
                     int QTY = convertToInt(row["Quantity"].ToString());
                     string DateFormatting = DateFormatter(row["OrderRequestedDate"].ToString());
-                    streamWriter.Write("ST*846*" + row["PrimaryKey"] + "~");
+                    streamWriter.Write("ST*846*" + SESTVal.ToString() + "~");
                     streamWriter.Write("BSN*00*" + "PO" + id + "." + row["PrimaryKey"] + "*" + DateFormatting + "~");
                     streamWriter.Write("HL*1**S~");
                     streamWriter.Write("N1*SF**ZZ*" + row["SuppAccRef"].ToString().Replace("$", "") + "~");                           //Replace $
@@ -1161,7 +1161,7 @@ namespace EDI_Orders
                     streamWriter.Write("REF*ZZ*~");
                     streamWriter.Write("SN1**" + QTY + "*EA~");
                     streamWriter.Write("CTT*3*" + QTY + "~");
-                    streamWriter.Write("SE*12*" + row["PrimaryKey"] + "~");
+                    streamWriter.Write("SE*12*" + SESTVal.ToString() + "~");
                     counter++;
                 }
 
