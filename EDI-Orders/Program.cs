@@ -125,6 +125,12 @@ namespace EDI_Orders
                         case "8462":
                             GreatBear.ProcessGreatBear("C:\\Bespoke\\EDI\\GreatBearSamples\\846.txt.edi", Orbis);
                             break;
+                        case "945":
+                            GreatBear.ProcessGreatBear("C:\\Bespoke\\EDI\\GreatBearSamples\\945-4.txt", Orbis);
+                            GreatBear.ProcessGreatBear("C:\\Bespoke\\EDI\\GreatBearSamples\\945-3.txt", Orbis);
+                            GreatBear.ProcessGreatBear("C:\\Bespoke\\EDI\\GreatBearSamples\\945-2.txt", Orbis);
+                            GreatBear.ProcessGreatBear("C:\\Bespoke\\EDI\\GreatBearSamples\\945-1.txt", Orbis);
+                            break;
                         #endregion
                         default:
                             SharedFunctions.Writefile("Error with the manual functions.", "Possible an incorrect input: " + choice);

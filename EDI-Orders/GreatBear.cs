@@ -242,6 +242,8 @@ namespace EDI_Orders
                     storedProcedure.Parameters.AddWithValue("ID", ID);
                     storedProcedure.Parameters.AddWithValue("MessageType", "PPLCON");
                     storedProcedure.Parameters.AddWithValue("ConNumber", ConNumber);
+                    storedProcedure.Parameters.AddWithValue("PackedQuantity", PackedQty);
+
 
                     storedProcedure.ExecuteNonQuery();
                     storedProcedure.Parameters.Clear();
@@ -268,6 +270,8 @@ namespace EDI_Orders
                         string[][] info = HandleLine(s);
                         foreach (string[] t in info)
                         {
+                            Console.WriteLine(t[0]);
+                            Console.WriteLine(t[1]);
                             storedProcedure.Parameters.AddWithValue(t[0], t[1]);
                         }
                     }
