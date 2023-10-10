@@ -861,8 +861,8 @@ namespace EDI_Orders
                      * Writes the delivery information for the an order in the X12 format.
                      */
 
-                    streamWriter.WriteLine("W05*C*" + row["OrderNumber"] + "*" + row["OrderReference"] + "*****" + row["OrderImporttype"] + "-" + row["Priority"] + "~");
-                    streamWriter.WriteLine("N1*DE*Osprey Europe*9*5056302200001~");
+                    streamWriter.Write("W05*C*" + row["OrderNumber"] + "*" + row["OrderReference"] + "*****" + row["OrderImporttype"] + "-" + row["Priority"] + "~");
+                    streamWriter.Write("N1*DE*Osprey Europe*9*5056302200001~");
                     #region GDPR data insert
                     if ((row["DelPostalName"].ToString() == "DTC Customer") || (row["DelPostalName"].ToString() == "Ecommerce"))
                     {
@@ -873,33 +873,33 @@ namespace EDI_Orders
                         DataTable GDPRData = SharedFunctions.QueryDB(conDTC, "OSP_GET_GDPR_DATA", row["DelPostCode"].ToString(), row["OrderReference"].ToString());
                         DataRow GDPR = GDPRData.Rows[0];
 
-                        streamWriter.WriteLine("N1*BP*" + GDPR["PostalName"] + "*91*" + row["CustomerAccountRef"] + "~");
-                        streamWriter.WriteLine("N1*BT*" + GDPR["PostalName"] + "*91*" + row["CustomerAccountRef"] + "~");
-                        streamWriter.WriteLine("N3*" + GDPR["AddressLine1"] + "*" + GDPR["AddressLine2"] + "~");
-                        streamWriter.WriteLine("N4*" + row["DelCity"] + "**" + row["DelPostCode"] + "*" + row["DelCountryCode"] + "~");
-                        streamWriter.WriteLine("N1*ST*" + GDPR["PostalName"] + "*91*" + row["CustomerAccountRef"] + "~");
-                        streamWriter.WriteLine("N3*" + GDPR["AddressLine1"] + "*" + GDPR["AddressLine2"] + "~");
-                        streamWriter.WriteLine("N4*" + GDPR["AddressLine3"] + "*" + GDPR["AddressLine4"] + "*" + row["DelPostCode"] + "*" + row["DelCountryCode"] + "~");
+                        streamWriter.Write("N1*BP*" + GDPR["PostalName"] + "*91*" + row["CustomerAccountRef"] + "~");
+                        streamWriter.Write("N1*BT*" + GDPR["PostalName"] + "*91*" + row["CustomerAccountRef"] + "~");
+                        streamWriter.Write("N3*" + GDPR["AddressLine1"] + "*" + GDPR["AddressLine2"] + "~");
+                        streamWriter.Write("N4*" + row["DelCity"] + "**" + row["DelPostCode"] + "*" + row["DelCountryCode"] + "~");
+                        streamWriter.Write("N1*ST*" + GDPR["PostalName"] + "*91*" + row["CustomerAccountRef"] + "~");
+                        streamWriter.Write("N3*" + GDPR["AddressLine1"] + "*" + GDPR["AddressLine2"] + "~");
+                        streamWriter.Write("N4*" + GDPR["AddressLine3"] + "*" + GDPR["AddressLine4"] + "*" + row["DelPostCode"] + "*" + row["DelCountryCode"] + "~");
                     }
                     else
                     {
-                        streamWriter.WriteLine("N1*BP*" + row["InvoicePostalAddress"] + "*91*" + row["CustomerAccountRef"] + "~");
-                        streamWriter.WriteLine("N1*BT*" + row["InvoicePostalAddress"] + "*91*" + row["CustomerAccountRef"] + "~");
-                        streamWriter.WriteLine("N3*" + row["InvoiceAddressLine1"] + "*" + row["InvoiceAddressLine2"] + "~");
-                        streamWriter.WriteLine("N4*" + row["InvoiceCity"] + "**" + row["InvoicePostCode"] + "*" + row["InvoiceCountry"] + "~");
-                        streamWriter.WriteLine("N1*ST*" + row["DelPostalName"] + "*91*" + row["CustomerAccountRef"] + "~");
-                        streamWriter.WriteLine("N3*" + row["DelAddressLine1"] + "*" + row["DelAddressLine2"] + "~");
-                        streamWriter.WriteLine("N4*" + row["DelAddressLine3"] + "*" + row["DelAddressLine4"] + "*" + row["DelPostCode"] + "*" + row["DelCountryCode"] + "~");
+                        streamWriter.Write("N1*BP*" + row["InvoicePostalAddress"] + "*91*" + row["CustomerAccountRef"] + "~");
+                        streamWriter.Write("N1*BT*" + row["InvoicePostalAddress"] + "*91*" + row["CustomerAccountRef"] + "~");
+                        streamWriter.Write("N3*" + row["InvoiceAddressLine1"] + "*" + row["InvoiceAddressLine2"] + "~");
+                        streamWriter.Write("N4*" + row["InvoiceCity"] + "**" + row["InvoicePostCode"] + "*" + row["InvoiceCountry"] + "~");
+                        streamWriter.Write("N1*ST*" + row["DelPostalName"] + "*91*" + row["CustomerAccountRef"] + "~");
+                        streamWriter.Write("N3*" + row["DelAddressLine1"] + "*" + row["DelAddressLine2"] + "~");
+                        streamWriter.Write("N4*" + row["DelAddressLine3"] + "*" + row["DelAddressLine4"] + "*" + row["DelPostCode"] + "*" + row["DelCountryCode"] + "~");
                     }
                     #endregion
-                    streamWriter.WriteLine("N9*BR*~");
-                    streamWriter.WriteLine("G62*02*" + DateFormatting + "~");
-                    streamWriter.WriteLine("W66*M*~");
+                    streamWriter.Write("N9*BR*~");
+                    streamWriter.Write("G62*02*" + DateFormatting + "~");
+                    streamWriter.Write("W66*M*~");
                     con.Close();
 
                     int total = WriteItemsGB(con, streamWriter, id, row["WHOrderNumber"].ToString());
                     //WriteItemsGB(con, streamWriter, id, row["WHOrderNumber"].ToString());
-                    streamWriter.WriteLine("W79*" + total + "~");
+                    streamWriter.Write("W79*" + total + "~");
 
                     WritePLFooter(streamWriter, data.Rows.Count, total + 15, GEGS[2].ToString(), ISAIEAVal.ToString());
 
@@ -931,21 +931,21 @@ namespace EDI_Orders
         {
             try
             {
-                Console.WriteLine("Start of wrte lines");
+                Console.Write("Start of wrte lines");
                 DataTable data = SharedFunctions.QueryDB(con, "OSP_WRITE_PRODUCTS_EDI", id, id2);
                 int total = 0;
                 int counter = 1;
                 int totalQty = 0;
-                Console.WriteLine(data.Rows.Count);
+                Console.Write(data.Rows.Count);
                 foreach (DataRow row in data.Rows)
                 {
-                    sw.WriteLine("LX*" + counter + "~");
-                    sw.WriteLine("W01*" + row["Quantity"] + "*Each*" + row["PartNumber"] + "*VN*" + row["ProductCode"] + "*BP*******~");
+                    sw.Write("LX*" + counter + "~");
+                    sw.Write("W01*" + row["Quantity"] + "*Each*" + row["PartNumber"] + "*VN*" + row["ProductCode"] + "*BP*******~");
                     totalQty = totalQty + (Int32.Parse(row["Quantity"].ToString()));
-                    sw.WriteLine("N9*KK*" + row["SageLineID"] + "~");
+                    sw.Write("N9*KK*" + row["SageLineID"] + "~");
                     counter += 3;
                 }
-                Console.WriteLine("End of wrte lines");
+                Console.Write("End of wrte lines");
                 return total;
             }
             catch (Exception ex)
@@ -1150,18 +1150,18 @@ namespace EDI_Orders
                 {
                     int QTY = convertToInt(row["Quantity"].ToString());
                     string DateFormatting = DateFormatter(row["OrderRequestedDate"].ToString());
-                    streamWriter.WriteLine("ST*846*" + row["PrimaryKey"] + "~");
-                    streamWriter.WriteLine("BSN*00*" + "PO" + id + "." + row["PrimaryKey"] + "*" + DateFormatting + "~");
-                    streamWriter.WriteLine("HL*1**S~");
-                    streamWriter.WriteLine("N1*SF**ZZ*" + row["SuppAccRef"].ToString().Replace("$", "") + "~");                           //Replace $
-                    streamWriter.WriteLine("HL*2*" + row["PrimaryKey"] + "*O~");
-                    streamWriter.WriteLine("PRF*" + id + "~");
-                    streamWriter.WriteLine("HL*3*" + row["PrimaryKey"] + "*I~");
-                    streamWriter.WriteLine("LIN*1*VN*" + row["StockItemCode"] + "~");
-                    streamWriter.WriteLine("REF*ZZ*~");
-                    streamWriter.WriteLine("SN1**" + QTY + "*EA~");
-                    streamWriter.WriteLine("CTT*3*" + QTY + "~");
-                    streamWriter.WriteLine("SE*12*" + row["PrimaryKey"] + "~");
+                    streamWriter.Write("ST*846*" + row["PrimaryKey"] + "~");
+                    streamWriter.Write("BSN*00*" + "PO" + id + "." + row["PrimaryKey"] + "*" + DateFormatting + "~");
+                    streamWriter.Write("HL*1**S~");
+                    streamWriter.Write("N1*SF**ZZ*" + row["SuppAccRef"].ToString().Replace("$", "") + "~");                           //Replace $
+                    streamWriter.Write("HL*2*" + row["PrimaryKey"] + "*O~");
+                    streamWriter.Write("PRF*" + id + "~");
+                    streamWriter.Write("HL*3*" + row["PrimaryKey"] + "*I~");
+                    streamWriter.Write("LIN*1*VN*" + row["StockItemCode"] + "~");
+                    streamWriter.Write("REF*ZZ*~");
+                    streamWriter.Write("SN1**" + QTY + "*EA~");
+                    streamWriter.Write("CTT*3*" + QTY + "~");
+                    streamWriter.Write("SE*12*" + row["PrimaryKey"] + "~");
                     counter++;
                 }
 
