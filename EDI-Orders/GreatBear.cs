@@ -216,7 +216,9 @@ namespace EDI_Orders
                             Warehouse = "GBD";
                         }
                         DateRecieved = s[9];
-                        ID = s[10];
+                        break;
+                    case "GS":
+                        ID = s[6];
                         break;
                     case "W27":
                         transporter = s[1];
