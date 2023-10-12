@@ -837,6 +837,7 @@ namespace EDI_Orders
                 int GEGSVal = Int32.Parse(GEGS[2].ToString());
                 int SESTVal = Int32.Parse(SEST[2].ToString());
                 int ISAIEAVal = Int32.Parse(ISAIEA[2].ToString());
+                int total = 0;
                 for (int i = 0; i < data.Rows.Count; i++)
                 {
                     con.Open();
@@ -897,7 +898,7 @@ namespace EDI_Orders
                     streamWriter.Write("W66*M*~");
                     con.Close();
 
-                    int total = WriteItemsGB(con, streamWriter, id, row["WHOrderNumber"].ToString());
+                    total = WriteItemsGB(con, streamWriter, id, row["WHOrderNumber"].ToString(), SESTVal);
                     //WriteItemsGB(con, streamWriter, id, row["WHOrderNumber"].ToString());
                     streamWriter.Write("W79*" + total + "~");
 
@@ -905,7 +906,7 @@ namespace EDI_Orders
 
                     streamWriter.Close();
                 }
-                SharedFunctions.UpdateCounters(Orbis, "OSP_UPDATE_GBITEMS_VALS", "1", "2", "3", (GEGSVal + 1).ToString(), (SESTVal + 1).ToString(), (ISAIEAVal + 1).ToString());
+                SharedFunctions.UpdateCounters(Orbis, "OSP_UPDATE_GBITEMS_VALS", "1", "2", "3", (GEGSVal + 1).ToString(), (SESTVal + 1).ToString(), (ISAIEAVal + total).ToString());
             }
             catch (Exception ex)
             {
@@ -927,7 +928,7 @@ namespace EDI_Orders
         #endregion
 
         #region Write Order Lines
-        public static int WriteItemsGB(SqlConnection con, StreamWriter sw, string id, string id2)
+        public static int WriteItemsGB(SqlConnection con, StreamWriter sw, string id, string id2, int SESTVal)
         {
             try
             {
@@ -939,11 +940,14 @@ namespace EDI_Orders
                 Console.Write(data.Rows.Count);
                 foreach (DataRow row in data.Rows)
                 {
+                    sw.Write("ST*846*" + (SESTVal + total).ToString() + "~");
                     sw.Write("LX*" + counter + "~");
-                    sw.Write("W01*" + row["Quantity"] + "*Each*" + row["PartNumber"] + "*VN*" + row["ProductCode"] + "*BP*******~");
+                    sw.Write("W01*" + row["Quantity"] + "*Each*" + row["PartNumber"] + "*VN*" + row["ProductCode"] + "*FG*******~");
                     totalQty = totalQty + (Int32.Parse(row["Quantity"].ToString()));
                     sw.Write("N9*KK*" + row["SageLineID"] + "~");
+                    sw.Write("SE*12*" + (SESTVal + total).ToString() + "~");
                     counter += 3;
+                    total++;
                 }
                 Console.Write("End of wrte lines");
                 return total;
