@@ -946,7 +946,7 @@ namespace EDI_Orders
                     totalQty = totalQty + (Int32.Parse(row["Quantity"].ToString()));
                     sw.Write("N9*KK*" + row["SageLineID"] + "~");
                     sw.Write("SE*12*" + (SESTVal + total).ToString() + "~");
-                    counter += 3;
+                    counter ++;
                     total++;
                 }
                 Console.Write("End of wrte lines");
