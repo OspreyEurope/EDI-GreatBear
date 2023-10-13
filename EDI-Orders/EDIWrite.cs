@@ -846,7 +846,7 @@ namespace EDI_Orders
                     /**
                      * * Retrives the data from the database and then writes it line by line into a file.
                      */
-                    string file = ConfigurationManager.AppSettings["Generating"] + "/" + row["OrderNumber"].ToString() + ".edi";
+                    string file = ConfigurationManager.AppSettings["GeneratingGB"] + "/" + row["OrderNumber"].ToString() + ".edi";
                     string fileName = row["OrderNumber"].ToString() + ".txt";
                     FileStream f = new FileStream(file, FileMode.Create);
                     Encoding utf8WithoutBom = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false);
@@ -995,7 +995,7 @@ namespace EDI_Orders
                     /**
                      * Retrives the data from the database and then writes it line by line into a file.
                      */
-                    string file = ConfigurationManager.AppSettings["Test"] + "/" + "GREATBEAR" + "_Product_List_Item_" + itemCount + ".edi";
+                    string file = ConfigurationManager.AppSettings["GeneratingGB"] + "/" + "GREATBEAR" + "_Product_List_Item_" + itemCount + ".edi";
                     FileStream f = new FileStream(file, FileMode.Create);
                     Encoding utf8WithoutBom = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false);
                     StreamWriter streamWriter = new StreamWriter(f, utf8WithoutBom);
@@ -1029,6 +1029,7 @@ namespace EDI_Orders
                     SESTVal++;
                     ISAIEAVal++;
                     itemCount++;
+                    File.Move(file, ConfigurationManager.AppSettings["GBOutbound"] + "/" + Path.GetFileName(file));
                 }
             }
             catch (Exception ex)
@@ -1152,7 +1153,7 @@ namespace EDI_Orders
                 /**
                  * Retrives the data from the database and then writes it line by line into a file.
                  */
-                string file = ConfigurationManager.AppSettings["Test"] + "/PO" + id + ".edi";
+                string file = ConfigurationManager.AppSettings["GeneratingGB"] + "/PO" + id + ".edi";
                 FileStream f = new FileStream(file, FileMode.Create);
                 Encoding utf8WithoutBom = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false);
                 StreamWriter streamWriter = new StreamWriter(f, utf8WithoutBom);
@@ -1183,6 +1184,7 @@ namespace EDI_Orders
                 WritePLFooter(streamWriter, data.Rows.Count, 8, GEGS[2].ToString(), ISAIEAVal.ToString());
                 streamWriter.Close();
                 SharedFunctions.UpdateCounters(Orbis, "OSP_UPDATE_GBITEMS_VALS", "1", "2", "3", (GEGSVal + 1).ToString(), (SESTVal + 1).ToString(), (ISAIEAVal + 1).ToString());
+                File.Move(file, ConfigurationManager.AppSettings["GBOutbound"] + "/" + Path.GetFileName(file));
             }
             catch (Exception ex)
             {
