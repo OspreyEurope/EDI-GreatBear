@@ -940,12 +940,12 @@ namespace EDI_Orders
                 Console.Write(data.Rows.Count);
                 foreach (DataRow row in data.Rows)
                 {
-                    sw.Write("ST*846*" + (SESTVal + total).ToString() + "~");
+                    //sw.Write("ST*846*" + (SESTVal + total).ToString() + "~");
                     sw.Write("LX*" + counter + "~");
                     sw.Write("W01*" + row["Quantity"] + "*Each*" + row["PartNumber"] + "*VN*" + row["ProductCode"] + "*FG*******~");
                     totalQty = totalQty + (Int32.Parse(row["Quantity"].ToString()));
                     sw.Write("N9*KK*" + row["SageLineID"] + "~");
-                    sw.Write("SE*12*" + (SESTVal + total).ToString() + "~");
+                    //sw.Write("SE*12*" + (SESTVal + total).ToString() + "~");
                     counter ++;
                     total++;
                 }
