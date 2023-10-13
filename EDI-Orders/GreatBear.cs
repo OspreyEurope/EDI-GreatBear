@@ -20,34 +20,34 @@ namespace EDI_Orders
         {
             try
             {
-                string[][] File = FileManipulation.readEDIFile(file);
-                string Decision = File[2][1].Trim();
+                string[][] Document = FileManipulation.readEDIFile(file);
+                string Decision = Document[2][1].Trim();
 
                 switch (Decision)
                 {
                     #region 846 - STKBAL
                     case "846":    //Items Message
-                        WriteSTKBAL(con, File, file);
+                        WriteSTKBAL(con, Document, file);
                         break;
                     #endregion
                     #region 944 - RECCON
                     case "944":    //Inbound Receipt Confirmation Message
-                        WriteRECCON(con, File, file);
+                        WriteRECCON(con, Document, file);
                         break;
                     #endregion
                     #region 945 - PPLCON
                     case "945":    //Assembly Order Message
-                        WritePPLCON(con, File, file);
+                        WritePPLCON(con, Document, file);
                         break;
                     #endregion
                     #region 947 - STKMVT
                     case "947":     //Stock adjust and status checks
-                        WriteSTKMVT(con, File, file);
+                        WriteSTKMVT(con, Document, file);
                         break;
                     #endregion
                     #region 997
                     case "997":     //Functional acknowledgment message
-                        foreach (string[] s in File)
+                        foreach (string[] s in Document)
                         {
                             foreach (string l in s)
                             {
@@ -184,7 +184,7 @@ namespace EDI_Orders
         #endregion
 
         #region Write PPLCON
-        public static void WritePPLCON(SqlConnection con, string[][] File, string file)
+        public static void WritePPLCON(SqlConnection con, string[][] Document, string file)
         {
             try
             {
@@ -207,7 +207,7 @@ namespace EDI_Orders
                 string ItemNumber = "";
                 string PackedQty = "";
 
-                foreach (string[] s in File)
+                foreach (string[] s in Document)
                 {
                     string header = s[0].Trim();
                     switch (header)
@@ -322,14 +322,14 @@ namespace EDI_Orders
             {
                 string name = Path.GetFileName(file);
                 File.Move(file, ConfigurationManager.AppSettings["GBQuarantined"] + "/" + "PPLCON" + name);
-                SharedFunctions.Writefile("There was an issue: " + ex.Message, "File Moved to Quarantine");
-                SharedFunctions.ErrorAlert(file + " moved to Quarantine", ex)
+                SharedFunctions.Writefile("There was an issue: " + ex.Message, "Document Moved to Quarantine");
+                SharedFunctions.ErrorAlert(file + " moved to Quarantine", ex);
             }
             }
         #endregion
 
         #region Write STKBAL
-        public static void WriteSTKBAL(SqlConnection con, string[][] File, string file)
+        public static void WriteSTKBAL(SqlConnection con, string[][] Document, string file)
         {
             try
             {
@@ -343,7 +343,7 @@ namespace EDI_Orders
                 string Qty = "";
                 string date = "";
 
-                foreach (string[] s in File)
+                foreach (string[] s in Document)
                 {
 
                     switch (s[0].Trim())
@@ -386,15 +386,15 @@ namespace EDI_Orders
             {
                 string name = Path.GetFileName(file);
                 File.Move(file, ConfigurationManager.AppSettings["GBQuarantined"] + "/" + "STKBAL" + name);
-                SharedFunctions.Writefile("There was an issue: " + ex.Message, "File Moved to Quarantine");
-                SharedFunctions.ErrorAlert(file + " moved to Quarantine", ex)
+                SharedFunctions.Writefile("There was an issue: " + ex.Message, "Document Moved to Quarantine");
+                SharedFunctions.ErrorAlert(file + " moved to Quarantine", ex);
             }
-        }s
+        }
 
         #endregion
 
         #region Write STKMVT
-        public static void WriteSTKMVT(SqlConnection con, string[][] File, string file)
+        public static void WriteSTKMVT(SqlConnection con, string[][] Document, string file)
         {
             try
             {
@@ -404,13 +404,13 @@ namespace EDI_Orders
                     CommandType = CommandType.StoredProcedure
                 };
 
-                string Warehouse = File[0][6];
-                string DateRecieved = File[1][4];
-                string MessageType = File[2][1];
-                string ID = File[2][2];
+                string Warehouse = Document[0][6];
+                string DateRecieved = Document[1][4];
+                string MessageType = Document[2][1];
+                string ID = Document[2][2];
                 string FileAction = "";
 
-                foreach (string[] line in File)
+                foreach (string[] line in Document)
                 {
                     if (line[0].Trim().Equals("N9") && line[1].Trim().Equals("ZZ"))
                     {
@@ -428,7 +428,7 @@ namespace EDI_Orders
                 storedProcedure.ExecuteNonQuery();
                 storedProcedure.Parameters.Clear();
 
-                WRiteSTKMVTItems(con, File, DateRecieved, ID, file);
+                WRiteSTKMVTItems(con, Document, DateRecieved, ID, file);
                 string name = Path.GetFileName(file);
                 File.Move(file, ConfigurationManager.AppSettings["GBProcessed"] + "/STKMVT" + name);
             }
@@ -436,14 +436,14 @@ namespace EDI_Orders
             {
                 string name = Path.GetFileName(file);
                 File.Move(file, ConfigurationManager.AppSettings["GBQuarantined"] + "/" + "STKMVT" + name);
-                SharedFunctions.Writefile("There was an issue: " + ex.Message, "File Moved to Quarantine");
-                SharedFunctions.ErrorAlert(file + " moved to Quarantine", ex)
+                SharedFunctions.Writefile("There was an issue: " + ex.Message, "Document Moved to Quarantine");
+                SharedFunctions.ErrorAlert(file + " moved to Quarantine", ex);
             }
         }
         #endregion
 
         #region STKMVT Items
-        public static void WRiteSTKMVTItems(SqlConnection con, string[][] File, string Date, string ID, string file)
+        public static void WRiteSTKMVTItems(SqlConnection con, string[][] Document, string Date, string ID, string file)
         {
             try
             {
@@ -458,7 +458,7 @@ namespace EDI_Orders
                 string TypeOfOperation = "";
                 string Reason = "";
 
-                foreach (string[] s in File)
+                foreach (string[] s in Document)
                 {
                     if ((ItemNumber != "") && (Quantity != "") && (Reason != ""))
                     {
@@ -506,15 +506,15 @@ namespace EDI_Orders
             {
                 string name = Path.GetFileName(file);
                 File.Move(file, ConfigurationManager.AppSettings["GBQuarantined"] + "/" + "PPLCON" + name);
-                SharedFunctions.Writefile("There was an issue: " + ex.Message, "File Moved to Quarantine");
-                SharedFunctions.ErrorAlert("Error in STKMVTItems, " + file, ex)
+                SharedFunctions.Writefile("There was an issue: " + ex.Message, "Document Moved to Quarantine");
+                SharedFunctions.ErrorAlert("Error in STKMVTItems, " + file, ex);
             }
         }
 
         #endregion
 
         #region Write RECCON
-        public static void WriteRECCON(SqlConnection con, string[][] File, string file)
+        public static void WriteRECCON(SqlConnection con, string[][] Document, string file)
         {
             try
             {
@@ -525,11 +525,11 @@ namespace EDI_Orders
                 };
 
 
-                string Warehouse = File[0][6];
-                string DateRecieved = File[0][9];
-                string MessageType = File[2][1];
-                string CustomerReferenceTransport = File[3][7];
-                string ID = File[3][4];
+                string Warehouse = Document[0][6];
+                string DateRecieved = Document[0][9];
+                string MessageType = Document[2][1];
+                string CustomerReferenceTransport = Document[3][7];
+                string ID = Document[3][4];
                 //string TransportInbound = "";
                 //string InboundDeliveryType = "";
                 //string TransporterName = "";
@@ -545,7 +545,7 @@ namespace EDI_Orders
                 storedProcedure.ExecuteNonQuery();
                 storedProcedure.Parameters.Clear();
 
-                WriteRECCONITEMS(con, File, ID, file);
+                WriteRECCONITEMS(con, Document, ID, file);
                 string name = Path.GetFileName(file);
                 File.Move(file, ConfigurationManager.AppSettings["GBProcessed"] + "/RECCON" + name);
             }
@@ -553,14 +553,14 @@ namespace EDI_Orders
             {
                 string name = Path.GetFileName(file);
                 File.Move(file, ConfigurationManager.AppSettings["GBQuarantined"] + "/" + "RECCON" + name);
-                SharedFunctions.Writefile("There was an issue: " + ex.Message, "File Moved to Quarantine");
-                SharedFunctions.ErrorAlert(file + " moved to Quarantine", ex)
+                SharedFunctions.Writefile("There was an issue: " + ex.Message, "Document Moved to Quarantine");
+                SharedFunctions.ErrorAlert(file + " moved to Quarantine", ex);
             }
         }
         #endregion
 
         #region RECCON Items
-        public static void WriteRECCONITEMS(SqlConnection con, string[][] File, string ID, string file)
+        public static void WriteRECCONITEMS(SqlConnection con, string[][] Document, string ID, string file)
         {
             try
             {
@@ -572,7 +572,7 @@ namespace EDI_Orders
                 //string ItemDescription = "";
                 string RecievedQuantity = "";
 
-                foreach (string[] s in File)
+                foreach (string[] s in Document)
                 {
                     Console.WriteLine(s[0]);
                     switch (s[0].Trim())
@@ -606,8 +606,8 @@ namespace EDI_Orders
             {
                 string name = Path.GetFileName(file);
                 File.Move(file, ConfigurationManager.AppSettings["GBQuarantined"] + "/" + "RECCON" + name);
-                SharedFunctions.Writefile("There was an issue: " + ex.Message, "File Moved to Quarantine");
-                SharedFunctions.ErrorAlert("Write RECCONItems failed for file, " + file, ex)
+                SharedFunctions.Writefile("There was an issue: " + ex.Message, "Document Moved to Quarantine");
+                SharedFunctions.ErrorAlert("Write RECCONItems failed for file, " + file, ex);
             }
         }
         #endregion

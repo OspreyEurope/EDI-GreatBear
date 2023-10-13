@@ -953,7 +953,7 @@ namespace EDI_Orders
                 {
                     //sw.Write("ST*846*" + (SESTVal + total).ToString() + "~");
                     sw.Write("LX*" + counter + "~");
-                    sw.Write("W01*" + row["Quantity"] + "*Each*" + row["PartNumber"] + "*VN*" + row["ProductCode"] + "*FG*******~");
+                    sw.Write("W01*" + row["Quantity"] + "*EA*" + row["PartNumber"] + "*VN*" + row["ProductCode"] + "********FG~");
                     totalQty = totalQty + (Int32.Parse(row["Quantity"].ToString()));
                     sw.Write("N9*KK*" + row["SageLineID"] + "~");
                     //sw.Write("SE*12*" + (SESTVal + total).ToString() + "~");
@@ -1174,7 +1174,7 @@ namespace EDI_Orders
                     streamWriter.Write("PRF*" + id + "~");
                     streamWriter.Write("HL*3*" + row["PrimaryKey"] + "*I~");
                     streamWriter.Write("LIN*1*VN*" + row["StockItemCode"] + "~");
-                    streamWriter.Write("REF*ZZ*~");
+                    //streamWriter.Write("REF*ZZ*~");
                     streamWriter.Write("SN1**" + QTY + "*EA~");
                     streamWriter.Write("CTT*3*" + QTY + "~");
                     streamWriter.Write("SE*12*" + SESTVal.ToString() + "~");

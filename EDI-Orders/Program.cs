@@ -102,8 +102,8 @@ namespace EDI_Orders
                         #endregion
                         #region GBD
                         case "940":
-                            //EDIWrite.WriteOrderGB(Orbis, "0000410684");
-                            EDIWrite.WriteOrderGB(Orbis, "0000460384");
+                            EDIWrite.WriteOrderGB(Orbis, "0000410684");
+                            //EDIWrite.WriteOrderGB(Orbis, "0000460384");
                             break;
                         case "846":
                             EDIWrite.WriteProductListGBItems(OERA, "100994002");
