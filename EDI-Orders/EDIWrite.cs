@@ -840,12 +840,13 @@ namespace EDI_Orders
                 int total = 0;
                 for (int i = 0; i < data.Rows.Count; i++)
                 {
+                    bool GDPRFlag = false;
                     con.Open();
                     DataRow row = data.Rows[i];
                     /**
                      * * Retrives the data from the database and then writes it line by line into a file.
                      */
-                    string file = ConfigurationManager.AppSettings["Test"] + "/" + row["OrderNumber"].ToString() + ".edi";
+                    string file = ConfigurationManager.AppSettings["Generating"] + "/" + row["OrderNumber"].ToString() + ".edi";
                     string fileName = row["OrderNumber"].ToString() + ".txt";
                     FileStream f = new FileStream(file, FileMode.Create);
                     Encoding utf8WithoutBom = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false);
@@ -867,13 +868,14 @@ namespace EDI_Orders
                     #region GDPR data insert
                     if ((row["DelPostalName"].ToString() == "DTC Customer") || (row["DelPostalName"].ToString() == "Ecommerce"))
                     {
+                        GDPRFlag = true;
                         SqlConnection conDTC = new SqlConnection
                         {
                             ConnectionString = ConfigurationManager.ConnectionStrings["DTC"].ConnectionString
                         };
                         DataTable GDPRData = SharedFunctions.QueryDB(conDTC, "OSP_GET_GDPR_DATA", row["DelPostCode"].ToString(), row["OrderReference"].ToString());
                         DataRow GDPR = GDPRData.Rows[0];
-
+                        Console.WriteLine("GDPRData");
                         streamWriter.Write("N1*BP*" + GDPR["PostalName"] + "*91*" + row["CustomerAccountRef"] + "~");
                         streamWriter.Write("N1*BT*" + GDPR["PostalName"] + "*91*" + row["CustomerAccountRef"] + "~");
                         streamWriter.Write("N3*" + GDPR["AddressLine1"] + "*" + GDPR["AddressLine2"] + "~");
@@ -897,14 +899,23 @@ namespace EDI_Orders
                     streamWriter.Write("G62*02*" + DateFormatting + "~");
                     streamWriter.Write("W66*M*~");
                     con.Close();
-
+                    Console.WriteLine("Failed at items");
                     total = WriteItemsGB(con, streamWriter, id, row["WHOrderNumber"].ToString(), SESTVal);
                     //WriteItemsGB(con, streamWriter, id, row["WHOrderNumber"].ToString());
                     streamWriter.Write("W79*" + total + "~");
                     streamWriter.Write("SE*" + (total + 12) + "*" + (SESTVal).ToString() + "~");
+                    Console.WriteLine("PLFooter");
                     WritePLFooter(streamWriter, data.Rows.Count, total + 15, GEGS[2].ToString(), ISAIEAVal.ToString());
-
+                    Console.WriteLine("IDK");
                     streamWriter.Close();
+                    if (GDPRFlag)
+                    {
+                        File.Move(file, ConfigurationManager.AppSettings["GDPROrderGB"] + "/" + "WEB" + Path.GetFileName(file));
+                    }
+                    else
+                    {
+                        File.Move(file, ConfigurationManager.AppSettings["GBOutbound"] + "/" + Path.GetFileName(file));
+                    }
                 }
                 SharedFunctions.UpdateCounters(Orbis, "OSP_UPDATE_GBITEMS_VALS", "1", "2", "3", (GEGSVal + 1).ToString(), (SESTVal + 1).ToString(), (ISAIEAVal + total).ToString());
             }
@@ -937,7 +948,7 @@ namespace EDI_Orders
                 int total = 0;
                 int counter = 1;
                 int totalQty = 0;
-                Console.Write(data.Rows.Count);
+                Console.WriteLine(data.Rows.Count);
                 foreach (DataRow row in data.Rows)
                 {
                     //sw.Write("ST*846*" + (SESTVal + total).ToString() + "~");
@@ -949,7 +960,7 @@ namespace EDI_Orders
                     counter ++;
                     total++;
                 }
-                Console.Write("End of wrte lines");
+                Console.WriteLine("End of write lines");
                 return total;
             }
             catch (Exception ex)
@@ -1008,7 +1019,7 @@ namespace EDI_Orders
                     streamWriter.Write("REF*CHM*" + r[5].ToString() + "*CM~");
                     streamWriter.Write("REF*CWM*" + r[7].ToString() + "*CM~");
                     streamWriter.Write("REF*CLM*" + r[6].ToString() + "*CM~");
-                    streamWriter.Write("REF*CQT*" + r[2].ToString() + "*EA~");
+                    streamWriter.Write("REF*CQT*" + r[8].ToString() + "*EA~");
                     streamWriter.Write("SE*12*" + SESTVal.ToString() + "~");
                     counter++;
                     WritePLFooter(streamWriter, 1, 8, GEGSVal.ToString(), ISAIEAVal.ToString());
