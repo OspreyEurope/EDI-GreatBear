@@ -319,7 +319,7 @@ namespace EDI_Orders
             catch (Exception ex) 
             {
                 string name = Path.GetFileName(file);
-                File.Move(file, ConfigurationManager.AppSettings["KTNSTKMVTQuarantined"] + "/" + "PPLCON" + name);
+                File.Move(file, ConfigurationManager.AppSettings["GBQuarantined"] + "/" + "PPLCON" + name);
                 SharedFunctions.Writefile("There was an issue: " + ex.Message, "File Moved to Quarantine");
                 SharedFunctions.ErrorAlert(file + " moved to Quarantine", ex)
             }
@@ -381,7 +381,7 @@ namespace EDI_Orders
             catch (Exception ex)
             {
                 string name = Path.GetFileName(file);
-                File.Move(file, ConfigurationManager.AppSettings["KTNSTKMVTQuarantined"] + "/" + "STKBAL" + name);
+                File.Move(file, ConfigurationManager.AppSettings["GBQuarantined"] + "/" + "STKBAL" + name);
                 SharedFunctions.Writefile("There was an issue: " + ex.Message, "File Moved to Quarantine");
                 SharedFunctions.ErrorAlert(file + " moved to Quarantine", ex)
             }
@@ -429,7 +429,7 @@ namespace EDI_Orders
             catch (Exception ex)
             {
                 string name = Path.GetFileName(file);
-                File.Move(file, ConfigurationManager.AppSettings["KTNSTKMVTQuarantined"] + "/" + "STKMVT" + name);
+                File.Move(file, ConfigurationManager.AppSettings["GBQuarantined"] + "/" + "STKMVT" + name);
                 SharedFunctions.Writefile("There was an issue: " + ex.Message, "File Moved to Quarantine");
                 SharedFunctions.ErrorAlert(file + " moved to Quarantine", ex)
             }
@@ -499,7 +499,7 @@ namespace EDI_Orders
             catch (Exception ex)
             {
                 string name = Path.GetFileName(file);
-                File.Move(file, ConfigurationManager.AppSettings["KTNSTKMVTQuarantined"] + "/" + "PPLCON" + name);
+                File.Move(file, ConfigurationManager.AppSettings["GBQuarantined"] + "/" + "PPLCON" + name);
                 SharedFunctions.Writefile("There was an issue: " + ex.Message, "File Moved to Quarantine");
                 SharedFunctions.ErrorAlert("Error in STKMVTItems, " + file, ex)
             }
@@ -544,7 +544,7 @@ namespace EDI_Orders
             catch (Exception ex)
             {
                 string name = Path.GetFileName(file);
-                File.Move(file, ConfigurationManager.AppSettings["KTNSTKMVTQuarantined"] + "/" + "RECCON" + name);
+                File.Move(file, ConfigurationManager.AppSettings["GBQuarantined"] + "/" + "RECCON" + name);
                 SharedFunctions.Writefile("There was an issue: " + ex.Message, "File Moved to Quarantine");
                 SharedFunctions.ErrorAlert(file + " moved to Quarantine", ex)
             }
@@ -597,7 +597,7 @@ namespace EDI_Orders
             catch (Exception ex)
             {
                 string name = Path.GetFileName(file);
-                File.Move(file, ConfigurationManager.AppSettings["KTNSTKMVTQuarantined"] + "/" + "RECCON" + name);
+                File.Move(file, ConfigurationManager.AppSettings["GBQuarantined"] + "/" + "RECCON" + name);
                 SharedFunctions.Writefile("There was an issue: " + ex.Message, "File Moved to Quarantine");
                 SharedFunctions.ErrorAlert("Write RECCONItems failed for file, " + file, ex)
             }
