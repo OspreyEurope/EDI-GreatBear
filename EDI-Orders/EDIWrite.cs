@@ -861,7 +861,7 @@ namespace EDI_Orders
                     /**
                      * Writes the delivery information for the an order in the X12 format.
                      */
-
+                    streamWriter.Write("ST*940*" + (SESTVal).ToString() + "~");
                     streamWriter.Write("W05*C*" + row["OrderNumber"] + "*" + row["OrderReference"] + "*****" + row["OrderImporttype"] + "-" + row["Priority"] + "~");
                     streamWriter.Write("N1*DE*Osprey Europe*9*5056302200001~");
                     #region GDPR data insert
@@ -901,7 +901,7 @@ namespace EDI_Orders
                     total = WriteItemsGB(con, streamWriter, id, row["WHOrderNumber"].ToString(), SESTVal);
                     //WriteItemsGB(con, streamWriter, id, row["WHOrderNumber"].ToString());
                     streamWriter.Write("W79*" + total + "~");
-
+                    streamWriter.Write("SE*" + (total + 12) + "*" + (SESTVal).ToString() + "~");
                     WritePLFooter(streamWriter, data.Rows.Count, total + 15, GEGS[2].ToString(), ISAIEAVal.ToString());
 
                     streamWriter.Close();
