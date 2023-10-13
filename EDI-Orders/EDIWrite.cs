@@ -1154,7 +1154,7 @@ namespace EDI_Orders
                 {
                     int QTY = convertToInt(row["Quantity"].ToString());
                     string DateFormatting = DateFormatter(row["OrderRequestedDate"].ToString());
-                    streamWriter.Write("ST*846*" + SESTVal.ToString() + "~");
+                    streamWriter.Write("ST*856*" + SESTVal.ToString() + "~");
                     streamWriter.Write("BSN*00*" + "PO" + id + "." + row["PrimaryKey"] + "*" + DateFormatting + "~");
                     streamWriter.Write("HL*1**S~");
                     streamWriter.Write("N1*SF**ZZ*" + row["SuppAccRef"].ToString().Replace("$", "") + "~");                           //Replace $
