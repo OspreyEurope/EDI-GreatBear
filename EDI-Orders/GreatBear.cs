@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.IO;
@@ -185,361 +186,421 @@ namespace EDI_Orders
         #region Write PPLCON
         public static void WritePPLCON(SqlConnection con, string[][] File, string file)
         {
-            con.Open();
-            SqlCommand storedProcedure = new SqlCommand("OSP_INSERT_PPLCON", con)
+            try
             {
-                CommandType = CommandType.StoredProcedure
-            };
-            int p = 0;
-            string Warehouse = "";
-            string DateRecieved = "";
-            string OrderNumber = "";
-            string Dateshipped = "";
-            string CustomerOrderNumber = "";
-            string transporter = "";
-            string ID = "";
-            string ConNumber = "";
-            string SSCC = "";
-            string PalletQty = "";
-            string ItemNumber = "";
-            string PackedQty = "";
-
-            foreach (string[] s in File)
-            {
-                string header = s[0].Trim();
-                switch (header)
+                con.Open();
+                SqlCommand storedProcedure = new SqlCommand("OSP_INSERT_PPLCON", con)
                 {
-                    case "ISA":
-                        Warehouse = s[6];
-                        if (Warehouse.Equals("GreatBear"))
-                        {
-                            Warehouse = "GBD";
-                        }
-                        DateRecieved = s[9];
-                        break;
-                    case "GS":
-                        ID = s[6];
-                        break;
-                    case "W27":
-                        transporter = s[1];
-                        break;
-                    case "W06":
-                        OrderNumber = s[2];
-                        Dateshipped = s[3];
-                        CustomerOrderNumber = s[6];
-                        break;
-                }
+                    CommandType = CommandType.StoredProcedure
+                };
+                int p = 0;
+                string Warehouse = "";
+                string DateRecieved = "";
+                string OrderNumber = "";
+                string Dateshipped = "";
+                string CustomerOrderNumber = "";
+                string transporter = "";
+                string ID = "";
+                string ConNumber = "";
+                string SSCC = "";
+                string PalletQty = "";
+                string ItemNumber = "";
+                string PackedQty = "";
 
-                if ((header == "LX" && p > 0) || header == "W03")
+                foreach (string[] s in File)
                 {
-                    Console.WriteLine("Now hits insert");
-                    storedProcedure.Parameters.AddWithValue("Warehouse", Warehouse);
-                    storedProcedure.Parameters.AddWithValue("DateReceived", DateRecieved);
-                    storedProcedure.Parameters.AddWithValue("OrderNumber", OrderNumber);
-                    storedProcedure.Parameters.AddWithValue("Dateshipped", Dateshipped);
-                    //storedProcedure.Parameters.AddWithValue("CustomerOrderNumber", CustomerOrderNumber);
-                    storedProcedure.Parameters.AddWithValue("transporter", transporter);
-                    storedProcedure.Parameters.AddWithValue("OriginalFileName", file);
-                    storedProcedure.Parameters.AddWithValue("PL", "PACK");
-                    storedProcedure.Parameters.AddWithValue("ID", ID);
-                    storedProcedure.Parameters.AddWithValue("MessageType", "PPLCON");
-                    storedProcedure.Parameters.AddWithValue("ConNumber", ConNumber);
-                    storedProcedure.Parameters.AddWithValue("PackedQuantity", PackedQty);
-
-
-                    storedProcedure.ExecuteNonQuery();
-                    storedProcedure.Parameters.Clear();
-                    p++;
-
-                    if (SSCC != "")
+                    string header = s[0].Trim();
+                    switch (header)
                     {
-                        SharedFunctions.InsertDESADV(OrderNumber, ItemNumber, PalletQty, SSCC, con);
-                        SSCC = "";
+                        case "ISA":
+                            Warehouse = s[6];
+                            if (Warehouse.Equals("GreatBear"))
+                            {
+                                Warehouse = "GBD";
+                            }
+                            DateRecieved = s[9];
+                            break;
+                        case "GS":
+                            ID = s[6];
+                            break;
+                        case "W27":
+                            transporter = s[1];
+                            break;
+                        case "W06":
+                            OrderNumber = s[2];
+                            Dateshipped = s[3];
+                            CustomerOrderNumber = s[6];
+                            break;
                     }
-                }
-                if (header == "LX")
-                {
-                    p++;
-                }
-                if (header == "N9")
-                {
-                    if (storedProcedure.Parameters.Contains("CarriertrackingNo"))
+                    if ((header == "LX" && p > 0) || header == "W03")
+                    {
+                        Console.WriteLine("Now hits insert");
+                        storedProcedure.Parameters.AddWithValue("Warehouse", Warehouse);
+                        storedProcedure.Parameters.AddWithValue("DateReceived", DateRecieved);
+                        storedProcedure.Parameters.AddWithValue("OrderNumber", OrderNumber);
+                        storedProcedure.Parameters.AddWithValue("Dateshipped", Dateshipped);
+                        //storedProcedure.Parameters.AddWithValue("CustomerOrderNumber", CustomerOrderNumber);
+                        storedProcedure.Parameters.AddWithValue("transporter", transporter);
+                        storedProcedure.Parameters.AddWithValue("OriginalFileName", file);
+                        storedProcedure.Parameters.AddWithValue("PL", "PACK");
+                        storedProcedure.Parameters.AddWithValue("ID", ID);
+                        storedProcedure.Parameters.AddWithValue("MessageType", "PPLCON");
+                        storedProcedure.Parameters.AddWithValue("ConNumber", ConNumber);
+                        storedProcedure.Parameters.AddWithValue("PackedQuantity", PackedQty);
+
+
+                        storedProcedure.ExecuteNonQuery();
+                        storedProcedure.Parameters.Clear();
+                        p++;
+
+                        if (SSCC != "")
+                        {
+                            SharedFunctions.InsertDESADV(OrderNumber, ItemNumber, PalletQty, SSCC, con);
+                            SSCC = "";
+                        }
+                    }
+                    if (header == "LX")
+                    {
+                        p++;
+                    }
+                    if (header == "N9")
+                    {
+                        if (storedProcedure.Parameters.Contains("CarriertrackingNo"))
+                        {
+
+                        }
+                        else
+                        {
+                            string[][] info = HandleLine(s);
+                            foreach (string[] t in info)
+                            {
+                                Console.WriteLine(t[0]);
+                                Console.WriteLine(t[1]);
+                                storedProcedure.Parameters.AddWithValue(t[0], t[1]);
+                            }
+                        }
+                    }
+                    else if (header == "W12")
+                    {
+                        PackedQty = s[2];
+                        PalletQty = s[2];
+                        ItemNumber = s[7];
+                    }
+                    else if (header == "MAN")
                     {
 
+
+                        switch (s[1])
+                        {
+                            case "CP":
+                                ConNumber = s[2];
+                                //Consignment number
+                                break;
+                            case "AA":
+                                SSCC = s[2];
+                                //SSCC
+                                break;
+                            default:
+                                //Error
+                                break;
+                        }
                     }
                     else
                     {
                         string[][] info = HandleLine(s);
                         foreach (string[] t in info)
                         {
-                            Console.WriteLine(t[0]);
-                            Console.WriteLine(t[1]);
                             storedProcedure.Parameters.AddWithValue(t[0], t[1]);
                         }
                     }
                 }
-                else if (header == "W12")
-                {
-                    PackedQty = s[2];
-                    PalletQty = s[2];
-                    ItemNumber = s[7];
-                }
-                else if (header == "MAN")
-                {
-
-
-                    switch (s[1])
-                    {
-                        case "CP":
-                            ConNumber = s[2];
-                            //Consignment number
-                            break;
-                        case "AA":
-                            SSCC = s[2];
-                            //SSCC
-                            break;
-                        default:
-                            //Error
-                            break;
-                    }
-                }
-                else
-                {
-                    string[][] info = HandleLine(s);
-                    foreach (string[] t in info)
-                    {
-                        storedProcedure.Parameters.AddWithValue(t[0], t[1]);
-                    }
-                }
+                con.Close();
             }
-            con.Close();
-        }
+            catch (Exception ex) 
+            {
+                string name = Path.GetFileName(file);
+                File.Move(file, ConfigurationManager.AppSettings["KTNSTKMVTQuarantined"] + "/" + "PPLCON" + name);
+                SharedFunctions.Writefile("There was an issue: " + ex.Message, "File Moved to Quarantine");
+                SharedFunctions.ErrorAlert(file + " moved to Quarantine", ex)
+            }
+            }
         #endregion
 
         #region Write STKBAL
         public static void WriteSTKBAL(SqlConnection con, string[][] File)
         {
-            con.Open();
-            SqlCommand storedProcedure = new SqlCommand("OSP_INSERT_STKBAL", con)
+            try
             {
-                CommandType = CommandType.StoredProcedure
-            };
-            string ItemNumber = "";
-            string ItemDescription = "";
-            string Qty = "";
-            string date = "";
-
-            foreach (string[] s in File)
-            {
-
-                switch (s[0].Trim())
+                con.Open();
+                SqlCommand storedProcedure = new SqlCommand("OSP_INSERT_STKBAL", con)
                 {
-                    case "ISA":
-                        date = s[9].ToString();
-                        break;
-                    case "LIN":
-                        ItemNumber = s[3].ToString();
-                        Console.WriteLine(s[3].ToString());
-                        break;
-                    case "QTY":
-                        Qty = s[2].ToString();
-                        break;
-                    default:
-                        break;
-                }
+                    CommandType = CommandType.StoredProcedure
+                };
+                string ItemNumber = "";
+                string ItemDescription = "";
+                string Qty = "";
+                string date = "";
 
-                if ((ItemNumber != "") && (Qty != ""))
+                foreach (string[] s in File)
                 {
-                    storedProcedure.Parameters.AddWithValue("ItemDescription", ItemDescription);
-                    storedProcedure.Parameters.AddWithValue("Quantity", Qty);
-                    storedProcedure.Parameters.AddWithValue("ItemNumber", ItemNumber);
-                    storedProcedure.Parameters.AddWithValue("DateOfMovement", date);
-                    storedProcedure.Parameters.AddWithValue("Warehouse", "GBD");
-                    storedProcedure.ExecuteNonQuery();
-                    storedProcedure.Parameters.Clear();
 
-                    ItemNumber = "";
-                    ItemDescription = "";
-                    Qty = "";
-                    
+                    switch (s[0].Trim())
+                    {
+                        case "ISA":
+                            date = s[9].ToString();
+                            break;
+                        case "LIN":
+                            ItemNumber = s[3].ToString();
+                            Console.WriteLine(s[3].ToString());
+                            break;
+                        case "QTY":
+                            Qty = s[2].ToString();
+                            break;
+                        default:
+                            break;
+                    }
+
+                    if ((ItemNumber != "") && (Qty != ""))
+                    {
+                        storedProcedure.Parameters.AddWithValue("ItemDescription", ItemDescription);
+                        storedProcedure.Parameters.AddWithValue("Quantity", Qty);
+                        storedProcedure.Parameters.AddWithValue("ItemNumber", ItemNumber);
+                        storedProcedure.Parameters.AddWithValue("DateOfMovement", date);
+                        storedProcedure.Parameters.AddWithValue("Warehouse", "GBD");
+                        storedProcedure.ExecuteNonQuery();
+                        storedProcedure.Parameters.Clear();
+
+                        ItemNumber = "";
+                        ItemDescription = "";
+                        Qty = "";
+
+                    }
                 }
+                con.Close();
             }
-            con.Close();
-        }
+            catch (Exception ex)
+            {
+                string name = Path.GetFileName(file);
+                File.Move(file, ConfigurationManager.AppSettings["KTNSTKMVTQuarantined"] + "/" + "STKBAL" + name);
+                SharedFunctions.Writefile("There was an issue: " + ex.Message, "File Moved to Quarantine");
+                SharedFunctions.ErrorAlert(file + " moved to Quarantine", ex)
+            }
+        }s
+
         #endregion
 
         #region Write STKMVT
         public static void WriteSTKMVT(SqlConnection con, string[][] File, string file)
         {
-            con.Open();
-            SqlCommand storedProcedure = new SqlCommand("OSP_INSERT_STOCK_MOVEMENT", con)
+            try
             {
-                CommandType = CommandType.StoredProcedure
-            };
-
-            string Warehouse = File[0][6];
-            string DateRecieved = File[1][4];
-            string MessageType = File[2][1];
-            string ID = File[2][2];
-            string FileAction = "";
-            
-            foreach (string[] line in File)
-            {
-                if (line[0].Trim().Equals("N9") && line[1].Trim().Equals("ZZ"))
+                con.Open();
+                SqlCommand storedProcedure = new SqlCommand("OSP_INSERT_STOCK_MOVEMENT", con)
                 {
-                    FileAction = line[2];
+                    CommandType = CommandType.StoredProcedure
+                };
+
+                string Warehouse = File[0][6];
+                string DateRecieved = File[1][4];
+                string MessageType = File[2][1];
+                string ID = File[2][2];
+                string FileAction = "";
+
+                foreach (string[] line in File)
+                {
+                    if (line[0].Trim().Equals("N9") && line[1].Trim().Equals("ZZ"))
+                    {
+                        FileAction = line[2];
+                    }
                 }
+
+                storedProcedure.Parameters.AddWithValue("ID", ID);
+                storedProcedure.Parameters.AddWithValue("MessageType", MessageType);
+                storedProcedure.Parameters.AddWithValue("DateReceived", DateRecieved);
+                storedProcedure.Parameters.AddWithValue("Warehouse", Warehouse);
+                storedProcedure.Parameters.AddWithValue("OriginalFileName", file);
+                storedProcedure.Parameters.AddWithValue("FileAction", FileAction);
+
+                storedProcedure.ExecuteNonQuery();
+                storedProcedure.Parameters.Clear();
+
+                WRiteSTKMVTItems(con, File, DateRecieved, ID, file);
             }
-
-            storedProcedure.Parameters.AddWithValue("ID", ID);
-            storedProcedure.Parameters.AddWithValue("MessageType", MessageType);
-            storedProcedure.Parameters.AddWithValue("DateReceived", DateRecieved);
-            storedProcedure.Parameters.AddWithValue("Warehouse", Warehouse);
-            storedProcedure.Parameters.AddWithValue("OriginalFileName", file);
-            storedProcedure.Parameters.AddWithValue("FileAction", FileAction);
-
-            storedProcedure.ExecuteNonQuery();
-            storedProcedure.Parameters.Clear();
-
-            WRiteSTKMVTItems(con, File, DateRecieved, ID);
+            catch (Exception ex)
+            {
+                string name = Path.GetFileName(file);
+                File.Move(file, ConfigurationManager.AppSettings["KTNSTKMVTQuarantined"] + "/" + "STKMVT" + name);
+                SharedFunctions.Writefile("There was an issue: " + ex.Message, "File Moved to Quarantine");
+                SharedFunctions.ErrorAlert(file + " moved to Quarantine", ex)
+            }
         }
         #endregion
 
         #region STKMVT Items
-        public static void WRiteSTKMVTItems(SqlConnection con, string[][] File, string Date, string ID)
+        public static void WRiteSTKMVTItems(SqlConnection con, string[][] File, string Date, string ID, string file)
         {
-            SqlCommand storedProcedure = new SqlCommand("OSP_INSERT_ITEMS_FOR_STKMVT", con)
+            try
             {
-                CommandType = CommandType.StoredProcedure
-            };
-
-            string ItemNumber = "";
-            string Quantity = "";
-            string StockMovementType = "";
-            string TypeOfOperation = "";
-            string Reason = "";
-
-            foreach (string[] s in File)
-            {
-                if ((ItemNumber != "") && (Quantity != "" ) && (Reason != ""))
+                SqlCommand storedProcedure = new SqlCommand("OSP_INSERT_ITEMS_FOR_STKMVT", con)
                 {
-                    storedProcedure.Parameters.AddWithValue("ID", ID);
-                    storedProcedure.Parameters.AddWithValue("ItemNumber", ItemNumber);
-                    storedProcedure.Parameters.AddWithValue("Quantity", Quantity);
-                    storedProcedure.Parameters.AddWithValue("StockMovementType", StockMovementType);
-                    storedProcedure.Parameters.AddWithValue("TypeOfOperation", TypeOfOperation);
-                    storedProcedure.Parameters.AddWithValue("Reason", Reason);
-                    storedProcedure.Parameters.AddWithValue("DateOfMovement", Date);
+                    CommandType = CommandType.StoredProcedure
+                };
 
-                    storedProcedure.ExecuteNonQuery();
-                    storedProcedure.Parameters.Clear();
+                string ItemNumber = "";
+                string Quantity = "";
+                string StockMovementType = "";
+                string TypeOfOperation = "";
+                string Reason = "";
 
-                    ItemNumber = "";
-                    Quantity = "";
-                    StockMovementType = "";
-                    TypeOfOperation = "";
-                    Reason = "";
-                }
-
-                switch (s[0].Trim())
+                foreach (string[] s in File)
                 {
-                    case "W19":
-                        ItemNumber = s[6];
-                        Quantity = s[2];
-                        TypeOfOperation = s[1];
-                        break;
-                    case "N9":
-                        switch (s[1].Trim())
-                        {
-                            case "ZZ":
-                                StockMovementType = s[2];
-                                break;
-                            case "TD":
-                                Console.WriteLine(s[2]);
-                                Reason = s[2];
-                                break;
-                        }
-                        break;
+                    if ((ItemNumber != "") && (Quantity != "") && (Reason != ""))
+                    {
+                        storedProcedure.Parameters.AddWithValue("ID", ID);
+                        storedProcedure.Parameters.AddWithValue("ItemNumber", ItemNumber);
+                        storedProcedure.Parameters.AddWithValue("Quantity", Quantity);
+                        storedProcedure.Parameters.AddWithValue("StockMovementType", StockMovementType);
+                        storedProcedure.Parameters.AddWithValue("TypeOfOperation", TypeOfOperation);
+                        storedProcedure.Parameters.AddWithValue("Reason", Reason);
+                        storedProcedure.Parameters.AddWithValue("DateOfMovement", Date);
+
+                        storedProcedure.ExecuteNonQuery();
+                        storedProcedure.Parameters.Clear();
+
+                        ItemNumber = "";
+                        Quantity = "";
+                        StockMovementType = "";
+                        TypeOfOperation = "";
+                        Reason = "";
+                    }
+
+                    switch (s[0].Trim())
+                    {
+                        case "W19":
+                            ItemNumber = s[6];
+                            Quantity = s[2];
+                            TypeOfOperation = s[1];
+                            break;
+                        case "N9":
+                            switch (s[1].Trim())
+                            {
+                                case "ZZ":
+                                    StockMovementType = s[2];
+                                    break;
+                                case "TD":
+                                    Console.WriteLine(s[2]);
+                                    Reason = s[2];
+                                    break;
+                            }
+                            break;
+                    }
                 }
             }
+            catch (Exception ex)
+            {
+                string name = Path.GetFileName(file);
+                File.Move(file, ConfigurationManager.AppSettings["KTNSTKMVTQuarantined"] + "/" + "PPLCON" + name);
+                SharedFunctions.Writefile("There was an issue: " + ex.Message, "File Moved to Quarantine");
+                SharedFunctions.ErrorAlert("Error in STKMVTItems, " + file, ex)
+            }
         }
+
         #endregion
 
         #region Write RECCON
         public static void WriteRECCON(SqlConnection con, string[][] File, string file)
         {
-            con.Open();
-            SqlCommand storedProcedure = new SqlCommand("OSP_INSERT_RECCON", con)
+            try
             {
-                CommandType = CommandType.StoredProcedure
-            };
+                con.Open();
+                SqlCommand storedProcedure = new SqlCommand("OSP_INSERT_RECCON", con)
+                {
+                    CommandType = CommandType.StoredProcedure
+                };
 
-            
-            string Warehouse = File[0][6];
-            string DateRecieved = File[0][9];
-            string MessageType = File[2][1];
-            string CustomerReferenceTransport = File[3][7];
-            string ID = File[3][4];
-            //string TransportInbound = "";
-            //string InboundDeliveryType = "";
-            //string TransporterName = "";
-            //string SupplierName = "";
 
-            storedProcedure.Parameters.AddWithValue("ID", ID);
-            storedProcedure.Parameters.AddWithValue("MessageType", MessageType);
-            storedProcedure.Parameters.AddWithValue("DateReceived", DateRecieved);
-            storedProcedure.Parameters.AddWithValue("Warehouse", Warehouse);
-            storedProcedure.Parameters.AddWithValue("OriginalFileName", file);
-            storedProcedure.Parameters.AddWithValue("CustomerReferenceTransport", CustomerReferenceTransport);
+                string Warehouse = File[0][6];
+                string DateRecieved = File[0][9];
+                string MessageType = File[2][1];
+                string CustomerReferenceTransport = File[3][7];
+                string ID = File[3][4];
+                //string TransportInbound = "";
+                //string InboundDeliveryType = "";
+                //string TransporterName = "";
+                //string SupplierName = "";
 
-            storedProcedure.ExecuteNonQuery();
-            storedProcedure.Parameters.Clear();
+                storedProcedure.Parameters.AddWithValue("ID", ID);
+                storedProcedure.Parameters.AddWithValue("MessageType", MessageType);
+                storedProcedure.Parameters.AddWithValue("DateReceived", DateRecieved);
+                storedProcedure.Parameters.AddWithValue("Warehouse", Warehouse);
+                storedProcedure.Parameters.AddWithValue("OriginalFileName", file);
+                storedProcedure.Parameters.AddWithValue("CustomerReferenceTransport", CustomerReferenceTransport);
 
-            WriteRECCONITEMS(con, File, ID);
+                storedProcedure.ExecuteNonQuery();
+                storedProcedure.Parameters.Clear();
+
+                WriteRECCONITEMS(con, File, ID, file);
+            }
+            catch (Exception ex)
+            {
+                string name = Path.GetFileName(file);
+                File.Move(file, ConfigurationManager.AppSettings["KTNSTKMVTQuarantined"] + "/" + "RECCON" + name);
+                SharedFunctions.Writefile("There was an issue: " + ex.Message, "File Moved to Quarantine");
+                SharedFunctions.ErrorAlert(file + " moved to Quarantine", ex)
+            }
         }
         #endregion
 
         #region RECCON Items
-        public static void WriteRECCONITEMS(SqlConnection con, string[][] File, string ID)
+        public static void WriteRECCONITEMS(SqlConnection con, string[][] File, string ID, string file)
         {
-            
-            SqlCommand storedProcedure = new SqlCommand("OSP_INSERT_ITEMS_FOR_RECCON", con)
+            try
             {
-                CommandType = CommandType.StoredProcedure
-            };
-            string ItemNumber = "";
-            //string ItemDescription = "";
-            string RecievedQuantity = "";
-            
-            foreach (string[] s in File)
-            {
-                Console.WriteLine(s[0]);
-                switch (s[0].Trim())
+                SqlCommand storedProcedure = new SqlCommand("OSP_INSERT_ITEMS_FOR_RECCON", con)
                 {
-                    case "W07":
-                        ItemNumber = s[5];
-                        RecievedQuantity = s[1];
-                        Console.WriteLine(ItemNumber);
-                        break;
-                }
+                    CommandType = CommandType.StoredProcedure
+                };
+                string ItemNumber = "";
+                //string ItemDescription = "";
+                string RecievedQuantity = "";
 
-                Console.WriteLine("If check for vals");
-                if ((ItemNumber != "") && (RecievedQuantity != ""))
+                foreach (string[] s in File)
                 {
-                    storedProcedure.Parameters.AddWithValue("ID", ID);
-                    storedProcedure.Parameters.AddWithValue("ItemNumber", ItemNumber);
-                    storedProcedure.Parameters.AddWithValue("RecievedQuantity", RecievedQuantity);
+                    Console.WriteLine(s[0]);
+                    switch (s[0].Trim())
+                    {
+                        case "W07":
+                            ItemNumber = s[5];
+                            RecievedQuantity = s[1];
+                            Console.WriteLine(ItemNumber);
+                            break;
+                    }
 
-                    storedProcedure.ExecuteNonQuery();
-                    storedProcedure.Parameters.Clear();
+                    Console.WriteLine("If check for vals");
+                    if ((ItemNumber != "") && (RecievedQuantity != ""))
+                    {
+                        storedProcedure.Parameters.AddWithValue("ID", ID);
+                        storedProcedure.Parameters.AddWithValue("ItemNumber", ItemNumber);
+                        storedProcedure.Parameters.AddWithValue("RecievedQuantity", RecievedQuantity);
 
-                    ItemNumber = "";
-                    //ItemDescription = "";
-                    RecievedQuantity = "";
+                        storedProcedure.ExecuteNonQuery();
+                        storedProcedure.Parameters.Clear();
+
+                        ItemNumber = "";
+                        //ItemDescription = "";
+                        RecievedQuantity = "";
+                    }
+                    Console.WriteLine("End of foreach pass");
                 }
-                Console.WriteLine("End of foreach pass");
+                con.Close();
             }
-            con.Close();
+            catch (Exception ex)
+            {
+                string name = Path.GetFileName(file);
+                File.Move(file, ConfigurationManager.AppSettings["KTNSTKMVTQuarantined"] + "/" + "RECCON" + name);
+                SharedFunctions.Writefile("There was an issue: " + ex.Message, "File Moved to Quarantine");
+                SharedFunctions.ErrorAlert("Write RECCONItems failed for file, " + file, ex)
+            }
         }
         #endregion
     }
