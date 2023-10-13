@@ -443,7 +443,7 @@ namespace EDI_Orders
                     break;
 
                 case "PPLCON":
-                    files = Directory.GetFiles(ConfigurationManager.AppSettings["Test"]); //Temp for testing
+                    files = Directory.GetFiles(ConfigurationManager.AppSettings["KTNSTKMVTHolding"]); //Temp for testing
                     Console.WriteLine(files.Length);
                     foreach (var file in files)
                     {
@@ -452,14 +452,14 @@ namespace EDI_Orders
                         {
                             if (file.Substring(3, 0) == "WEB")
                             {
-                                File.Move(file, ConfigurationManager.AppSettings["Test"] + "/" + name);
+                                File.Move(file, ConfigurationManager.AppSettings["KTNPPLCONProcessed"] + "/" + name);
                                 Console.WriteLine(file + " Was Processed and moved to EU network Successfully.");
                             }
                             else
                             {
                                 Console.WriteLine(file);
                                 KTN.ProcessKTN(file, Orbis);
-                                File.Move(file, ConfigurationManager.AppSettings["Test"] + "/" + name);
+                                File.Move(file, ConfigurationManager.AppSettings["KTNPPLCONProcessed"] + "/" + name);
                                 Console.WriteLine(file + " Was Processed Successfully.");
                             }
                         }
@@ -467,7 +467,7 @@ namespace EDI_Orders
                         {
                             Writefile("File Quarantined: " + name, ex.Message);
                             ErrorAlert("Read PPLCON", ex);
-                            File.Move(file, ConfigurationManager.AppSettings["Test"] + "/" + name + "&" + DateTime.Now);
+                            File.Move(file, ConfigurationManager.AppSettings["KTNPPLCONQuarantined"] + "/" + name + "&" + DateTime.Now);
                         }
                     }
                     break;
