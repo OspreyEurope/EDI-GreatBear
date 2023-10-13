@@ -27,7 +27,7 @@ namespace EDI_Orders
                 {
                     #region 846 - STKBAL
                     case "846":    //Items Message
-                        WriteSTKBAL(con, File);
+                        WriteSTKBAL(con, File, file);
                         break;
                     #endregion
                     #region 944 - RECCON
@@ -315,6 +315,8 @@ namespace EDI_Orders
                     }
                 }
                 con.Close();
+                string name = Path.GetFileName(file);
+                File.Move(file, ConfigurationManager.AppSettings["GBProcessed"] + "/PPLCON" + name);
             }
             catch (Exception ex) 
             {
@@ -327,7 +329,7 @@ namespace EDI_Orders
         #endregion
 
         #region Write STKBAL
-        public static void WriteSTKBAL(SqlConnection con, string[][] File)
+        public static void WriteSTKBAL(SqlConnection con, string[][] File, string file)
         {
             try
             {
@@ -377,6 +379,8 @@ namespace EDI_Orders
                     }
                 }
                 con.Close();
+                string name = Path.GetFileName(file);
+                File.Move(file, ConfigurationManager.AppSettings["GBProcessed"] + "/STKBAL" + name);
             }
             catch (Exception ex)
             {
@@ -425,6 +429,8 @@ namespace EDI_Orders
                 storedProcedure.Parameters.Clear();
 
                 WRiteSTKMVTItems(con, File, DateRecieved, ID, file);
+                string name = Path.GetFileName(file);
+                File.Move(file, ConfigurationManager.AppSettings["GBProcessed"] + "/STKMVT" + name);
             }
             catch (Exception ex)
             {
@@ -540,6 +546,8 @@ namespace EDI_Orders
                 storedProcedure.Parameters.Clear();
 
                 WriteRECCONITEMS(con, File, ID, file);
+                string name = Path.GetFileName(file);
+                File.Move(file, ConfigurationManager.AppSettings["GBProcessed"] + "/RECCON" + name);
             }
             catch (Exception ex)
             {
