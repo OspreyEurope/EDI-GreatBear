@@ -114,7 +114,8 @@ namespace EDI_Orders
                         #endregion
                         #region GBD
                         case "944":
-                            GreatBear.ProcessGreatBear("C:\\Bespoke\\EDI\\GreatBearSamples\\944.txt.edi", Orbis);
+                            //GreatBear.ProcessGreatBear("C:\\Bespoke\\EDI\\GreatBearSamples\\944.txt.edi", Orbis);
+                            GreatBear.ProcessGreatBear("C:\\Bespoke\\EDI\\GreatBearSamples\\OSP000000040_131023.I005.xml.20231013_135900956.edi", Orbis);
                             break;
                         case "947":
                             GreatBear.ProcessGreatBear("C:\\Bespoke\\EDI\\GreatBearSamples\\947.txt.edi", Orbis);

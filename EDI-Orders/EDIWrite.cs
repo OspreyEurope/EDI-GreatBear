@@ -914,7 +914,7 @@ namespace EDI_Orders
                     }
                     else
                     {
-                        File.Move(file, ConfigurationManager.AppSettings["GBOutbound"] + "/" + Path.GetFileName(file));
+                        File.Move(file, ConfigurationManager.AppSettings["GBOrders"] + "/" + Path.GetFileName(file));
                     }
                 }
                 SharedFunctions.UpdateCounters(Orbis, "OSP_UPDATE_GBITEMS_VALS", "1", "2", "3", (GEGSVal + 1).ToString(), (SESTVal + 1).ToString(), (ISAIEAVal + total).ToString());
@@ -1029,7 +1029,7 @@ namespace EDI_Orders
                     SESTVal++;
                     ISAIEAVal++;
                     itemCount++;
-                    File.Move(file, ConfigurationManager.AppSettings["GBOutbound"] + "/" + Path.GetFileName(file));
+                    File.Move(file, ConfigurationManager.AppSettings["GBItems"] + "/" + Path.GetFileName(file));
                 }
             }
             catch (Exception ex)
@@ -1184,7 +1184,7 @@ namespace EDI_Orders
                 WritePLFooter(streamWriter, data.Rows.Count, 8, GEGS[2].ToString(), ISAIEAVal.ToString());
                 streamWriter.Close();
                 SharedFunctions.UpdateCounters(Orbis, "OSP_UPDATE_GBITEMS_VALS", "1", "2", "3", (GEGSVal + 1).ToString(), (SESTVal + 1).ToString(), (ISAIEAVal + 1).ToString());
-                File.Move(file, ConfigurationManager.AppSettings["GBOutbound"] + "/" + Path.GetFileName(file));
+                File.Move(file, ConfigurationManager.AppSettings["GBASN"] + "/" + Path.GetFileName(file));
             }
             catch (Exception ex)
             {
