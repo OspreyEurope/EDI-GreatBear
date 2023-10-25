@@ -58,6 +58,25 @@ namespace EDI_Orders
                     case "R":
                         SharedFunctions.FileCheck(choice);
                         break;
+                    #endregion
+                    #region GB Write File
+                    case "WriteOrderGB":
+                        EDIWrite.WriteOrder(Orbis, args[1]);
+                        break;
+                    case "WriteProductListGB":
+                        EDIWrite.WriteProductListGBItems(OERA, "108016515");
+                        break;
+                    case "POGB":
+                        EDIWrite.WritePOGB(Orbis, "0000099999");
+                        break;
+                    case "ReturnGB":
+                        EDIWrite.ReturnToGB(Orbis, args[1]);
+                        break;
+                    #endregion
+                    #region GB Read
+                    case "ReadGB":
+                        GreatBear.ProcessGreatBear(choice);
+                        break;
                         #endregion
                 }
             }
@@ -68,7 +87,7 @@ namespace EDI_Orders
                     string choice = Console.ReadLine();
                     switch (choice)
                     {
-                        #region Testing Wite File
+                        #region KTN Write
                         case "WriteOrder":
                             EDIWrite.WriteOrder(Orbis, "0000419040");
                             break;
@@ -100,7 +119,7 @@ namespace EDI_Orders
                             SharedFunctions.FileCheck(choice);
                             break;
                         #endregion
-                        #region GBD
+                        #region GBD Writes
                         case "940":
                             EDIWrite.WriteOrderGB(Orbis, "0000410684");
                             //EDIWrite.WriteOrderGB(Orbis, "0000460384");
@@ -112,7 +131,7 @@ namespace EDI_Orders
                             EDIWrite.WritePOGB(Orbis, "0000099999");
                             break;
                         #endregion
-                        #region GBD
+                        #region GBD Read
                         case "944":
                             //GreatBear.ProcessGreatBear("C:\\Bespoke\\EDI\\GreatBearSamples\\944.txt.edi", Orbis);
                             GreatBear.ProcessGreatBear("C:\\Bespoke\\EDI\\GreatBearSamples\\OSP000000040_131023.I005.xml.20231013_135900956.edi", Orbis);
