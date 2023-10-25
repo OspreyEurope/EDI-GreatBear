@@ -1204,6 +1204,67 @@ namespace EDI_Orders
             return intVal;
         }
         #endregion
+
+        #region Return To GB
+        public static void ReturnToGB (SqlConnection con, string id)
+        {
+            try
+            {
+                SqlConnection Orbis = new SqlConnection
+                {
+                    ConnectionString = ConfigurationManager.ConnectionStrings["Orbis"].ConnectionString
+                };
+                DataTable data = SharedFunctions.QueryDB(con, "OSP_GET_RETURN_DATA", id);
+                DataTable GBCounters = SharedFunctions.QueryDB(Orbis, "OSP_GET_GBITEMS_VALS", "1", "2");
+                DataRow GEGS = GBCounters.Rows[0];
+                DataRow SEST = GBCounters.Rows[1];
+                DataRow ISAIEA = GBCounters.Rows[2];
+                int GEGSVal = Int32.Parse(GEGS[2].ToString());
+                int SESTVal = Int32.Parse(SEST[2].ToString());
+                int ISAIEAVal = Int32.Parse(ISAIEA[2].ToString());
+                /**
+                 * Retrives the data from the database and then writes it line by line into a file.
+                 */
+                string file = ConfigurationManager.AppSettings["GeneratingGB"] + "/PO" + id + ".edi";
+                FileStream f = new FileStream(file, FileMode.Create);
+                Encoding utf8WithoutBom = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false);
+                StreamWriter streamWriter = new StreamWriter(f, utf8WithoutBom);
+                string fileName = "PO" + id + ".txt";
+                int counter = 1;
+
+                WritePLHeader(streamWriter, fileName, GEGS[2].ToString(), ISAIEAVal.ToString());
+
+                foreach (DataRow row in data.Rows)
+                {
+                    int QTY = convertToInt(row["Quantity"].ToString());
+                    string DateFormatting = DateFormatter(row["OrderRequestedDate"].ToString());
+                    streamWriter.Write("ST*856*" + SESTVal.ToString() + "~");
+                    streamWriter.Write("BSN*00*" + "RM" + id + "." + row["PrimaryKey"] + "*" + DateFormatting + "~");
+                    streamWriter.Write("HL*1**S~");
+                    streamWriter.Write("N1*SF**ZZ*" + row["SuppAccRef"].ToString().Replace("$", "") + "~");                           //Replace $
+                    streamWriter.Write("HL*2*" + row["PrimaryKey"] + "*O~");
+                    streamWriter.Write("PRF*" + id + "~");
+                    streamWriter.Write("HL*3*" + row["PrimaryKey"] + "*I~");
+                    streamWriter.Write("LIN*1*VN*" + row["StockItemCode"] + "~");
+                    //streamWriter.Write("REF*ZZ*~");
+                    streamWriter.Write("SN1**" + QTY + "*EA~");
+                    streamWriter.Write("CTT*3*" + QTY + "~");
+                    streamWriter.Write("SE*12*" + SESTVal.ToString() + "~");
+                    counter++;
+                }
+
+                WritePLFooter(streamWriter, data.Rows.Count, 8, GEGS[2].ToString(), ISAIEAVal.ToString());
+                streamWriter.Close();
+                SharedFunctions.UpdateCounters(Orbis, "OSP_UPDATE_GBITEMS_VALS", "1", "2", "3", (GEGSVal + 1).ToString(), (SESTVal + 1).ToString(), (ISAIEAVal + 1).ToString());
+                File.Move(file, ConfigurationManager.AppSettings["GBASN"] + "/" + Path.GetFileName(file));
+            }
+            catch (Exception ex)
+            {
+                SharedFunctions.Writefile("Write PO for Great Bear failed: " + ex.Message, "");
+                SharedFunctions.ErrorAlert("Write PO for GB", ex);
+            }
+        }
+        #endregion
         #endregion
 
     }

@@ -530,6 +530,8 @@ namespace EDI_Orders
                 string MessageType = Document[2][1];
                 string CustomerReferenceTransport = Document[3][7];
                 string ID = Document[3][4];
+                string FileAction = Document[3][3];
+                FileAction = FileAction.Substring(0, 2);
                 //string TransportInbound = "";
                 //string InboundDeliveryType = "";
                 //string TransporterName = "";
@@ -541,6 +543,7 @@ namespace EDI_Orders
                 storedProcedure.Parameters.AddWithValue("Warehouse", Warehouse);
                 storedProcedure.Parameters.AddWithValue("OriginalFileName", file);
                 storedProcedure.Parameters.AddWithValue("CustomerReferenceTransport", CustomerReferenceTransport);
+                storedProcedure.Parameters.AddWithValue("FileAction", FileAction);
 
                 storedProcedure.ExecuteNonQuery();
                 storedProcedure.Parameters.Clear();
