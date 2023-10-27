@@ -75,7 +75,7 @@ namespace EDI_Orders
                     #endregion
                     #region GB Read
                     case "ReadGB":
-                        GreatBear.ProcessGreatBear(choice);
+                        //GreatBear.ProcessGreatBear(choice);
                         break;
                         #endregion
                 }
@@ -128,7 +128,10 @@ namespace EDI_Orders
                             EDIWrite.WriteProductListGBItems(OERA, "108016515");
                             break;
                         case "856":
-                            EDIWrite.WritePOGB(Orbis, "0000099999");
+                            EDIWrite.WritePOGB(Orbis, "0000026378");
+                            EDIWrite.WritePOGB(Orbis, "0000026688");
+                            EDIWrite.WritePOGB(Orbis, "0000026702");
+                            EDIWrite.WritePOGB(Orbis, "0000026704");
                             break;
                         #endregion
                         #region GBD Read
