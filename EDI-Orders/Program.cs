@@ -75,7 +75,7 @@ namespace EDI_Orders
                     #endregion
                     #region GB Read
                     case "ReadGB":
-                        //GreatBear.ProcessGreatBear(choice);
+                        GreatBear.ProcessGreatBear(Orbis);
                         break;
                         #endregion
                 }
@@ -137,22 +137,22 @@ namespace EDI_Orders
                         #region GBD Read
                         case "944":
                             //GreatBear.ProcessGreatBear("C:\\Bespoke\\EDI\\GreatBearSamples\\944.txt.edi", Orbis);
-                            GreatBear.ProcessGreatBear("C:\\Bespoke\\EDI\\GreatBearSamples\\OSP000000040_131023.I005.xml.20231013_135900956.edi", Orbis);
+                            GreatBear.ProcessGreatBear(Orbis);
                             break;
-                        case "947":
-                            GreatBear.ProcessGreatBear("C:\\Bespoke\\EDI\\GreatBearSamples\\947.txt.edi", Orbis);
-                            break;
-                        case "9472":
-                            GreatBear.ProcessGreatBear("C:\\Bespoke\\EDI\\GreatBearSamples\\9472.txt.edi", Orbis);
-                            break;
-                        case "8462":
-                            GreatBear.ProcessGreatBear("C:\\Bespoke\\EDI\\GreatBearSamples\\846.txt.edi", Orbis);
-                            break;
-                        case "945":
-                            GreatBear.ProcessGreatBear("C:\\Bespoke\\EDI\\GreatBearSamples\\945-4.txt", Orbis);
-                            GreatBear.ProcessGreatBear("C:\\Bespoke\\EDI\\GreatBearSamples\\945-3.txt", Orbis);
-                            GreatBear.ProcessGreatBear("C:\\Bespoke\\EDI\\GreatBearSamples\\945-2.txt", Orbis);
-                            GreatBear.ProcessGreatBear("C:\\Bespoke\\EDI\\GreatBearSamples\\945-1.txt", Orbis);
+                        //case "947":
+                        //    GreatBear.ProcessGreatBear("C:\\Bespoke\\EDI\\GreatBearSamples\\947.txt.edi", Orbis);
+                        //    break;
+                        //case "9472":
+                        //    GreatBear.ProcessGreatBear("C:\\Bespoke\\EDI\\GreatBearSamples\\9472.txt.edi", Orbis);
+                        //    break;
+                        //case "8462":
+                        //    GreatBear.ProcessGreatBear("C:\\Bespoke\\EDI\\GreatBearSamples\\846.txt.edi", Orbis);
+                        //    break;
+                        //case "945":
+                        //    GreatBear.ProcessGreatBear("C:\\Bespoke\\EDI\\GreatBearSamples\\945-4.txt", Orbis);
+                        //    GreatBear.ProcessGreatBear("C:\\Bespoke\\EDI\\GreatBearSamples\\945-3.txt", Orbis);
+                        //    GreatBear.ProcessGreatBear("C:\\Bespoke\\EDI\\GreatBearSamples\\945-2.txt", Orbis);
+                        //    GreatBear.ProcessGreatBear("C:\\Bespoke\\EDI\\GreatBearSamples\\945-1.txt", Orbis);
                             break;
                         #endregion
                         default:

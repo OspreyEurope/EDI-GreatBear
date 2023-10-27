@@ -16,55 +16,59 @@ namespace EDI_Orders
     internal class GreatBear
     {
         #region Process GreatBear
-        public static void ProcessGreatBear(string file, SqlConnection con)
+        public static void ProcessGreatBear(SqlConnection con)
         {
-            try
+            string[] files = Directory.GetFiles(ConfigurationManager.AppSettings["GBHolding"]);
+            foreach (string file in files)
             {
-                string[][] Document = FileManipulation.readEDIFile(file);
-                string Decision = Document[2][1].Trim();
-
-                switch (Decision)
+                try
                 {
-                    #region 846 - STKBAL
-                    case "846":    //Items Message
-                        WriteSTKBAL(con, Document, file);
-                        break;
-                    #endregion
-                    #region 944 - RECCON
-                    case "944":    //Inbound Receipt Confirmation Message
-                        WriteRECCON(con, Document, file);
-                        break;
-                    #endregion
-                    #region 945 - PPLCON
-                    case "945":    //Assembly Order Message
-                        WritePPLCON(con, Document, file);
-                        break;
-                    #endregion
-                    #region 947 - STKMVT
-                    case "947":     //Stock adjust and status checks
-                        WriteSTKMVT(con, Document, file);
-                        break;
-                    #endregion
-                    #region 997
-                    case "997":     //Functional acknowledgment message
-                        foreach (string[] s in Document)
-                        {
-                            foreach (string l in s)
-                            {
-                                Console.WriteLine(l);
-                            }
-                            Console.WriteLine("Next Line");
-                        }
-                        break;
-                    #endregion
-                    default:
-                        break;
+                    string[][] Document = FileManipulation.readEDIFile(file);
+                    string Decision = Document[2][1].Trim();
 
+                    switch (Decision)
+                    {
+                        #region 846 - STKBAL
+                        case "846":    //Items Message
+                            WriteSTKBAL(con, Document, file);
+                            break;
+                        #endregion
+                        #region 944 - RECCON
+                        case "944":    //Inbound Receipt Confirmation Message
+                            WriteRECCON(con, Document, file);
+                            break;
+                        #endregion
+                        #region 945 - PPLCON
+                        case "945":    //Assembly Order Message
+                            WritePPLCON(con, Document, file);
+                            break;
+                        #endregion
+                        #region 947 - STKMVT
+                        case "947":     //Stock adjust and status checks
+                            WriteSTKMVT(con, Document, file);
+                            break;
+                        #endregion
+                        #region 997
+                        case "997":     //Functional acknowledgment message
+                            foreach (string[] s in Document)
+                            {
+                                foreach (string l in s)
+                                {
+                                    Console.WriteLine(l);
+                                }
+                                Console.WriteLine("Next Line");
+                            }
+                            break;
+                        #endregion
+                        default:
+                            break;
+
+                    }
                 }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Error: " + ex);
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error: " + ex);
+                }
             }
         }
         #endregion
