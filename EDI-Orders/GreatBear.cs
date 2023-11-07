@@ -528,7 +528,7 @@ namespace EDI_Orders
                     CommandType = CommandType.StoredProcedure
                 };
 
-
+                string name = Path.GetFileName(file);
                 string Warehouse = Document[0][6];
                 string DateRecieved = Document[0][9];
                 string MessageType = Document[2][1];
@@ -545,7 +545,7 @@ namespace EDI_Orders
                 storedProcedure.Parameters.AddWithValue("MessageType", MessageType);
                 storedProcedure.Parameters.AddWithValue("DateReceived", DateRecieved);
                 storedProcedure.Parameters.AddWithValue("Warehouse", Warehouse);
-                storedProcedure.Parameters.AddWithValue("OriginalFileName", file);
+                storedProcedure.Parameters.AddWithValue("OriginalFileName", name);
                 storedProcedure.Parameters.AddWithValue("CustomerReferenceTransport", CustomerReferenceTransport);
                 storedProcedure.Parameters.AddWithValue("FileAction", FileAction);
 
@@ -553,7 +553,6 @@ namespace EDI_Orders
                 storedProcedure.Parameters.Clear();
 
                 WriteRECCONITEMS(con, Document, ID, file);
-                string name = Path.GetFileName(file);
                 File.Move(file, ConfigurationManager.AppSettings["GBProcessed"] + "/RECCON" + name);
             }
             catch (Exception ex)
