@@ -5,6 +5,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.Remoting.Messaging;
 using System.Security.Cryptography;
 using System.Text;
@@ -530,11 +531,16 @@ namespace EDI_Orders
 
                 string name = Path.GetFileName(file);
                 string Warehouse = Document[0][6];
+                if (Warehouse == "GreatBear")
+                {
+                    Warehouse = "GBD";
+                }
                 string DateRecieved = Document[0][9];
                 string MessageType = Document[2][1];
-                string CustomerReferenceTransport = Document[3][7];
+                string CustomerReferenceTransport = Document[3][4];
                 string ID = Document[3][4];
                 string FileAction = Document[3][3];
+                string InboundDeliveryType = "NORMAL";
                 FileAction = FileAction.Substring(0, 2);
                 //string TransportInbound = "";
                 //string InboundDeliveryType = "";
@@ -546,8 +552,10 @@ namespace EDI_Orders
                 storedProcedure.Parameters.AddWithValue("DateReceived", DateRecieved);
                 storedProcedure.Parameters.AddWithValue("Warehouse", Warehouse);
                 storedProcedure.Parameters.AddWithValue("OriginalFileName", name);
-                storedProcedure.Parameters.AddWithValue("CustomerReferenceTransport", CustomerReferenceTransport);
+                storedProcedure.Parameters.AddWithValue("CustomerReferenceTransport", ID);
                 storedProcedure.Parameters.AddWithValue("FileAction", FileAction);
+                //storedProcedure.Parameters.AddWithValue("DateEntered", DateTime.Now.ToString("g"));
+                storedProcedure.Parameters.AddWithValue("InboundDeliveryType", InboundDeliveryType);
 
                 storedProcedure.ExecuteNonQuery();
                 storedProcedure.Parameters.Clear();

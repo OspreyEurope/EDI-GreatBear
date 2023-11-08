@@ -997,7 +997,7 @@ namespace EDI_Orders
                      */
                     string file = ConfigurationManager.AppSettings["GeneratingGB"] + "/" + "GREATBEAR" + "_Product_List_Item_" + itemCount + ".edi";
                     FileStream f = new FileStream(file, FileMode.Create);
-                    Encoding utf8WithoutBom = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false);
+                    Encoding utf8WithoutBom = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false);  
                     StreamWriter streamWriter = new StreamWriter(f, utf8WithoutBom);
                     string fileName = id + "_Product_List.txt";
                     fileName = fileName.PadRight(35, ' ');
