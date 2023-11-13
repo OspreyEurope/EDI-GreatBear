@@ -531,7 +531,7 @@ namespace EDI_Orders
 
                 string name = Path.GetFileName(file);
                 string Warehouse = Document[0][6];
-                if (Warehouse == "GreatBear")
+                if (Warehouse.Equals("GreatBear"))
                 {
                     Warehouse = "GBD";
                 }
