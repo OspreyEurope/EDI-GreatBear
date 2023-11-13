@@ -20,52 +20,63 @@ namespace EDI_Orders
         public static void ProcessGreatBear(SqlConnection con)
         {
             string[] files = Directory.GetFiles(ConfigurationManager.AppSettings["GBHolding"]);
+            string[] exists = Directory.GetFiles(ConfigurationManager.AppSettings["GBProcessed"]);
             foreach (string file in files)
             {
-                try
+                if ((exists.Contains("RECCON" + file)) || (exists.Contains("PPLCON" + file)) || (exists.Contains("STKMVT" + file)) )
                 {
-                    string[][] Document = FileManipulation.readEDIFile(file);
-                    string Decision = Document[2][1].Trim();
-
-                    switch (Decision)
-                    {
-                        #region 846 - STKBAL
-                        case "846":    //Items Message
-                            WriteSTKBAL(con, Document, file);
-                            break;
-                        #endregion
-                        #region 944 - RECCON
-                        case "944":    //Inbound Receipt Confirmation Message
-                            WriteRECCON(con, Document, file);
-                            break;
-                        #endregion
-                        #region 945 - PPLCON
-                        case "945":    //Assembly Order Message
-                            WritePPLCON(con, Document, file);
-                            break;
-                        #endregion
-                        #region 947 - STKMVT
-                        case "947":     //Stock adjust and status checks
-                            WriteSTKMVT(con, Document, file);
-                            break;
-                        #endregion
-                        #region 997
-                        case "997":     //Functional acknowledgment message
-                            foreach (string[] s in Document)
-                            {
-                                foreach (string l in s)
-                                {
-                                    Console.WriteLine(l);
-                                }
-                                Console.WriteLine("Next Line");
-                            }
-                            break;
-                        #endregion
-                        default:
-                            break;
-
-                    }
+                    string name = Path.GetFileName(file);
+                    File.Move(file, ConfigurationManager.AppSettings["GBQuarantined"] + "/" + name);
+                    SharedFunctions.Writefile("Write Product List Failed to process, error message is: The file already exists.", "");
+                    SharedFunctions.ErrorAlert("Write Product List", ex);
                 }
+                else
+                {
+                    try
+                    {
+                        string[][] Document = FileManipulation.readEDIFile(file);
+                        string Decision = Document[2][1].Trim();
+
+                        switch (Decision)
+                        {
+                            #region 846 - STKBAL
+                            case "846":    //Items Message
+                                WriteSTKBAL(con, Document, file);
+                                break;
+                            #endregion
+                            #region 944 - RECCON
+                            case "944":    //Inbound Receipt Confirmation Message
+                                WriteRECCON(con, Document, file);
+                                break;
+                            #endregion
+                            #region 945 - PPLCON
+                            case "945":    //Assembly Order Message
+                                WritePPLCON(con, Document, file);
+                                break;
+                            #endregion
+                            #region 947 - STKMVT
+                            case "947":     //Stock adjust and status checks
+                                WriteSTKMVT(con, Document, file);
+                                break;
+                            #endregion
+                            #region 997
+                            case "997":     //Functional acknowledgment message
+                                foreach (string[] s in Document)
+                                {
+                                    foreach (string l in s)
+                                    {
+                                        Console.WriteLine(l);
+                                    }
+                                    Console.WriteLine("Next Line");
+                                }
+                                break;
+                            #endregion
+                            default:
+                                break;
+
+                        }
+                    }
+                    }
                 catch (Exception ex)
                 {
                     Console.WriteLine("Error: " + ex);
