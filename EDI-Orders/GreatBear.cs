@@ -552,7 +552,7 @@ namespace EDI_Orders
                 storedProcedure.Parameters.AddWithValue("DateReceived", DateRecieved);
                 storedProcedure.Parameters.AddWithValue("Warehouse", Warehouse);
                 storedProcedure.Parameters.AddWithValue("OriginalFileName", name);
-                storedProcedure.Parameters.AddWithValue("CustomerReferenceTransport", ID);
+                storedProcedure.Parameters.AddWithValue("CustomerReferenceInbound", ID);
                 storedProcedure.Parameters.AddWithValue("FileAction", FileAction);
                 //storedProcedure.Parameters.AddWithValue("DateEntered", DateTime.Now.ToString("g"));
                 storedProcedure.Parameters.AddWithValue("InboundDeliveryType", InboundDeliveryType);
