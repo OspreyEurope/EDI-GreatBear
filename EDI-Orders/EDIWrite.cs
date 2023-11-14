@@ -875,7 +875,7 @@ namespace EDI_Orders
                         };
                         DataTable GDPRData = SharedFunctions.QueryDB(conDTC, "OSP_GET_GDPR_DATA", row["DelPostCode"].ToString(), row["OrderReference"].ToString());
                         DataRow GDPR = GDPRData.Rows[0];
-                        Console.WriteLine("GDPRData");
+                        //Console.WriteLine("GDPRData");
                         streamWriter.Write("N1*BP*" + GDPR["PostalName"] + "*91*" + row["CustomerAccountRef"] + "~");
                         streamWriter.Write("N1*BT*" + GDPR["PostalName"] + "*91*" + row["CustomerAccountRef"] + "~");
                         streamWriter.Write("N3*" + GDPR["AddressLine1"] + "~");                                                                                                 //+ "*" + GDPR["AddressLine2"] 
