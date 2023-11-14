@@ -23,6 +23,7 @@ namespace EDI_Orders
             string[] exists = Directory.GetFiles(ConfigurationManager.AppSettings["GBProcessed"]);
             foreach (string file in files)
             {
+                //Console.WriteLine((exists.Contains("RECCON" + file)) || (exists.Contains("PPLCON" + file)) || (exists.Contains("STKMVT" + file)));
                 if ((exists.Contains("RECCON" + file)) || (exists.Contains("PPLCON" + file)) || (exists.Contains("STKMVT" + file)))
                 {
                     string name = Path.GetFileName(file);
@@ -32,11 +33,12 @@ namespace EDI_Orders
                 }
                 else
                 {
+                    //Console.WriteLine("Here");
                     try
                     {
                         string[][] Document = FileManipulation.readEDIFile(file);
                         string Decision = Document[2][1].Trim();
-
+                        Console.WriteLine(Decision);
                         switch (Decision)
                         {
                             #region 846 - STKBAL
@@ -46,6 +48,7 @@ namespace EDI_Orders
                             #endregion
                             #region 944 - RECCON
                             case "944":    //Inbound Receipt Confirmation Message
+                                Console.WriteLine("WriteReccon");
                                 WriteRECCON(con, Document, file);
                                 break;
                             #endregion
@@ -61,6 +64,7 @@ namespace EDI_Orders
                             #endregion
                             #region 997
                             case "997":     //Functional acknowledgment message
+                                Console.WriteLine("Hits 997 write");
                                 foreach (string[] s in Document)
                                 {
                                     foreach (string l in s)
@@ -543,7 +547,7 @@ namespace EDI_Orders
 
                 string name = Path.GetFileName(file);
                 string Warehouse = Document[0][6];
-                if (Warehouse.Equals("GreatBear"))
+                if (Warehouse.Equals(" GreatBear"))
                 {
                     Warehouse = "GBD";
                 }
@@ -573,6 +577,7 @@ namespace EDI_Orders
                 storedProcedure.Parameters.Clear();
 
                 WriteRECCONITEMS(con, Document, ID, file);
+                Console.WriteLine("File Written");
                 File.Move(file, ConfigurationManager.AppSettings["GBProcessed"] + "/RECCON" + name);
             }
             catch (Exception ex)

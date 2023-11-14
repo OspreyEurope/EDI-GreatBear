@@ -61,7 +61,7 @@ namespace EDI_Orders
                     #endregion
                     #region GB Write File
                     case "WriteOrderGB":
-                        EDIWrite.WriteOrder(Orbis, args[1]);
+                        EDIWrite.WriteOrderGB(Orbis, args[1]);
                         break;
                     case "WriteProductListGB":
                         EDIWrite.WriteProductListGBItems(OERA, "108016515");
