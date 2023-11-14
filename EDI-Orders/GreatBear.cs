@@ -23,12 +23,12 @@ namespace EDI_Orders
             string[] exists = Directory.GetFiles(ConfigurationManager.AppSettings["GBProcessed"]);
             foreach (string file in files)
             {
-                if ((exists.Contains("RECCON" + file)) || (exists.Contains("PPLCON" + file)) || (exists.Contains("STKMVT" + file)) )
+                if ((exists.Contains("RECCON" + file)) || (exists.Contains("PPLCON" + file)) || (exists.Contains("STKMVT" + file)))
                 {
                     string name = Path.GetFileName(file);
                     File.Move(file, ConfigurationManager.AppSettings["GBQuarantined"] + "/" + name);
                     SharedFunctions.Writefile("Write Product List Failed to process, error message is: The file already exists.", "");
-                    SharedFunctions.ErrorAlert("Write Product List", ex);
+                    SharedFunctions.ErrorAlert("Write Product List", new Exception("Repeat File"));
                 }
                 else
                 {
@@ -76,11 +76,12 @@ namespace EDI_Orders
 
                         }
                     }
-                    }
-                catch (Exception ex)
+                    catch (Exception ex)
                 {
                     Console.WriteLine("Error: " + ex);
                 }
+                    }
+                
             }
         }
         #endregion
