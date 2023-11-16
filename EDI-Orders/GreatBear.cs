@@ -547,6 +547,7 @@ namespace EDI_Orders
 
                 string name = Path.GetFileName(file);
                 string Warehouse = Document[0][6];
+                Console.WriteLine(Warehouse);
                 if (Warehouse.Equals(" GreatBear"))
                 {
                     Warehouse = "GBD";
@@ -565,7 +566,7 @@ namespace EDI_Orders
 
                 storedProcedure.Parameters.AddWithValue("ID", ID);
                 storedProcedure.Parameters.AddWithValue("MessageType", MessageType);
-                storedProcedure.Parameters.AddWithValue("DateReceived", DateRecieved);
+                storedProcedure.Parameters.AddWithValue("DateReceived", "20" + DateRecieved.Trim());
                 storedProcedure.Parameters.AddWithValue("Warehouse", Warehouse);
                 storedProcedure.Parameters.AddWithValue("OriginalFileName", name);
                 storedProcedure.Parameters.AddWithValue("CustomerReferenceInbound", ID);
@@ -576,7 +577,7 @@ namespace EDI_Orders
                 storedProcedure.ExecuteNonQuery();
                 storedProcedure.Parameters.Clear();
 
-                WriteRECCONITEMS(con, Document, ID, file);
+                WriteRECCONITEMS(con, Document, ID, file, DateRecieved);
                 Console.WriteLine("File Written");
                 File.Move(file, ConfigurationManager.AppSettings["GBProcessed"] + "/RECCON" + name);
             }
@@ -591,7 +592,7 @@ namespace EDI_Orders
         #endregion
 
         #region RECCON Items
-        public static void WriteRECCONITEMS(SqlConnection con, string[][] Document, string ID, string file)
+        public static void WriteRECCONITEMS(SqlConnection con, string[][] Document, string ID, string file, string DateRecieved)
         {
             try
             {
@@ -621,6 +622,7 @@ namespace EDI_Orders
                         storedProcedure.Parameters.AddWithValue("ID", ID);
                         storedProcedure.Parameters.AddWithValue("ItemNumber", ItemNumber);
                         storedProcedure.Parameters.AddWithValue("RecievedQuantity", RecievedQuantity);
+                        storedProcedure.Parameters.AddWithValue("DateReceived", "20" + DateRecieved.Trim());
 
                         storedProcedure.ExecuteNonQuery();
                         storedProcedure.Parameters.Clear();
