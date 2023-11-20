@@ -558,22 +558,23 @@ namespace EDI_Orders
                 string ID = Document[3][4];
                 string FileAction = Document[3][3];
                 string InboundDeliveryType = "NORMAL";
+                string TransportInbound = Document[0][13];
+                string TransporterName = "FlexPort";
+                string SupplierName = Document[4][4];
                 FileAction = FileAction.Substring(0, 2);
-                //string TransportInbound = "";
-                //string InboundDeliveryType = "";
-                //string TransporterName = "";
-                //string SupplierName = "";
-
+                
                 storedProcedure.Parameters.AddWithValue("ID", ID);
                 storedProcedure.Parameters.AddWithValue("MessageType", MessageType);
-                storedProcedure.Parameters.AddWithValue("DateReceived", "20" + DateRecieved.Trim());
                 storedProcedure.Parameters.AddWithValue("Warehouse", Warehouse);
+                storedProcedure.Parameters.AddWithValue("DateReceived", "20" + DateRecieved.Trim());
                 storedProcedure.Parameters.AddWithValue("OriginalFileName", name);
-                storedProcedure.Parameters.AddWithValue("CustomerReferenceInbound", ID);
                 storedProcedure.Parameters.AddWithValue("FileAction", FileAction);
-                //storedProcedure.Parameters.AddWithValue("DateEntered", DateTime.Now.ToString("g"));
+                storedProcedure.Parameters.AddWithValue("CustomerReferenceInbound", ID);
+                storedProcedure.Parameters.AddWithValue("TransportInbound", TransportInbound);
                 storedProcedure.Parameters.AddWithValue("InboundDeliveryType", InboundDeliveryType);
-
+                storedProcedure.Parameters.AddWithValue("TransporterName", TransporterName);
+                storedProcedure.Parameters.AddWithValue("SupplierName", SupplierName);
+                
                 storedProcedure.ExecuteNonQuery();
                 storedProcedure.Parameters.Clear();
 
