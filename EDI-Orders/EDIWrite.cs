@@ -916,6 +916,27 @@ namespace EDI_Orders
                     {
                         File.Move(file, ConfigurationManager.AppSettings["GBOrders"] + "/" + Path.GetFileName(file));
                     }
+                    try
+                    {
+                        con.Open();
+                        SqlCommand insertTracker = new SqlCommand("OSP_INSERT_TO_TRACKER", con)
+                        {
+                            CommandType = CommandType.StoredProcedure
+                        };
+                        insertTracker.Parameters.AddWithValue("id2", row["OrderNumber"].ToString() + row["WHOrderNumber"].ToString());
+                        insertTracker.Parameters.AddWithValue("id", fileName);
+
+
+                        insertTracker.ExecuteNonQuery();
+                        insertTracker.Parameters.Clear();
+                        con.Close();
+                        //SharedFunctions.QueryDB(con, "OSP_INSERT_TO_TRACKER", fileName, row["OrderNumber"].ToString());
+                    }
+                    catch (Exception ex)
+                    {
+                        SharedFunctions.Writefile("Failed on write tracker: " + ex.Message, "");
+                    }
+
                 }
                 SharedFunctions.UpdateCounters(Orbis, "OSP_UPDATE_GBITEMS_VALS", "1", "2", "3", (GEGSVal + 1).ToString(), (SESTVal + 1).ToString(), (ISAIEAVal + total).ToString());
             }

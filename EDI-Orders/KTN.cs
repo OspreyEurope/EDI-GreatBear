@@ -174,6 +174,7 @@ namespace EDI_Orders
                                         if (lines[i + 1].Substring(6, 3) == "LIN" || lines[i + 1].Substring(6, 3) == "UNT")
                                         {
                                             storedProcedure.Parameters.AddWithValue("DateOfMovement", date);
+                                            storedProcedure.Parameters.AddWithValue("Warehouse", "KTN");
                                             storedProcedure.ExecuteNonQuery();
                                             storedProcedure.Parameters.Clear();
                                         }
