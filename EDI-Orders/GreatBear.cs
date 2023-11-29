@@ -62,17 +62,9 @@ namespace EDI_Orders
                                 WriteSTKMVT(con, Document, file);
                                 break;
                             #endregion
-                            #region 997
+                            #region 997 - File Acknowledgment
                             case "997":     //Functional acknowledgment message
-                                Console.WriteLine("Hits 997 write");
-                                foreach (string[] s in Document)
-                                {
-                                    foreach (string l in s)
-                                    {
-                                        Console.WriteLine(l);
-                                    }
-                                    Console.WriteLine("Next Line");
-                                }
+                                Handle997(con, Document, file);
                                 break;
                             #endregion
                             default:
@@ -90,6 +82,45 @@ namespace EDI_Orders
         }
         #endregion
 
+        #region 997 File Handling
+        public static void Handle997 (SqlConnection con, string[][] Document, string file)
+        {
+            try
+            {
+                con.Open();
+                SqlCommand storedProcedure = new SqlCommand("OSP_INSERT_997", con)
+                {
+                    CommandType = CommandType.StoredProcedure
+                };
+
+                string Date = Document[0][9];
+                string Time = Document[0][10];
+                string FileType = Document[4][1];
+                string Warehouse = "GBD";
+
+                storedProcedure.Parameters.AddWithValue("DateOfFile", Date);
+                storedProcedure.Parameters.AddWithValue("TimeOfFile", Time);
+                storedProcedure.Parameters.AddWithValue("Filename", file);
+                storedProcedure.Parameters.AddWithValue("FileType", FileType);
+                storedProcedure.Parameters.AddWithValue("Warehouse", Warehouse);
+
+                storedProcedure.ExecuteNonQuery();
+                storedProcedure.Parameters.Clear();
+
+                con.Close();
+                string name = Path.GetFileName(file);
+                File.Move(file, ConfigurationManager.AppSettings["GB997"] + "/" + FileType + name);
+            }
+            catch (Exception ex)
+            {
+                string name = Path.GetFileName(file);
+                File.Move(file, ConfigurationManager.AppSettings["GBQuarantined"] + "/" + "PPLCON" + name);
+                SharedFunctions.Writefile("There was an issue in 997 handling: " + ex.Message, "Document Moved to Quarantine");
+                SharedFunctions.ErrorAlert(file + " moved to Quarantine", ex);
+            }
+
+        }
+        #endregion
         #region Handle Line
         public static string[][] HandleLine(string[] line)
         {
@@ -557,8 +588,18 @@ namespace EDI_Orders
                 string CustomerReferenceTransport = Document[3][4];
                 string ID = Document[3][4];
                 string FileAction = Document[3][3];
-                string InboundDeliveryType = "NORMAL";
-                string TransportInbound = Document[0][13];
+                string InboundDeliveryType = Document[3][3].Substring(0, 2);
+
+                if (InboundDeliveryType == "PO")
+                {
+                    InboundDeliveryType = "NORMAL";
+                }
+                else if (InboundDeliveryType == "RM")
+                {
+                    InboundDeliveryType = "RETURN";
+                }
+
+                string TransportInbound = ""; //Document[0][13];
                 string TransporterName = "FlexPort";
                 string SupplierName = Document[4][4];
                 FileAction = FileAction.Substring(0, 2);

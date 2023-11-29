@@ -121,20 +121,31 @@ namespace EDI_Orders
                         #endregion
                         #region GBD Writes
                         case "940":
-                            EDIWrite.WriteOrderGB(Orbis, "0000529084");
-                            EDIWrite.WriteOrderGB(Orbis, "0000529085");
-                            EDIWrite.WriteOrderGB(Orbis, "0000529086");
-                            EDIWrite.WriteOrderGB(Orbis, "0000529087");
+                            //IWrite.WriteOrderGB(Orbis, "0000529084");
+                            //EDIWrite.WriteOrderGB(Orbis, "0000529085");
+                            //EDIWrite.WriteOrderGB(Orbis, "0000529086");
+                            //EDIWrite.WriteOrderGB(Orbis, "0000529087");
+                            EDIWrite.WriteOrderGB(Orbis, "0000501495");
+                            EDIWrite.WriteOrderGB(Orbis, "0000501497");
+                            EDIWrite.WriteOrderGB(Orbis, "0000501499");
                             //EDIWrite.WriteOrderGB(Orbis, "0000460384");
                             break;
                         case "846":
                             EDIWrite.WriteProductListGBItems(OERA, "108016515");
                             break;
                         case "856":
-                            EDIWrite.WritePOGB(Orbis, "0000026833");
-                            //EDIWrite.WritePOGB(Orbis, "0000026688");
+                            //EDIWrite.WritePOGB(Orbis, "0000026792");
+                            //EDIWrite.WritePOGB(Orbis, "0000026793");
                             //EDIWrite.WritePOGB(Orbis, "0000026702");
-                            //EDIWrite.WritePOGB(Orbis, "0000026704");
+                            //EDIWrite.WritePOGB(Orbis, "0000024410");
+                            //EDIWrite.WritePOGB(Orbis, "0000026751");
+                            //EDIWrite.WritePOGB(Orbis, "0000026757");
+                            //EDIWrite.WritePOGB(Orbis, "0000026766");
+                            //EDIWrite.WritePOGB(Orbis, "0000026767");
+                            //EDIWrite.WritePOGB(Orbis, "0000026795");
+                            //EDIWrite.WritePOGB(Orbis, "0000026804");
+                            //EDIWrite.WritePOGB(Orbis, "0000026805");
+                            EDIWrite.WritePOGB(Orbis, "0000026830");
                             break;
                         #endregion
                         #region GBD Read
