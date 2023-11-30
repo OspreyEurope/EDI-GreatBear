@@ -17,13 +17,19 @@ namespace EDI_Orders
     internal class GreatBear
     {
         #region Process GreatBear
+        /**
+         * This is the decision making for any files in the recieved file for the GB enviroment,
+         * This function wil call the correct fucntinos to handle the file and to move it to the correct location.
+         */
         public static void ProcessGreatBear(SqlConnection con)
         {
             string[] files = Directory.GetFiles(ConfigurationManager.AppSettings["GBHolding"]);
             string[] exists = Directory.GetFiles(ConfigurationManager.AppSettings["GBProcessed"]);
             foreach (string file in files)
             {
-                //Console.WriteLine((exists.Contains("RECCON" + file)) || (exists.Contains("PPLCON" + file)) || (exists.Contains("STKMVT" + file)));
+                /**
+                 * This section is to check if the file already exists and if so it will quarantine the ileisntead which helps to maintain data integrity.
+                 */
                 if ((exists.Contains("RECCON" + file)) || (exists.Contains("PPLCON" + file)) || (exists.Contains("STKMVT" + file)))
                 {
                     string name = Path.GetFileName(file);
@@ -83,6 +89,11 @@ namespace EDI_Orders
         #endregion
 
         #region 997 File Handling
+        /**
+         * Due to GB sending 997 fies for every file they obtain, this section helps to handle these,
+         * It will log the date, time, file type, file name and the warehouse to a table in the DB,
+         * Then move the file to a 997 specific file as to not confuse more important files.
+         */
         public static void Handle997 (SqlConnection con, string[][] Document, string file)
         {
             try
@@ -123,6 +134,9 @@ namespace EDI_Orders
         #endregion
 
         #region Handle Line
+        /*8
+         * Utilized in the write PPLCON function to  find correct values from the file.
+         */
         public static string[][] HandleLine(string[] line)
         {
             string[][] result = new string[15][];
@@ -237,6 +251,10 @@ namespace EDI_Orders
         #endregion
 
         #region Write PPLCON
+        /**
+         * This is to handle the PPLCON's also known as 945 files for GB,
+         * This is utilizing the same SP 
+         */
         public static void WritePPLCON(SqlConnection con, string[][] Document, string file)
         {
             try
@@ -246,6 +264,9 @@ namespace EDI_Orders
                 {
                     CommandType = CommandType.StoredProcedure
                 };
+                /**
+                 * Establishes the vaiables that are to be isnerted into the DBwith blank values ready to be used.
+                 */
                 int p = 0;
                 string Warehouse = "";
                 string DateRecieved = "";
@@ -260,6 +281,9 @@ namespace EDI_Orders
                 string ItemNumber = "";
                 string PackedQty = "";
 
+                /**
+                 * Runs through each line of the file and updates the value of the correct variable as it readches each ine.
+                 */
                 foreach (string[] s in Document)
                 {
                     string header = s[0].Trim();
@@ -285,6 +309,10 @@ namespace EDI_Orders
                             CustomerOrderNumber = s[6];
                             break;
                     }
+
+                    /**
+                     * This section checks tat all the corrct location in the file has eben reached before inserting the data into the DB.
+                     */
                     if ((header == "LX" && p > 0) || header == "W03")
                     {
                         Console.WriteLine("Now hits insert");
@@ -312,6 +340,9 @@ namespace EDI_Orders
                             SSCC = "";
                         }
                     }
+                    /**
+                     * Check to ensure that the insert is not rna too early.
+                     */
                     if (header == "LX")
                     {
                         p++;
@@ -327,8 +358,6 @@ namespace EDI_Orders
                             string[][] info = HandleLine(s);
                             foreach (string[] t in info)
                             {
-                                Console.WriteLine(t[0]);
-                                Console.WriteLine(t[1]);
                                 storedProcedure.Parameters.AddWithValue(t[0], t[1]);
                             }
                         }
@@ -341,8 +370,6 @@ namespace EDI_Orders
                     }
                     else if (header == "MAN")
                     {
-
-
                         switch (s[1])
                         {
                             case "CP":
@@ -382,6 +409,10 @@ namespace EDI_Orders
         #endregion
 
         #region Write STKBAL
+        /**
+         * This writes the daily stock balance message into the DB,
+         * This is recieved once a day every day.
+         */
         public static void WriteSTKBAL(SqlConnection con, string[][] Document, string file)
         {
             try
@@ -447,6 +478,10 @@ namespace EDI_Orders
         #endregion
 
         #region Write STKMVT
+        /**
+         * This function handles stock movements on the rare occasion these files are recieved,
+         * This will write them the same way as they are written for KTn.
+         */
         public static void WriteSTKMVT(SqlConnection con, string[][] Document, string file)
         {
             try
@@ -496,6 +531,9 @@ namespace EDI_Orders
         #endregion
 
         #region STKMVT Items
+        /**
+         * This function will only be called if a stock movement is processed and is used as tthe details as to the movement and the items for the movement are in seperate tables.
+         */
         public static void WRiteSTKMVTItems(SqlConnection con, string[][] Document, string Date, string ID, string file)
         {
             try
@@ -533,6 +571,9 @@ namespace EDI_Orders
                         Reason = "";
                     }
 
+                    /**
+                     * Gathering relevant variable information.
+                     */
                     switch (s[0].Trim())
                     {
                         case "W19":
@@ -567,6 +608,11 @@ namespace EDI_Orders
         #endregion
 
         #region Write RECCON
+        /**
+         * This is to read a 944 file or an RECCON file from GB,
+         * This utilizes the same SP's as the sister function in the KTN class,
+         * This takes a Document[][] parameter witch is the split up file and uses the maped locations to fill in the variable information.
+         */
         public static void WriteRECCON(SqlConnection con, string[][] Document, string file)
         {
             try
@@ -635,6 +681,10 @@ namespace EDI_Orders
         #endregion
 
         #region RECCON Items
+        /**
+         * This function writes the item infrmation into a different table to the RECCON details,
+         * it i passed a few variables as to be able to link the item to the correct reccon data.
+         */
         public static void WriteRECCONITEMS(SqlConnection con, string[][] Document, string ID, string file, string DateRecieved)
         {
             try

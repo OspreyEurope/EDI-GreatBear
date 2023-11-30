@@ -2,6 +2,9 @@
 {
     public class Lookups
     {
+        /**
+         * This is used for the edifact class to search for specific headers based off the 3 letter code in each line.
+         */
         #region Read Lookup
         public static string ReadLookup(string EDI)
         {

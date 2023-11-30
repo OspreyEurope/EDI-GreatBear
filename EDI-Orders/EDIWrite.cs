@@ -906,7 +906,7 @@ namespace EDI_Orders
                     /**
                      * Retrives the total number of items and lines ready to be inserted into the final line of the footer.
                      */
-                    total = WriteItemsGB(con, streamWriter, id, row["WHOrderNumber"].ToString(), SESTVal)
+                    total = WriteItemsGB(con, streamWriter, id, row["WHOrderNumber"].ToString(), SESTVal);
                     streamWriter.Write("W79*" + total + "~");
                     streamWriter.Write("SE*" + (total + 12) + "*" + (SESTVal).ToString() + "~");
                     WritePLFooter(streamWriter, data.Rows.Count, total + 15, GEGS[2].ToString(), ISAIEAVal.ToString());
