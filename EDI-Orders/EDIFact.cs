@@ -141,6 +141,10 @@ namespace EDI_Orders
         #endregion
 
         #region Read KTN
+        /**
+         * This section breaks down inbound KTN files by spliting them into segments based on the line number,
+         * This is further split down when read by later functions based on the  letter combination between post 6 and 9.
+         */
         public static void ReadKTN(string[][] order, SqlConnection conOE)
         {
             for (int x = 0; x < order.Length - 1; x++)
