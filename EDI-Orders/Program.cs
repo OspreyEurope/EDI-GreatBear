@@ -125,27 +125,25 @@ namespace EDI_Orders
                             //EDIWrite.WriteOrderGB(Orbis, "0000529085");
                             //EDIWrite.WriteOrderGB(Orbis, "0000529086");
                             //EDIWrite.WriteOrderGB(Orbis, "0000529087");
-                            EDIWrite.WriteOrderGB(Orbis, "0000501495");
-                            EDIWrite.WriteOrderGB(Orbis, "0000501497");
-                            EDIWrite.WriteOrderGB(Orbis, "0000501499");
+                            //EDIWrite.WriteOrderGB(Orbis, "0000501495");
+                            //EDIWrite.WriteOrderGB(Orbis, "0000501497");
+                            //EDIWrite.WriteOrderGB(Orbis, "0000501499");
                             //EDIWrite.WriteOrderGB(Orbis, "0000460384");
                             break;
                         case "846":
                             EDIWrite.WriteProductListGBItems(OERA, "108016515");
                             break;
                         case "856":
-                            //EDIWrite.WritePOGB(Orbis, "0000026792");
-                            //EDIWrite.WritePOGB(Orbis, "0000026793");
-                            //EDIWrite.WritePOGB(Orbis, "0000026702");
-                            //EDIWrite.WritePOGB(Orbis, "0000024410");
-                            //EDIWrite.WritePOGB(Orbis, "0000026751");
-                            //EDIWrite.WritePOGB(Orbis, "0000026757");
-                            //EDIWrite.WritePOGB(Orbis, "0000026766");
-                            //EDIWrite.WritePOGB(Orbis, "0000026767");
-                            //EDIWrite.WritePOGB(Orbis, "0000026795");
-                            //EDIWrite.WritePOGB(Orbis, "0000026804");
-                            //EDIWrite.WritePOGB(Orbis, "0000026805");
-                            EDIWrite.WritePOGB(Orbis, "0000026830");
+                            //EDIWrite.WritePOGB(Orbis, "0000027171");
+                            //EDIWrite.WritePOGB(Orbis, "0000027230");
+                            //EDIWrite.WritePOGB(Orbis, "0000027239");
+                            //EDIWrite.WritePOGB(Orbis, "0000026836");
+                            //EDIWrite.WritePOGB(Orbis, "0000026837");
+                            //EDIWrite.WritePOGB(Orbis, "0000026838");
+                            //EDIWrite.WritePOGB(Orbis, "0000026839");
+                            //EDIWrite.WritePOGB(Orbis, "0000026840");
+                            //EDIWrite.WritePOGB(Orbis, "0000026841");
+                            //EDIWrite.WritePOGB(Orbis, "0000026870");
                             break;
                         #endregion
                         #region GBD Read
@@ -167,10 +165,10 @@ namespace EDI_Orders
                         //    GreatBear.ProcessGreatBear("C:\\Bespoke\\EDI\\GreatBearSamples\\945-3.txt", Orbis);
                         //    GreatBear.ProcessGreatBear("C:\\Bespoke\\EDI\\GreatBearSamples\\945-2.txt", Orbis);
                         //    GreatBear.ProcessGreatBear("C:\\Bespoke\\EDI\\GreatBearSamples\\945-1.txt", Orbis);
-                            break;
+                        //    break;
                         #endregion
                         default:
-                            SharedFunctions.Writefile("Error with the manual functions.", "Possible an incorrect input: " + choice);
+                            SharedFunctions.Writefile("Error with the manual functions.", "Possibly an incorrect input: " + choice);
                             break;
                     }
                 }

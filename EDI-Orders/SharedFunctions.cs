@@ -505,7 +505,7 @@ namespace EDI_Orders
         }
         #endregion
 
-        -#region Log Writing
+        #region Log Writing
         public static void Writefile(string v, string z)
         {
             string strPath = @"C:\Temp\KTNOrder.txt";

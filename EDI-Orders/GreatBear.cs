@@ -92,7 +92,7 @@ namespace EDI_Orders
         /**
          * Due to GB sending 997 fies for every file they obtain, this section helps to handle these,
          * It will log the date, time, file type, file name and the warehouse to a table in the DB,
-         * Then move the file to a 997 specific file as to not confuse more important files.
+         * Then move the file to a 997 specific folder as to not confuse more important files.
          */
         public static void Handle997 (SqlConnection con, string[][] Document, string file)
         {
@@ -210,6 +210,9 @@ namespace EDI_Orders
                 case "AK5":
 
                     break;
+                case "MAN":
+
+                    break;
                 case "REF":
                     switch (line[1])
                     {
@@ -265,7 +268,7 @@ namespace EDI_Orders
                     CommandType = CommandType.StoredProcedure
                 };
                 /**
-                 * Establishes the vaiables that are to be isnerted into the DBwith blank values ready to be used.
+                 * Establishes the vaiables that are to be inserted into the DB with blank values ready to be used.
                  */
                 int p = 0;
                 string Warehouse = "";
@@ -280,9 +283,10 @@ namespace EDI_Orders
                 string PalletQty = "";
                 string ItemNumber = "";
                 string PackedQty = "";
-
+                string CarrierTrackingNo = "";
+                
                 /**
-                 * Runs through each line of the file and updates the value of the correct variable as it readches each ine.
+                 * Runs through each line of the file and updates the value of the correct variable as it reaches each ine.
                  */
                 foreach (string[] s in Document)
                 {
@@ -290,34 +294,34 @@ namespace EDI_Orders
                     switch (header)
                     {
                         case "ISA":
-                            Warehouse = s[6];
+                            Warehouse = s[6].Trim();
                             if (Warehouse.Equals("GreatBear"))
                             {
                                 Warehouse = "GBD";
                             }
-                            DateRecieved = s[9];
+                            DateRecieved = s[9].Trim();
                             break;
                         case "GS":
                             ID = s[6];
                             break;
                         case "W27":
-                            transporter = s[1];
+                            transporter = s[1].Trim();
                             break;
                         case "W06":
-                            OrderNumber = s[2];
-                            Dateshipped = s[3];
-                            CustomerOrderNumber = s[6];
+                            OrderNumber = s[2].Trim();
+                            Dateshipped = s[3].Trim();
+                            CustomerOrderNumber = s[6].Trim();
                             break;
                     }
 
                     /**
-                     * This section checks tat all the corrct location in the file has eben reached before inserting the data into the DB.
+                     * This section checks that all the correct location in the file has been reached before inserting the data into the DB.
                      */
                     if ((header == "LX" && p > 0) || header == "W03")
                     {
                         Console.WriteLine("Now hits insert");
                         storedProcedure.Parameters.AddWithValue("Warehouse", Warehouse);
-                        storedProcedure.Parameters.AddWithValue("DateReceived", DateRecieved);
+                        storedProcedure.Parameters.AddWithValue("DateReceived", "20" + DateRecieved);
                         storedProcedure.Parameters.AddWithValue("OrderNumber", OrderNumber);
                         storedProcedure.Parameters.AddWithValue("Dateshipped", Dateshipped);
                         //storedProcedure.Parameters.AddWithValue("CustomerOrderNumber", CustomerOrderNumber);
@@ -328,8 +332,8 @@ namespace EDI_Orders
                         storedProcedure.Parameters.AddWithValue("MessageType", "PPLCON");
                         storedProcedure.Parameters.AddWithValue("ConNumber", ConNumber);
                         storedProcedure.Parameters.AddWithValue("PackedQuantity", PackedQty);
-
-
+                        storedProcedure.Parameters.AddWithValue("CarriertrackingNo", CarrierTrackingNo);
+                        
                         storedProcedure.ExecuteNonQuery();
                         storedProcedure.Parameters.Clear();
                         p++;
@@ -341,7 +345,7 @@ namespace EDI_Orders
                         }
                     }
                     /**
-                     * Check to ensure that the insert is not rna too early.
+                     * Check to ensure that the insert is not run too early.
                      */
                     if (header == "LX")
                     {
@@ -349,36 +353,45 @@ namespace EDI_Orders
                     }
                     if (header == "N9")
                     {
-                        if (storedProcedure.Parameters.Contains("CarriertrackingNo"))
+                        if (s[1].Trim() == "CN")
                         {
+                            CarrierTrackingNo = s[2].Trim();
+                        }
+                        //if (storedProcedure.Parameters.Contains("CarriertrackingNo"))
+                        //{
 
-                        }
-                        else
-                        {
-                            string[][] info = HandleLine(s);
-                            foreach (string[] t in info)
-                            {
-                                storedProcedure.Parameters.AddWithValue(t[0], t[1]);
-                            }
-                        }
+                        //}
+                        //else
+                        //{
+                        //    string[][] info = HandleLine(s);
+                        //    foreach (string[] t in info)
+                        //    {
+                        //        storedProcedure.Parameters.AddWithValue(t[0], t[1]);
+                        //    }
+                        //}
                     }
                     else if (header == "W12")
                     {
-                        PackedQty = s[2];
-                        PalletQty = s[2];
-                        ItemNumber = s[7];
+                        PackedQty = s[2].Trim();
+                        PalletQty = s[2].Trim();
+                        ItemNumber = s[8].Trim();
                     }
                     else if (header == "MAN")
                     {
-                        switch (s[1])
+                        switch (s[1].Trim())
                         {
                             case "CP":
-                                ConNumber = s[2];
+                                ConNumber = s[2].Trim();
                                 //Consignment number
                                 break;
                             case "AA":
-                                SSCC = s[2];
-                                //SSCC
+                                SSCC = s[2].Trim();
+                                //SSCC Pallet
+                                break;
+                            case "GM":
+                                SSCC = s[2].Trim();
+                                ConNumber = s[5].Trim();
+                                //SSCC Carton
                                 break;
                             default:
                                 //Error
