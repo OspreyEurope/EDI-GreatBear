@@ -126,9 +126,9 @@ namespace EDI_Orders
                             //EDIWrite.WriteOrderGB(Orbis, "0000529085");
                             //EDIWrite.WriteOrderGB(Orbis, "0000529086");
                             //EDIWrite.WriteOrderGB(Orbis, "0000529087");
-                            EDIWrite.WriteOrderGB(Orbis, "0000501495");
-                            EDIWrite.WriteOrderGB(Orbis, "0000501497");
-                            EDIWrite.WriteOrderGB(Orbis, "0000501499");
+                            //EDIWrite.WriteOrderGB(Orbis, "0000501495");
+                            //EDIWrite.WriteOrderGB(Orbis, "0000501497");
+                            //EDIWrite.WriteOrderGB(Orbis, "0000501499");
                             //EDIWrite.WriteOrderGB(Orbis, "0000460384");
                             break;
                         case "846":
@@ -176,7 +176,7 @@ namespace EDI_Orders
                             Application.Run(new GUI());
                             break;
                         default:
-                            SharedFunctions.Writefile("Error with the manual functions.", "Possible an incorrect input: " + choice);
+                            SharedFunctions.Writefile("Error with the manual functions.", "Possibly an incorrect input: " + choice);
                             break;
                     }
                 }
