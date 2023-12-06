@@ -277,9 +277,11 @@ namespace EDI_Orders
                 string ID = "";
                 string ConNumber = "";
                 string SSCC = "";
+                string SSCCType = "";
                 string PalletQty = "";
                 string ItemNumber = "";
                 string PackedQty = "";
+                string CarrierTrackingNo = "";
 
                 /**
                  * Runs through each line of the file and updates the value of the correct variable as it readches each ine.
@@ -328,6 +330,7 @@ namespace EDI_Orders
                         storedProcedure.Parameters.AddWithValue("MessageType", "PPLCON");
                         storedProcedure.Parameters.AddWithValue("ConNumber", ConNumber);
                         storedProcedure.Parameters.AddWithValue("PackedQuantity", PackedQty);
+                        storedProcedure.Parameters.AddWithValue("CarriertrackingNo", CarrierTrackingNo);
 
 
                         storedProcedure.ExecuteNonQuery();
@@ -336,7 +339,7 @@ namespace EDI_Orders
 
                         if (SSCC != "")
                         {
-                            SharedFunctions.InsertDESADV(OrderNumber, ItemNumber, PalletQty, SSCC, con);
+                            SharedFunctions.InsertDESADV(OrderNumber, ItemNumber, PalletQty, SSCC, SSCCType, con);
                             SSCC = "";
                         }
                     }
@@ -349,17 +352,9 @@ namespace EDI_Orders
                     }
                     if (header == "N9")
                     {
-                        if (storedProcedure.Parameters.Contains("CarriertrackingNo"))
+                        if (s[1].Trim() == "CN")
                         {
-
-                        }
-                        else
-                        {
-                            string[][] info = HandleLine(s);
-                            foreach (string[] t in info)
-                            {
-                                storedProcedure.Parameters.AddWithValue(t[0], t[1]);
-                            }
+                            CarrierTrackingNo = s[2];
                         }
                     }
                     else if (header == "W12")
@@ -370,7 +365,7 @@ namespace EDI_Orders
                     }
                     else if (header == "MAN")
                     {
-                        switch (s[1])
+                        switch (s[1].Trim())
                         {
                             case "CP":
                                 ConNumber = s[2];
@@ -378,8 +373,16 @@ namespace EDI_Orders
                                 break;
                             case "AA":
                                 SSCC = s[2];
-                                //SSCC
+                                ConNumber = s[5];
+                                SSCCType = "Pallet";
+                                //SSCC Pallet
                                 break;
+                            case "GM":
+                                SSCC = s[2];
+                                ConNumber = s[5];
+                                SSCCType = "Carton";
+                                break;
+                            //SSCC Carton
                             default:
                                 //Error
                                 break;
@@ -635,7 +638,7 @@ namespace EDI_Orders
                 string CustomerReferenceTransport = Document[3][4];
                 string ID = Document[3][4];
                 string FileAction = Document[3][3];
-                string InboundDeliveryType = Document[3][3].Substring(0, 2);
+                string InboundDeliveryType = Document[3][3].Substring(1, 2);
 
                 if (InboundDeliveryType == "PO")
                 {

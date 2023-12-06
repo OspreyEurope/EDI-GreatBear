@@ -271,6 +271,7 @@ namespace EDI_Orders
                         string ASDV = "";
                         string SSCC = "";
                         string BoxID = "";
+                        string SSCCType = "CARTON";
                         int p = 0;
                         //int q = 0;
 
@@ -386,7 +387,7 @@ namespace EDI_Orders
                                     if ((PalletQty != "0" && ASDV == "AMAZON" && SSCC != "" && PL == "LOAD ") == true)
                                     {
                                         Console.WriteLine(ASDV + " " + PalletQty + " " + PL + " " + SSCC + " " + ItemNumber);
-                                        SharedFunctions.InsertDESADV(OrderNumber, ItemNumber, PalletQty, SSCC, con, BoxID);
+                                        SharedFunctions.InsertDESADV(OrderNumber, ItemNumber, PalletQty, SSCC, SSCCType, con, BoxID);
                                         PalletQty = "0";
                                         SSCC = "";
                                         BoxID = "";

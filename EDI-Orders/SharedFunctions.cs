@@ -505,10 +505,10 @@ namespace EDI_Orders
         }
         #endregion
 
-        -#region Log Writing
+        #region Log Writing
         public static void Writefile(string v, string z)
         {
-            string strPath = @"C:\Temp\KTNOrder.txt";
+            string strPath = @"C:\Temp\EDIErrorLog.txt";
             if (!File.Exists(strPath))
             {
                 File.Create(strPath).Dispose();
@@ -559,7 +559,7 @@ namespace EDI_Orders
          * This is passed the relevant data and wil add it into the asdac table within the DB in the correct enviroment,
          * This being the same enviroment as the data is being written to initaly.
          */
-        public static void InsertDESADV(string orderNumber, string Item, string palletQty, string SSCC, SqlConnection con, string BoxID = null)
+        public static void InsertDESADV(string orderNumber, string Item, string palletQty, string SSCC, string SSCCType, SqlConnection con, string BoxID = null)
         {
             try
             {
@@ -574,6 +574,7 @@ namespace EDI_Orders
                 InsertPallet.Parameters.AddWithValue("PalletQty", palletQty);
                 InsertPallet.Parameters.AddWithValue("SSCC", SSCC);
                 InsertPallet.Parameters.AddWithValue("BoxID", BoxID);
+                InsertPallet.Parameters.AddWithValue("SSCCType", SSCCType);
 
                 InsertPallet.ExecuteNonQuery();
                 InsertPallet.Parameters.Clear();

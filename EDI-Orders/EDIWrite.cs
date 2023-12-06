@@ -74,8 +74,8 @@ namespace EDI_Orders
             }
             catch (Exception ex)
             {
-                SharedFunctions.Writefile("Write order items Failed to process, error message is: " + ex.Message + ex.ToString(), "");
-                SharedFunctions.ErrorAlert("Write Order Products", ex);
+                SharedFunctions.Writefile("OrderNumber: " + orderNo + " Write order items Failed to process, error message is: " + ex.Message + ex.ToString(), "");
+                SharedFunctions.ErrorAlert("OrderNumber: " + orderNo + " Write Order Products", ex);
                 return counter;
             }
         }
@@ -391,7 +391,7 @@ namespace EDI_Orders
             }
             catch (Exception ex)
             {
-                SharedFunctions.Writefile("Order Failed to process, error message is: " + ex.Message + ex.ToString(), "");
+                SharedFunctions.Writefile("OrderNumber: " + id + " Order Failed to process, error message is: " + ex.Message + ex.ToString(), "");
                 SharedFunctions.ErrorAlert("Write Order", ex);
             }
         }
@@ -495,8 +495,8 @@ namespace EDI_Orders
             }
             catch (Exception ex)
             {
-                SharedFunctions.Writefile("PO Failed to process, error message is: " + ex.Message, "");
-                SharedFunctions.ErrorAlert("Write ASN", ex);
+                SharedFunctions.Writefile("PO Failed to write: " + id + " PO Failed to process, error message is: " + ex.Message, "");
+                SharedFunctions.ErrorAlert("PO Failed to write: " + id + " Write ASN", ex);
             }
         }
         #endregion
@@ -615,8 +615,8 @@ namespace EDI_Orders
             }
             catch (Exception ex)
             {
-                SharedFunctions.Writefile("Write Produc List Failed to process, error message is: " + ex.Message, "");
-                SharedFunctions.ErrorAlert("Write Product List", ex);
+                SharedFunctions.Writefile("Write Produc List Failed to process for KTN, error message is: " + ex.Message, "");
+                SharedFunctions.ErrorAlert("Write Product List for KTN", ex);
             }
         }
         #endregion
@@ -702,8 +702,8 @@ namespace EDI_Orders
             }
             catch (Exception ex)
             {
-                SharedFunctions.Writefile("Warehouse to warehouse Failed to process, error message is: " + ex.Message, "");
-                SharedFunctions.ErrorAlert("Write Truck Del To Warehouse", ex);
+                SharedFunctions.Writefile("Warehouse to warehouse Failed to process for PO: " + id + ", error message is: " + ex.Message, "");
+                SharedFunctions.ErrorAlert("Write Truck Del To Warehouse for PO " + id + "", ex);
             }
 
         }
@@ -809,8 +809,8 @@ namespace EDI_Orders
             }
             catch (Exception ex)
             {
-                SharedFunctions.Writefile("PO Failed to process, error message is: " + ex.Message, "");
-                SharedFunctions.ErrorAlert("Write Return", ex);
+                SharedFunctions.Writefile("Return: " + id + " Failed to process, error message is: " + ex.Message, "");
+                SharedFunctions.ErrorAlert("Write Return: " + id + " failed to process.", ex);
             }
         }
         #endregion
@@ -949,8 +949,8 @@ namespace EDI_Orders
             }
             catch (Exception ex)
             {
-                SharedFunctions.Writefile("Write order body for Great Bear failed: " + ex.Message, "");
-                SharedFunctions.ErrorAlert("Write order body for GB ", ex);
+                SharedFunctions.Writefile("Write order: " + id + " body for Great Bear failed: " + ex.Message, "");
+                SharedFunctions.ErrorAlert("Write order: " + id + " body for GB ", ex);
             }
         }
         #endregion
@@ -999,8 +999,8 @@ namespace EDI_Orders
             }
             catch (Exception ex)
             {
-                SharedFunctions.Writefile("Write items for Great Bear order failed: " + ex.Message, "");
-                SharedFunctions.ErrorAlert("Write items for GB order ", ex);
+                SharedFunctions.Writefile("Write items for Great Bear order: " + id + " failed: " + ex.Message, "");
+                SharedFunctions.ErrorAlert("Write items for GB order: " + id, ex);
                 return -1;
             }
         }
@@ -1077,8 +1077,8 @@ namespace EDI_Orders
             }
             catch (Exception ex)
             {
-                SharedFunctions.Writefile("Write Product List Failed to process, error message is: " + ex.Message, "");
-                SharedFunctions.ErrorAlert("Write Product List", ex);
+                SharedFunctions.Writefile("Write Product List for GBD Failed to process, error message is: " + ex.Message, "");
+                SharedFunctions.ErrorAlert("Write Product List for GBD failed", ex);
             }
         }
         #endregion
@@ -1181,8 +1181,8 @@ namespace EDI_Orders
             }
             catch (Exception ex)
             {
-                SharedFunctions.Writefile("Write PO for Great Bear failed: " + ex.Message, "");
-                SharedFunctions.ErrorAlert("Write PO for GB", ex);
+                SharedFunctions.Writefile("Write PO: " + id + " for Great Bear failed: " + ex.Message, "");
+                SharedFunctions.ErrorAlert("Write PO: " + id + " for GB", ex);
             }
         }
         #endregion
@@ -1256,8 +1256,8 @@ namespace EDI_Orders
             }
             catch (Exception ex)
             {
-                SharedFunctions.Writefile("Write PO for Great Bear failed: " + ex.Message, "");
-                SharedFunctions.ErrorAlert("Write PO for GB", ex);
+                SharedFunctions.Writefile("Write Preturn: " + id + " for Great Bear failed: " + ex.Message, "");
+                SharedFunctions.ErrorAlert("Write return: " + id + " for GB", ex);
             }
         }
         #endregion

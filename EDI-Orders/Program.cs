@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Configuration;
 using System.Data.SqlClient;
+using System.Windows.Forms;
 
 //TODO: Swap Connection strings to move to live,
 //TODO: Swap the file locations in EDIWrite to production
@@ -136,16 +137,16 @@ namespace EDI_Orders
                         case "856":
                             //EDIWrite.WritePOGB(Orbis, "0000026792");
                             //EDIWrite.WritePOGB(Orbis, "0000026793");
-                            //EDIWrite.WritePOGB(Orbis, "0000026702");
-                            //EDIWrite.WritePOGB(Orbis, "0000024410");
-                            //EDIWrite.WritePOGB(Orbis, "0000026751");
-                            //EDIWrite.WritePOGB(Orbis, "0000026757");
-                            //EDIWrite.WritePOGB(Orbis, "0000026766");
-                            //EDIWrite.WritePOGB(Orbis, "0000026767");
-                            //EDIWrite.WritePOGB(Orbis, "0000026795");
-                            //EDIWrite.WritePOGB(Orbis, "0000026804");
-                            //EDIWrite.WritePOGB(Orbis, "0000026805");
-                            EDIWrite.WritePOGB(Orbis, "0000026830");
+                            EDIWrite.WritePOGB(Orbis, "0000027226");
+                            EDIWrite.WritePOGB(Orbis, "0000027226");
+                            EDIWrite.WritePOGB(Orbis, "0000027187");
+                            EDIWrite.WritePOGB(Orbis, "0000027186");
+                            EDIWrite.WritePOGB(Orbis, "0000027185");
+                            EDIWrite.WritePOGB(Orbis, "0000026864");
+                            EDIWrite.WritePOGB(Orbis, "0000026814");
+                            EDIWrite.WritePOGB(Orbis, "0000026800");
+                            EDIWrite.WritePOGB(Orbis, "0000024548");
+                            EDIWrite.WritePOGB(Orbis, "0000026824");
                             break;
                         #endregion
                         #region GBD Read
@@ -167,8 +168,13 @@ namespace EDI_Orders
                         //    GreatBear.ProcessGreatBear("C:\\Bespoke\\EDI\\GreatBearSamples\\945-3.txt", Orbis);
                         //    GreatBear.ProcessGreatBear("C:\\Bespoke\\EDI\\GreatBearSamples\\945-2.txt", Orbis);
                         //    GreatBear.ProcessGreatBear("C:\\Bespoke\\EDI\\GreatBearSamples\\945-1.txt", Orbis);
-                            break;
+                            //break;
                         #endregion
+                        case "GUI":
+                            Application.EnableVisualStyles();
+                            Application.SetCompatibleTextRenderingDefault(false);
+                            Application.Run(new GUI());
+                            break;
                         default:
                             SharedFunctions.Writefile("Error with the manual functions.", "Possible an incorrect input: " + choice);
                             break;
