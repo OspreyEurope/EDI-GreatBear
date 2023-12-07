@@ -376,7 +376,7 @@ namespace EDI_Orders
                                 break;
                             case "AA":
                                 SSCC = s[2];
-                                ConNumber = s[5];
+                                //ConNumber = s[5];
                                 SSCCType = "Pallet";
                                 //SSCC Pallet
                                 break;

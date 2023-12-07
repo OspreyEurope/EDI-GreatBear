@@ -28,6 +28,13 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem(new string[] {
+            "STKMVT"}, -1, System.Drawing.Color.Empty, System.Drawing.Color.Empty, new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0))));
+            System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem(new string[] {
+            "RECCON"}, -1, System.Drawing.Color.Empty, System.Drawing.Color.Empty, new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0))));
+            System.Windows.Forms.ListViewItem listViewItem3 = new System.Windows.Forms.ListViewItem(new string[] {
+            "PPLCON"}, -1, System.Drawing.Color.Empty, System.Drawing.Color.Empty, new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0))));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(GUI));
             this.Create_Orde_KTNbtn = new System.Windows.Forms.Button();
             this.Create_PO_KTNbtn = new System.Windows.Forms.Button();
             this.KTNl = new System.Windows.Forms.Label();
@@ -45,6 +52,7 @@
             this.READ_GBDbtn = new System.Windows.Forms.Button();
             this.File_Pathtxt = new System.Windows.Forms.TextBox();
             this.Select_Filebtn = new System.Windows.Forms.Button();
+            this.KTNFileTypelist = new System.Windows.Forms.ListView();
             this.SuspendLayout();
             // 
             // Create_Orde_KTNbtn
@@ -157,7 +165,7 @@
             // 
             // Read_KTNbtn
             // 
-            this.Read_KTNbtn.Location = new System.Drawing.Point(364, 43);
+            this.Read_KTNbtn.Location = new System.Drawing.Point(275, 46);
             this.Read_KTNbtn.Name = "Read_KTNbtn";
             this.Read_KTNbtn.Size = new System.Drawing.Size(190, 90);
             this.Read_KTNbtn.TabIndex = 12;
@@ -192,11 +200,27 @@
             this.Select_Filebtn.UseVisualStyleBackColor = true;
             this.Select_Filebtn.Click += new System.EventHandler(this.Select_Filebtn_Click);
             // 
+            // KTNFileTypelist
+            // 
+            this.KTNFileTypelist.GridLines = true;
+            this.KTNFileTypelist.HideSelection = false;
+            this.KTNFileTypelist.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
+            listViewItem1,
+            listViewItem2,
+            listViewItem3});
+            this.KTNFileTypelist.Location = new System.Drawing.Point(487, 43);
+            this.KTNFileTypelist.Name = "KTNFileTypelist";
+            this.KTNFileTypelist.Size = new System.Drawing.Size(105, 97);
+            this.KTNFileTypelist.TabIndex = 17;
+            this.KTNFileTypelist.UseCompatibleStateImageBehavior = false;
+            this.KTNFileTypelist.View = System.Windows.Forms.View.List;
+            // 
             // GUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(620, 450);
+            this.Controls.Add(this.KTNFileTypelist);
             this.Controls.Add(this.Select_Filebtn);
             this.Controls.Add(this.File_Pathtxt);
             this.Controls.Add(this.READ_GBDbtn);
@@ -213,9 +237,10 @@
             this.Controls.Add(this.KTNl);
             this.Controls.Add(this.Create_PO_KTNbtn);
             this.Controls.Add(this.Create_Orde_KTNbtn);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "GUI";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "GUI";
+            this.Text = "EDI Application Manual Interface";
             this.Load += new System.EventHandler(this.GUI_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -241,5 +266,6 @@
         private System.Windows.Forms.Button READ_GBDbtn;
         private System.Windows.Forms.TextBox File_Pathtxt;
         private System.Windows.Forms.Button Select_Filebtn;
+        private System.Windows.Forms.ListView KTNFileTypelist;
     }
 }

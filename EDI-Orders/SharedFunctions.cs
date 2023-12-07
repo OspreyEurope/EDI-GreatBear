@@ -563,6 +563,7 @@ namespace EDI_Orders
         {
             try
             {
+                
                 SqlCommand InsertPallet = new SqlCommand("OSP_INSERT_PPLCON_PALLET", con)
                 {
                     CommandType = CommandType.StoredProcedure
@@ -578,6 +579,7 @@ namespace EDI_Orders
 
                 InsertPallet.ExecuteNonQuery();
                 InsertPallet.Parameters.Clear();
+                
             }
             catch (Exception ex)
             {

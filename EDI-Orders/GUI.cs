@@ -1,31 +1,28 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Configuration;
-using System.Data;
 using System.Data.SqlClient;
-using System.Drawing;
+using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml.Linq;
 
 namespace EDI_Orders
 {
     public partial class GUI : Form
     {
         #region SQL Connections
-        private SqlConnection OERA = new SqlConnection
+        static protected SqlConnection OERA = new SqlConnection
         {
             ConnectionString = ConfigurationManager.ConnectionStrings["OERA"].ConnectionString
         };
-        private SqlConnection Orbis = new SqlConnection
+        static protected SqlConnection Orbis = new SqlConnection
         {
             ConnectionString = ConfigurationManager.ConnectionStrings["Orbis"].ConnectionString
         };
         #endregion
 
+        #region Generic GUI creation
         public GUI()
         {
             InitializeComponent();
@@ -33,13 +30,15 @@ namespace EDI_Orders
 
         private void GUI_Load(object sender, EventArgs e)
         {
-            
-        }
 
+        }
+        #endregion
+
+        #region Buttons for KTN
         private void Create_Orde_KTNbtn_Click(object sender, EventArgs e)
         {
             string orderno = this.Order_Number_KTNtxt.Text;
-            if (orderno.Length == 10) 
+            if (orderno.Length == 10)
             {
                 EDIWrite.WriteOrder(Orbis, orderno);
                 MessageBox.Show("Order has been created");
@@ -70,6 +69,20 @@ namespace EDI_Orders
             MessageBox.Show("Product List has been created");
         }
 
+        private void Read_KTNbtn_Click(object sender, EventArgs e)
+        {
+            if (this.KTNFileTypelist.SelectedItems.Count == 1)
+            {
+                string Choice = this.KTNFileTypelist.SelectedItems[0].Text;
+                string file = this.File_Pathtxt.Text;
+                Console.WriteLine(Choice + "      " +  file);
+                //FileCheckKTN(file, Choice);
+            }
+            
+        }
+        #endregion
+
+        #region Buttons for GBD
         private void Create_Order_GBDbtn_Click(object sender, EventArgs e)
         {
             string orderno = this.Order_Number_GBDtxt.Text;
@@ -104,16 +117,14 @@ namespace EDI_Orders
             MessageBox.Show("Product List has been created");
         }
 
-        private void Read_KTNbtn_Click(object sender, EventArgs e)
-        {
-            
-        }
-
         private void READ_GBDbtn_Click(object sender, EventArgs e)
         {
-
+            string file = this.File_Pathtxt.Text;
+            FileCheckGBD(file);
         }
+        #endregion
 
+        #region File Handling
         private void Select_Filebtn_Click(object sender, EventArgs e)
         {
             string Path = "";
@@ -138,5 +149,153 @@ namespace EDI_Orders
             MessageBox.Show("File selected, please see check the textbox to see if the file is correct");
         }
 
+        public static void FileCheckKTN(string file, string Type)
+        {
+            switch (Type)
+            {
+                case "STKMVT":
+                    string name = Path.GetFileName(file);
+                    try
+                    {
+                        if (file.Substring(3, 0) == "WEB")
+                        {
+                            File.Move(file, ConfigurationManager.AppSettings["KTNSTKMVTProcessed"] + "/" + name);
+                            Console.WriteLine(file + " Was Processed and moved to EU network Successfully.");
+                        }
+                        else
+                        {
+                            Console.WriteLine(file);
+                            KTN.ProcessKTN(file, Orbis);
+                            File.Move(file, ConfigurationManager.AppSettings["KTNSTKMVTProcessed"] + "/" + name);
+                            Console.WriteLine(file + " Was Processed Successfully.");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        SharedFunctions.Writefile("File Quarantined: " + name, ex.Message);
+                        SharedFunctions.ErrorAlert("Read STKMVT", ex);
+                        File.Move(file, ConfigurationManager.AppSettings["KTNSTKMVTQuarantined"] + "/" + name + "&" + DateTime.Now);
+                    }
+                    break;
+
+                case "PPLCON":
+
+                    name = Path.GetFileName(file);
+                    try
+                    {
+                        if (file.Substring(3, 0) == "WEB")
+                        {
+                            File.Move(file, ConfigurationManager.AppSettings["KTNPPLCONProcessed"] + "/" + name);
+                            Console.WriteLine(file + " Was Processed and moved to EU network Successfully.");
+                        }
+                        else
+                        {
+                            Console.WriteLine(file);
+                            KTN.ProcessKTN(file, Orbis);
+                            File.Move(file, ConfigurationManager.AppSettings["KTNPPLCONProcessed"] + "/" + name);
+                            Console.WriteLine(file + " Was Processed Successfully.");
+                        }
+
+                    }
+                    catch (Exception ex)
+                    {
+                        SharedFunctions.Writefile("File Quarantined: " + name, ex.Message);
+                        SharedFunctions.ErrorAlert("Read PPLCON", ex);
+                        File.Move(file, ConfigurationManager.AppSettings["KTNPPLCONQuarantined"] + "/" + name + "&" + DateTime.Now);
+                    }
+
+                    break;
+
+                case "RECCON":
+                    name = Path.GetFileName(file);
+                    try
+                    {
+                        if (file.Substring(3, 0) == "WEB")
+                        {
+                            File.Move(file, ConfigurationManager.AppSettings["KTNRECCONProcessed"] + "/" + name);
+                            Console.WriteLine(file + " Was Processed and moved to EU network Successfully.");
+                        }
+                        else
+                        {
+                            Console.WriteLine(file);
+                            KTN.ProcessKTN(file, Orbis);
+                            File.Move(file, ConfigurationManager.AppSettings["KTNRECCONProcessed"] + "/" + name);
+                            Console.WriteLine(file + " Was Processed Successfully.");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        SharedFunctions.Writefile("File Quarantined: " + name, ex.Message);
+                        SharedFunctions.ErrorAlert("Read RECCON", ex);
+                        File.Move(file, ConfigurationManager.AppSettings["KTNRECCONQuarantined"] + "/" + name + "&" + DateTime.Now);
+                    }
+
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        public static void FileCheckGBD(string file)
+        {
+            SqlConnection con = Orbis;
+            string[] exists = Directory.GetFiles(ConfigurationManager.AppSettings["GBProcessed"]);
+            if ((exists.Contains("RECCON" + file)) || (exists.Contains("PPLCON" + file)) || (exists.Contains("STKMVT" + file)))
+            {
+                string name = Path.GetFileName(file);
+                File.Move(file, ConfigurationManager.AppSettings["GBQuarantined"] + "/" + name);
+                SharedFunctions.Writefile("Write Product List Failed to process, error message is: The file already exists.", "");
+                SharedFunctions.ErrorAlert("Write Product List", new Exception("Repeat File"));
+            }
+            else
+            {
+                try
+                {
+                    string[][] Document = FileManipulation.readEDIFile(file);
+                    string Decision = Document[2][1].Trim();
+                    Console.WriteLine(Decision);
+                    switch (Decision)
+                    {
+                        #region 846 - STKBAL
+                        case "846":    //Items Message
+                            GreatBear.WriteSTKBAL(con, Document, file);
+                            break;
+                        #endregion
+                        #region 944 - RECCON
+                        case "944":    //Inbound Receipt Confirmation Message
+                            Console.WriteLine("WriteReccon");
+                            GreatBear.WriteRECCON(con, Document, file);
+                            break;
+                        #endregion
+                        #region 945 - PPLCON
+                        case "945":    //Assembly Order Message
+                            GreatBear.WritePPLCON(con, Document, file);
+                            break;
+                        #endregion
+                        #region 947 - STKMVT
+                        case "947":     //Stock adjust and status checks
+                            GreatBear.WriteSTKMVT(con, Document, file);
+                            break;
+                        #endregion
+                        #region 997 - File Acknowledgment
+                        case "997":     //Functional acknowledgment message
+                            GreatBear.Handle997(con, Document, file);
+                            break;
+                        #endregion
+                        default:
+                            break;
+
+                    }
+                }
+                catch (Exception ex)
+                {
+                    SharedFunctions.Writefile("File Quarantined: " + file + " ", ex.Message);
+                    SharedFunctions.ErrorAlert("Read GBD file on button from GUI: ", ex);
+                }
+            }
+
+
+        }
+        #endregion
     }
 }
