@@ -306,7 +306,7 @@ namespace EDI_Orders
                             ID = s[6];
                             break;
                         case "W27":
-                            transporter = s[1].Trim();
+                            transporter = s[2].Trim();
                             break;
                         case "W06":
                             OrderNumber = s[2].Trim();

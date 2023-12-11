@@ -12,11 +12,11 @@ namespace EDI_Orders
     public partial class GUI : Form
     {
         #region SQL Connections
-        static protected SqlConnection OERA = new SqlConnection
+        public static SqlConnection OERA = new SqlConnection
         {
             ConnectionString = ConfigurationManager.ConnectionStrings["OERA"].ConnectionString
         };
-        static protected SqlConnection Orbis = new SqlConnection
+        public static SqlConnection Orbis = new SqlConnection
         {
             ConnectionString = ConfigurationManager.ConnectionStrings["Orbis"].ConnectionString
         };
@@ -37,6 +37,16 @@ namespace EDI_Orders
         #region Buttons for KTN
         private void Create_Orde_KTNbtn_Click(object sender, EventArgs e)
         {
+            #region SQL Connections
+            SqlConnection OERA = new SqlConnection
+            {
+                ConnectionString = ConfigurationManager.ConnectionStrings["OERA"].ConnectionString
+            };
+            SqlConnection Orbis = new SqlConnection
+            {
+                ConnectionString = ConfigurationManager.ConnectionStrings["Orbis"].ConnectionString
+            };
+            #endregion
             string orderno = this.Order_Number_KTNtxt.Text;
             if (orderno.Length == 10)
             {
@@ -76,7 +86,7 @@ namespace EDI_Orders
                 string Choice = this.KTNFileTypelist.SelectedItems[0].Text;
                 string file = this.File_Pathtxt.Text;
                 Console.WriteLine(Choice + "      " +  file);
-                //FileCheckKTN(file, Choice);
+                FileCheckKTN(file, Choice);
             }
             
         }

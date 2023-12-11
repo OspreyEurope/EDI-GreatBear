@@ -866,7 +866,7 @@ namespace EDI_Orders
                      * Writes the delivery information for the an order in the X12 format.
                      */
                     streamWriter.Write("ST*940*" + (SESTVal).ToString() + "~");
-                    streamWriter.Write("W05*C*" + row["OrderNumber"] + row["WHOrderNumber"] + "*" + row["OrderReference"] + "*****" + row["OrderImporttype"] + "-" + row["Priority"] + "~");
+                    streamWriter.Write("W05*C*" + row["OrderNumber"] + "-" + row["WHOrderNumber"] + "*" + row["OrderReference"] + "*****" + row["OrderImporttype"] + "-" + row["Priority"] + "~");
                     streamWriter.Write("N1*DE*Osprey Europe*9*5056302200001~");
                     #region GDPR data insert
                     /** 
