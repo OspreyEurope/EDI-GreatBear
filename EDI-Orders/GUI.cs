@@ -11,17 +11,6 @@ namespace EDI_Orders
 {
     public partial class GUI : Form
     {
-        #region SQL Connections
-        public static SqlConnection OERA = new SqlConnection
-        {
-            ConnectionString = ConfigurationManager.ConnectionStrings["OERA"].ConnectionString
-        };
-        public static SqlConnection Orbis = new SqlConnection
-        {
-            ConnectionString = ConfigurationManager.ConnectionStrings["Orbis"].ConnectionString
-        };
-        #endregion
-
         #region Generic GUI creation
         public GUI()
         {
@@ -38,10 +27,6 @@ namespace EDI_Orders
         private void Create_Orde_KTNbtn_Click(object sender, EventArgs e)
         {
             #region SQL Connections
-            SqlConnection OERA = new SqlConnection
-            {
-                ConnectionString = ConfigurationManager.ConnectionStrings["OERA"].ConnectionString
-            };
             SqlConnection Orbis = new SqlConnection
             {
                 ConnectionString = ConfigurationManager.ConnectionStrings["Orbis"].ConnectionString
@@ -61,6 +46,12 @@ namespace EDI_Orders
 
         private void Create_PO_KTNbtn_Click(object sender, EventArgs e)
         {
+            #region SQL Connections
+            SqlConnection Orbis = new SqlConnection
+            {
+                ConnectionString = ConfigurationManager.ConnectionStrings["Orbis"].ConnectionString
+            };
+            #endregion
             string PONo = this.PO_Number_KTNtxt.Text;
             if (PONo.Length == 10)
             {
@@ -75,6 +66,12 @@ namespace EDI_Orders
 
         private void Product_List_KTNbtn_Click(object sender, EventArgs e)
         {
+            #region SQL Connection
+            SqlConnection OERA = new SqlConnection
+            {
+                ConnectionString = ConfigurationManager.ConnectionStrings["OERA"].ConnectionString
+            };
+            #endregion
             EDIWrite.WriteProductList(OERA, "100994002");
             MessageBox.Show("Product List has been created");
         }
@@ -95,6 +92,12 @@ namespace EDI_Orders
         #region Buttons for GBD
         private void Create_Order_GBDbtn_Click(object sender, EventArgs e)
         {
+            #region SQL Connections
+            SqlConnection Orbis = new SqlConnection
+            {
+                ConnectionString = ConfigurationManager.ConnectionStrings["Orbis"].ConnectionString
+            };
+            #endregion
             string orderno = this.Order_Number_GBDtxt.Text;
             if (orderno.Length == 10)
             {
@@ -109,6 +112,12 @@ namespace EDI_Orders
 
         private void Create_PO_GBDbtn_Click(object sender, EventArgs e)
         {
+            #region SQL Connections
+            SqlConnection Orbis = new SqlConnection
+            {
+                ConnectionString = ConfigurationManager.ConnectionStrings["Orbis"].ConnectionString
+            };
+            #endregion
             string PONo = this.PO_Number_KTNtxt.Text;
             if (PONo.Length == 10)
             {
@@ -123,6 +132,12 @@ namespace EDI_Orders
 
         private void Product_List_GBDbtn_Click(object sender, EventArgs e)
         {
+            #region SQL Connection
+            SqlConnection OERA = new SqlConnection
+            {
+                ConnectionString = ConfigurationManager.ConnectionStrings["OERA"].ConnectionString
+            };
+            #endregion
             EDIWrite.WriteProductListGBItems(OERA, "108016515");
             MessageBox.Show("Product List has been created");
         }
