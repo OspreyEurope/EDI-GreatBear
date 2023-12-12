@@ -1239,7 +1239,7 @@ namespace EDI_Orders
                     streamWriter.Write("ST*856*" + SESTVal.ToString() + "~");
                     streamWriter.Write("BSN*00*" + "RM" + id + "." + row["PrimaryKey"] + "*" + DateFormatting + "~");         //The difference between this and a PO is the RM over Po to preffice the number
                     streamWriter.Write("HL*1**S~");
-                    streamWriter.Write("N1*SF**ZZ*" + row["SuppAccRef"].ToString().Replace("$", "") + "~");
+                    streamWriter.Write("N1*SF**ZZ*" + row["CustomerAccRef"].ToString().Replace("$", "") + "~");
                     streamWriter.Write("HL*2*" + row["PrimaryKey"] + "*O~");
                     streamWriter.Write("PRF*" + id + "~");
                     streamWriter.Write("HL*3*" + row["PrimaryKey"] + "*I~");
