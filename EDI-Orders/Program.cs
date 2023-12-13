@@ -148,6 +148,9 @@ namespace EDI_Orders
                             //EDIWrite.WritePOGB(Orbis, "0000024548");
                             //EDIWrite.WritePOGB(Orbis, "0000026824");
                             break;
+                        case "returnGB":
+                            EDIWrite.ReturnToGB(Orbis, "0000066986");
+                            break;
                         #endregion
                         #region GBD Read
                         case "944":

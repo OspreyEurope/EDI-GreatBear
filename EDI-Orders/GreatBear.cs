@@ -457,7 +457,7 @@ namespace EDI_Orders
                         storedProcedure.Parameters.AddWithValue("ItemDescription", ItemDescription);
                         storedProcedure.Parameters.AddWithValue("Quantity", Qty);
                         storedProcedure.Parameters.AddWithValue("ItemNumber", ItemNumber);
-                        storedProcedure.Parameters.AddWithValue("DateOfMovement", date);
+                        storedProcedure.Parameters.AddWithValue("DateOfMovement", "20" + date);
                         storedProcedure.Parameters.AddWithValue("Warehouse", "GBD");
                         storedProcedure.ExecuteNonQuery();
                         storedProcedure.Parameters.Clear();
@@ -514,7 +514,7 @@ namespace EDI_Orders
 
                 storedProcedure.Parameters.AddWithValue("ID", ID);
                 storedProcedure.Parameters.AddWithValue("MessageType", MessageType);
-                storedProcedure.Parameters.AddWithValue("DateReceived", DateRecieved);
+                storedProcedure.Parameters.AddWithValue("DateReceived", "20" + DateRecieved);
                 storedProcedure.Parameters.AddWithValue("Warehouse", Warehouse);
                 storedProcedure.Parameters.AddWithValue("OriginalFileName", file);
                 storedProcedure.Parameters.AddWithValue("FileAction", FileAction);

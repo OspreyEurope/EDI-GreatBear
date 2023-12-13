@@ -176,6 +176,12 @@ namespace EDI_Orders
 
         public static void FileCheckKTN(string file, string Type)
         {
+            #region SQL Connections
+            SqlConnection Orbis = new SqlConnection
+            {
+                ConnectionString = ConfigurationManager.ConnectionStrings["Orbis"].ConnectionString
+            };
+            #endregion
             switch (Type)
             {
                 case "STKMVT":
@@ -263,6 +269,12 @@ namespace EDI_Orders
 
         public static void FileCheckGBD(string file)
         {
+            #region SQL Connections
+            SqlConnection Orbis = new SqlConnection
+            {
+                ConnectionString = ConfigurationManager.ConnectionStrings["Orbis"].ConnectionString
+            };
+            #endregion
             SqlConnection con = Orbis;
             string[] exists = Directory.GetFiles(ConfigurationManager.AppSettings["GBProcessed"]);
             if ((exists.Contains("RECCON" + file)) || (exists.Contains("PPLCON" + file)) || (exists.Contains("STKMVT" + file)))

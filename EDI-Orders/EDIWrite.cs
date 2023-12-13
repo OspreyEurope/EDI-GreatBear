@@ -1225,7 +1225,7 @@ namespace EDI_Orders
                 /**
                  * Retrives the data from the database and then writes it line by line into a file.
                  */
-                string file = ConfigurationManager.AppSettings["GeneratingGB"] + "/PO" + id + ".edi";
+                string file = ConfigurationManager.AppSettings["GeneratingGB"] + "/RM" + id + ".edi";
                 FileStream f = new FileStream(file, FileMode.Create);
                 Encoding utf8WithoutBom = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false);
                 StreamWriter streamWriter = new StreamWriter(f, utf8WithoutBom);
@@ -1235,11 +1235,11 @@ namespace EDI_Orders
                 foreach (DataRow row in data.Rows)
                 {
                     int QTY = convertToInt(row["Quantity"].ToString());
-                    string DateFormatting = DateFormatter(row["OrderRequestedDate"].ToString());
+                    string DateFormatting = DateFormatter(row["ReturnRequestedDate"].ToString());
                     streamWriter.Write("ST*856*" + SESTVal.ToString() + "~");
                     streamWriter.Write("BSN*00*" + "RM" + id + "." + row["PrimaryKey"] + "*" + DateFormatting + "~");         //The difference between this and a PO is the RM over Po to preffice the number
                     streamWriter.Write("HL*1**S~");
-                    streamWriter.Write("N1*SF**ZZ*" + row["CustomerAccRef"].ToString().Replace("$", "") + "~");
+                    streamWriter.Write("N1*SF**ZZ*" + row["CustAccRef"].ToString().Replace("$", "") + "~");
                     streamWriter.Write("HL*2*" + row["PrimaryKey"] + "*O~");
                     streamWriter.Write("PRF*" + id + "~");
                     streamWriter.Write("HL*3*" + row["PrimaryKey"] + "*I~");
