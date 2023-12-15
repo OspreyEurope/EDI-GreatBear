@@ -516,13 +516,15 @@ namespace EDI_Orders
                 /**
                  * Retrives the data from the database and then writes it line by line into a file.
                  */
-                string file = ConfigurationManager.AppSettings["Test"] + "/" + id + "_Product_List.txt";
+                string file = ConfigurationManager.AppSettings["KTNItems"] + "/" + id + "_Product_List.txt";
                 FileStream f = new FileStream(file, FileMode.Create);
                 Encoding utf8WithoutBom = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false);
                 StreamWriter streamWriter = new StreamWriter(f, utf8WithoutBom);
                 string fileName = id + "_Product_List.txt";
                 fileName = fileName.PadRight(35, ' ');
                 streamWriter.WriteLine("000001UNH00000001            ITEMS               R4        KTN                                          ITEMS                                                                      OSPREY     KTN        " + DateTime.Now.ToString("yyyyMMddHHmmss").PadRight(35, ' ') + "204" + fileName.PadRight(50, ' ') + "");
+
+                Console.WriteLine(data.Rows.Count);
 
                 int counter = 2;
 
@@ -612,6 +614,8 @@ namespace EDI_Orders
                 streamWriter.Close();
                 var lineCount = File.ReadLines(file).Count();
                 File.AppendAllText(file, counter.ToString().PadLeft(6, '0') + "UNT" + (lineCount + 1).ToString().PadRight(6, ' ') + "00000001            ");
+
+                SharedFunctions.UpdateRecords(con, "OSP_UPDATE_PRODUCTLIST_SENT", "100994002");
             }
             catch (Exception ex)
             {
@@ -1074,6 +1078,8 @@ namespace EDI_Orders
                     itemCount++;
                     File.Move(file, ConfigurationManager.AppSettings["GBItems"] + "/" + Path.GetFileName(file));
                 }
+
+                SharedFunctions.UpdateRecords(con, "OSP_UPDATE_PRODUCTLIST_SENT", "108016515");
             }
             catch (Exception ex)
             {
