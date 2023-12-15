@@ -68,7 +68,7 @@ namespace EDI_Orders
                         EDIWrite.WriteProductListGBItems(OERA, "108016515");
                         break;
                     case "POGB":
-                        EDIWrite.WritePOGB(Orbis, "0000099999");
+                        EDIWrite.WritePOGB(Orbis, args[1]);
                         break;
                     case "ReturnGB":
                         EDIWrite.ReturnToGB(Orbis, args[1]);
