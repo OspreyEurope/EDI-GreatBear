@@ -328,7 +328,7 @@ namespace EDI_Orders
                         //storedProcedure.Parameters.AddWithValue("CustomerOrderNumber", CustomerOrderNumber);
                         storedProcedure.Parameters.AddWithValue("transporter", transporter);
                         storedProcedure.Parameters.AddWithValue("OriginalFileName", file);
-                        storedProcedure.Parameters.AddWithValue("PL", "PACK");
+                        storedProcedure.Parameters.AddWithValue("PL", "LOAD");
                         storedProcedure.Parameters.AddWithValue("ID", ID);
                         storedProcedure.Parameters.AddWithValue("MessageType", "PPLCON");
                         storedProcedure.Parameters.AddWithValue("ConNumber", ConNumber);
