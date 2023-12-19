@@ -111,7 +111,7 @@ namespace EDI_Orders
 
                 storedProcedure.Parameters.AddWithValue("DateOfFile", Date);
                 storedProcedure.Parameters.AddWithValue("TimeOfFile", Time);
-                storedProcedure.Parameters.AddWithValue("Filename", file);
+                storedProcedure.Parameters.AddWithValue("Filename", file.Substring(48,(file.Length - 48)));
                 storedProcedure.Parameters.AddWithValue("FileType", FileType);
                 storedProcedure.Parameters.AddWithValue("Warehouse", Warehouse);
 
