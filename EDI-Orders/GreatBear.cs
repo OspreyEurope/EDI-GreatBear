@@ -111,7 +111,7 @@ namespace EDI_Orders
 
                 storedProcedure.Parameters.AddWithValue("DateOfFile", Date);
                 storedProcedure.Parameters.AddWithValue("TimeOfFile", Time);
-                storedProcedure.Parameters.AddWithValue("Filename", file.Substring(48,(file.Length - 48)));
+                storedProcedure.Parameters.AddWithValue("Filename", Path.GetFileName(file));
                 storedProcedure.Parameters.AddWithValue("FileType", FileType);
                 storedProcedure.Parameters.AddWithValue("Warehouse", Warehouse);
 
@@ -187,7 +187,7 @@ namespace EDI_Orders
                     //result[0] = new string[] { "transporter", line[1] };                  ///???????????????????????????????????????????
                     break;
                 case "LX":
-                    result[0] = new string[] { "ItemNumber", line[1] };
+                    
                     break;
                 case "W12":
                     result[0] = new string[] { "PackedQuantity", line[3] };
@@ -327,7 +327,7 @@ namespace EDI_Orders
                         storedProcedure.Parameters.AddWithValue("Dateshipped", Dateshipped);
                         //storedProcedure.Parameters.AddWithValue("CustomerOrderNumber", CustomerOrderNumber);
                         storedProcedure.Parameters.AddWithValue("transporter", transporter);
-                        storedProcedure.Parameters.AddWithValue("OriginalFileName", file);
+                        storedProcedure.Parameters.AddWithValue("OriginalFileName", Path.GetFileName(file));
                         storedProcedure.Parameters.AddWithValue("PL", "LOAD");
                         storedProcedure.Parameters.AddWithValue("ID", ID);
                         storedProcedure.Parameters.AddWithValue("MessageType", "PPLCON");
@@ -516,7 +516,7 @@ namespace EDI_Orders
                 storedProcedure.Parameters.AddWithValue("MessageType", MessageType);
                 storedProcedure.Parameters.AddWithValue("DateReceived", "20" + DateRecieved);
                 storedProcedure.Parameters.AddWithValue("Warehouse", Warehouse);
-                storedProcedure.Parameters.AddWithValue("OriginalFileName", file);
+                storedProcedure.Parameters.AddWithValue("OriginalFileName", Path.GetFileName(file));
                 storedProcedure.Parameters.AddWithValue("FileAction", FileAction);
 
                 storedProcedure.ExecuteNonQuery();
@@ -661,7 +661,7 @@ namespace EDI_Orders
                 storedProcedure.Parameters.AddWithValue("MessageType", MessageType);
                 storedProcedure.Parameters.AddWithValue("Warehouse", Warehouse);
                 storedProcedure.Parameters.AddWithValue("DateReceived", "20" + DateRecieved.Trim());
-                storedProcedure.Parameters.AddWithValue("OriginalFileName", name);
+                storedProcedure.Parameters.AddWithValue("OriginalFileName", Path.GetFileName(file));
                 storedProcedure.Parameters.AddWithValue("FileAction", FileAction);
                 storedProcedure.Parameters.AddWithValue("CustomerReferenceInbound", ID);
                 storedProcedure.Parameters.AddWithValue("TransportInbound", TransportInbound);
