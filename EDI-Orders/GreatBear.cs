@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
@@ -158,7 +159,7 @@ namespace EDI_Orders
 
                     break;
                 case "LIN":
-                    result[0] = new string[] { "ItemNumber", line[8] };
+                    
                     break;
                 case "QTY":
                     result[0] = new string[] { "Quantity", line[2] };
@@ -292,6 +293,7 @@ namespace EDI_Orders
                 foreach (string[] s in Document)
                 {
                     string header = s[0].Trim();
+                    Console.WriteLine(header);
                     switch (header)
                     {
                         case "ISA":
@@ -313,12 +315,53 @@ namespace EDI_Orders
                             Dateshipped = s[3].Trim();
                             CustomerOrderNumber = s[6].Trim();
                             break;
+                        case "LX":
+                            p++;
+                            break;
+                        case "N9":
+                            if (s[1].Trim() == "CN")
+                            {
+                                CarrierTrackingNo = s[2];
+                            }
+                            break;
+                        case "W12":
+                            PackedQty = s[2].Trim();
+                            PalletQty = s[2].Trim();
+                            ItemNumber = s[8].Trim();
+                            break;
+                        #region SSCC
+                        case "MAN":
+                            switch (s[1].Trim())
+                            {
+                                case "CP":
+                                    ConNumber = s[2].Trim();
+                                    //Consignment number
+                                    break;
+                                case "AA":
+                                    SSCC = s[2];
+                                    //ConNumber = s[5];
+                                    SSCCType = "Pallet";
+                                    //SSCC Pallet
+                                    break;
+                                case "GM":
+                                    SSCC = s[2];
+                                    ConNumber = s[5];
+                                    SSCCType = "Carton";
+                                    break;
+                                //SSCC Carton
+                                default:
+                                    //Error
+                                    break;
+                            }
+                            break;
+                            #endregion
+
                     }
 
                     /**
                      * This section checks that all the correct location in the file has been reached before inserting the data into the DB.
                      */
-                    if ((header == "LX" && p > 0) || header == "W03")
+                    if ((header == "LX" && p > 1) || header == "W03")
                     {
                         Console.WriteLine("Now hits insert");
                         storedProcedure.Parameters.AddWithValue("Warehouse", Warehouse);
@@ -334,6 +377,7 @@ namespace EDI_Orders
                         storedProcedure.Parameters.AddWithValue("ConNumber", ConNumber);
                         storedProcedure.Parameters.AddWithValue("PackedQuantity", PackedQty);
                         storedProcedure.Parameters.AddWithValue("CarriertrackingNo", CarrierTrackingNo);
+                        storedProcedure.Parameters.AddWithValue("ItemNumber", ItemNumber);
 
 
                         storedProcedure.ExecuteNonQuery();
@@ -349,56 +393,56 @@ namespace EDI_Orders
                     /**
                      * Check to ensure that the insert is not run too early.
                      */
-                    if (header == "LX")
-                    {
-                        p++;
-                    }
-                    if (header == "N9")
-                    {
-                        if (s[1].Trim() == "CN")
-                        {
-                            CarrierTrackingNo = s[2];
-                        }
-                    }
-                    else if (header == "W12")
-                    {
-                        PackedQty = s[2].Trim();
-                        PalletQty = s[2].Trim();
-                        ItemNumber = s[8].Trim();
-                    }
-                    else if (header == "MAN")
-                    {
-                        switch (s[1].Trim())
-                        {
-                            case "CP":
-                                ConNumber = s[2].Trim();
-                                //Consignment number
-                                break;
-                            case "AA":
-                                SSCC = s[2];
-                                //ConNumber = s[5];
-                                SSCCType = "Pallet";
-                                //SSCC Pallet
-                                break;
-                            case "GM":
-                                SSCC = s[2];
-                                ConNumber = s[5];
-                                SSCCType = "Carton";
-                                break;
-                            //SSCC Carton
-                            default:
-                                //Error
-                                break;
-                        }
-                    }
-                    else
-                    {
-                        string[][] info = HandleLine(s);
-                        foreach (string[] t in info)
-                        {
-                            storedProcedure.Parameters.AddWithValue(t[0], t[1]);
-                        }
-                    }
+                    //if (header == "LX")
+                    //{
+                    //    p++;
+                    //}
+                    //if (header == "N9")
+                    //{
+                    //    if (s[1].Trim() == "CN")
+                    //    {
+                    //        CarrierTrackingNo = s[2];
+                    //    }
+                    //}
+                    //if (header == "W12")
+                    //{
+                    //    PackedQty = s[2].Trim();
+                    //    PalletQty = s[2].Trim();
+                    //    ItemNumber = s[8].Trim();
+                    //}
+                    //if (header == "MAN")
+                    //{
+                    //    switch (s[1].Trim())
+                    //    {
+                    //        case "CP":
+                    //            ConNumber = s[2].Trim();
+                    //            //Consignment number
+                    //            break;
+                    //        case "AA":
+                    //            SSCC = s[2];
+                    //            //ConNumber = s[5];
+                    //            SSCCType = "Pallet";
+                    //            //SSCC Pallet
+                    //            break;
+                    //        case "GM":
+                    //            SSCC = s[2];
+                    //            ConNumber = s[5];
+                    //            SSCCType = "Carton";
+                    //            break;
+                    //        //SSCC Carton
+                    //        default:
+                    //            //Error
+                    //            break;
+                    //    }
+                    //}
+                    //else
+                    //{
+                    //    string[][] info = HandleLine(s);
+                    //    foreach (string[] t in info)
+                    //    {
+                    //        storedProcedure.Parameters.AddWithValue(t[0], t[1]);
+                    //    }
+                    //}
                 }
                 con.Close();
                 string name = Path.GetFileName(file);
