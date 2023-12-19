@@ -158,7 +158,7 @@ namespace EDI_Orders
 
                     break;
                 case "LIN":
-                    result[0] = new string[] { "ItemNumber", line[3] };
+                    result[0] = new string[] { "ItemNumber", line[8] };
                     break;
                 case "QTY":
                     result[0] = new string[] { "Quantity", line[2] };
