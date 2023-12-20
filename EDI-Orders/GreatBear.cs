@@ -391,7 +391,7 @@ namespace EDI_Orders
                         }
                     }
                     /**
-                     * Check to ensure that the insert is not run too early.
+                     * Check to ensure that the insert is not run too early
                      */
                     //if (header == "LX")
                     //{
