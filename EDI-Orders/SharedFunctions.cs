@@ -366,10 +366,13 @@ namespace EDI_Orders
         public static void UpdateRecords(SqlConnection con, string SP, string id)
         {
             con.Open();
-            SqlDataAdapter dataQuery = new SqlDataAdapter(SP, con);
-            dataQuery.SelectCommand.CommandType = CommandType.StoredProcedure;
-            DataTable data = new DataTable();
-            dataQuery.Fill(data);
+            SqlCommand dataQuery = new SqlCommand(SP, con);
+            
+            if (id != "")
+            {
+                dataQuery.Parameters.AddWithValue("@id", id);
+            }
+            dataQuery.ExecuteNonQuery();
             con.Close();
         }
         #endregion
