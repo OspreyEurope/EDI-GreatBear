@@ -948,8 +948,6 @@ namespace EDI_Orders
                         SharedFunctions.Writefile("Failed on write tracker: " + ex.Message, "");
                     }
 
-                    ////////////////////////////
-
                     try
                     {
                         con.Open();
@@ -970,9 +968,6 @@ namespace EDI_Orders
                     {
                         SharedFunctions.Writefile("Failed on write tracker: " + ex.Message, "");
                     }
-
-                    //////////////////////////////
-
                 }
                 SharedFunctions.UpdateCounters(Orbis, "OSP_UPDATE_GBITEMS_VALS", "1", "2", "3", (GEGSVal + 1).ToString(), (SESTVal + 1).ToString(), (ISAIEAVal + total).ToString());
             }
