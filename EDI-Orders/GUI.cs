@@ -32,7 +32,7 @@ namespace EDI_Orders
                 ConnectionString = ConfigurationManager.ConnectionStrings["Orbis"].ConnectionString
             };
             #endregion
-            string orderno = this.Order_Number_KTNtxt.Text;
+            string orderno = Order_Number_KTNtxt.Text;
             if (orderno.Length == 10)
             {
                 EDIWrite.WriteOrder(Orbis, orderno);
@@ -52,7 +52,7 @@ namespace EDI_Orders
                 ConnectionString = ConfigurationManager.ConnectionStrings["Orbis"].ConnectionString
             };
             #endregion
-            string PONo = this.PO_Number_KTNtxt.Text;
+            string PONo = PO_Number_KTNtxt.Text;
             if (PONo.Length == 10)
             {
                 EDIWrite.WriteASNFile(Orbis, PONo);
@@ -78,10 +78,10 @@ namespace EDI_Orders
 
         private void Read_KTNbtn_Click(object sender, EventArgs e)
         {
-            if (this.KTNFileTypelist.SelectedItems.Count == 1)
+            if (KTNFileTypelist.SelectedItems.Count == 1)
             {
-                string Choice = this.KTNFileTypelist.SelectedItems[0].Text;
-                string file = this.File_Pathtxt.Text;
+                string Choice = KTNFileTypelist.SelectedItems[0].Text;
+                string file = File_Pathtxt.Text;
                 Console.WriteLine(Choice + "      " +  file);
                 FileCheckKTN(file, Choice);
             }
@@ -98,7 +98,7 @@ namespace EDI_Orders
                 ConnectionString = ConfigurationManager.ConnectionStrings["Orbis"].ConnectionString
             };
             #endregion
-            string orderno = this.Order_Number_GBDtxt.Text;
+            string orderno = Order_Number_GBDtxt.Text;
             if (orderno.Length == 10)
             {
                 EDIWrite.WriteOrderGB(Orbis, orderno);
@@ -118,7 +118,7 @@ namespace EDI_Orders
                 ConnectionString = ConfigurationManager.ConnectionStrings["Orbis"].ConnectionString
             };
             #endregion
-            string PONo = this.PO_Number_KTNtxt.Text;
+            string PONo = PO_Number_KTNtxt.Text;
             if (PONo.Length == 10)
             {
                 EDIWrite.WritePOGB(Orbis, PONo);
@@ -144,7 +144,7 @@ namespace EDI_Orders
 
         private void READ_GBDbtn_Click(object sender, EventArgs e)
         {
-            string file = this.File_Pathtxt.Text;
+            string file = File_Pathtxt.Text;
             FileCheckGBD(file);
         }
         #endregion
@@ -169,7 +169,7 @@ namespace EDI_Orders
             T.Start();
             T.Join();
 
-            this.File_Pathtxt.Text = Path;
+            File_Pathtxt.Text = Path;
 
             MessageBox.Show("File selected, please see check the textbox to see if the file is correct");
         }

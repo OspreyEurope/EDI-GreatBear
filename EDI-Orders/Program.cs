@@ -135,13 +135,13 @@ namespace EDI_Orders
                             EDIWrite.WriteProductListGBItems(OERA, "108016515");
                             break;
                         case "856":
-                            EDIWrite.WritePOGB(Orbis, "0000027186");
-                            EDIWrite.WritePOGB(Orbis, "0000027187");
-                            EDIWrite.WritePOGB(Orbis, "0000027226");
-                            EDIWrite.WritePOGB(Orbis, "0000026800");
-                            EDIWrite.WritePOGB(Orbis, "0000024548");
-                            EDIWrite.WritePOGB(Orbis, "0000026814");
-                            EDIWrite.WritePOGB(Orbis, "0000026824");
+                            EDIWrite.WritePOGB(Orbis, "0000026864");
+                            //EDIWrite.WritePOGB(Orbis, "0000027187");
+                            //EDIWrite.WritePOGB(Orbis, "0000027226");
+                            //EDIWrite.WritePOGB(Orbis, "0000026800");
+                            //EDIWrite.WritePOGB(Orbis, "0000024548");
+                            //EDIWrite.WritePOGB(Orbis, "0000026814");
+                            //EDIWrite.WritePOGB(Orbis, "0000026824");
                             //EDIWrite.WritePOGB(Orbis, "0000026864");
                             //EDIWrite.WritePOGB(Orbis, "0000026814");
                             //EDIWrite.WritePOGB(Orbis, "0000026800");
