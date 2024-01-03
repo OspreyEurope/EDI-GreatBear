@@ -118,7 +118,8 @@ namespace EDI_Orders
                 ConnectionString = ConfigurationManager.ConnectionStrings["Orbis"].ConnectionString
             };
             #endregion
-            string PONo = PO_Number_KTNtxt.Text;
+            string PONo = PO_Number_GBDtxt.Text;
+            Console.WriteLine(PONo);
             if (PONo.Length == 10)
             {
                 EDIWrite.WritePOGB(Orbis, PONo);
@@ -126,7 +127,7 @@ namespace EDI_Orders
             }
             else
             {
-                MessageBox.Show("Please insert a purchase order number, this should be 10 digits long.");
+                MessageBox.Show("Please insert a purchase order number, this should be 10 digits long. The PONo is: " + PONo + "     AAA");
             }
         }
 
