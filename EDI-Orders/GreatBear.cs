@@ -389,6 +389,28 @@ namespace EDI_Orders
                             SharedFunctions.InsertDESADV(OrderNumber, ItemNumber, PalletQty, SSCC, SSCCType, con);
                             SSCC = "";
                         }
+                        try
+                        {
+                            SqlCommand UpdateTracker = new SqlCommand("OSP_UPDATE_TRACKER_LOAD", con)
+                            {
+                                CommandType = CommandType.StoredProcedure
+                            };
+                            UpdateTracker.Parameters.AddWithValue("OrderNumber", OrderNumber.Substring(0, 10));
+                            UpdateTracker.Parameters.AddWithValue("WHOrderNumber", OrderNumber.Substring(10, 6));
+                            UpdateTracker.Parameters.AddWithValue("ConNumber", ConNumber);
+                            UpdateTracker.Parameters.AddWithValue("PackedQty", PackedQty);
+                            UpdateTracker.Parameters.AddWithValue("Transport", transporter);
+                            UpdateTracker.Parameters.AddWithValue("DateShipped", Dateshipped);
+                            UpdateTracker.Parameters.AddWithValue("FileName", Path.GetFileName(file));
+                            UpdateTracker.Parameters.AddWithValue("ItemNumber", ItemNumber);
+                            UpdateTracker.ExecuteNonQuery();
+                            UpdateTracker.Parameters.Clear();
+                        }
+                        catch (Exception ex)
+                        {
+                            SharedFunctions.Writefile("There was an issue in the updating of the tracker: " + ex.Message, "File Quarantined.");
+                        }
+                        
                     }
                     /**
                      * Check to ensure that the insert is not run too early
