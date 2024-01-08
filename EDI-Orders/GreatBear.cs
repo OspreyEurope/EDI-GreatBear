@@ -326,7 +326,7 @@ namespace EDI_Orders
                             break;
                         case "W12":
                             PackedQty = s[2].Trim();
-                            PalletQty = s[2].Trim();
+                            PalletQty = s[3].Trim();
                             ItemNumber = s[8].Trim();
                             break;
                         #region SSCC
@@ -384,11 +384,6 @@ namespace EDI_Orders
                         storedProcedure.Parameters.Clear();
                         p++;
 
-                        if (SSCC != "")
-                        {
-                            SharedFunctions.InsertDESADV(OrderNumber, ItemNumber, PalletQty, SSCC, SSCCType, con);
-                            SSCC = "";
-                        }
                         try
                         {
                             SqlCommand UpdateTracker = new SqlCommand("OSP_UPDATE_TRACKER_LOAD", con)
@@ -409,8 +404,14 @@ namespace EDI_Orders
                         catch (Exception ex)
                         {
                             SharedFunctions.Writefile("There was an issue in the updating of the tracker: " + ex.Message, "File Quarantined.");
-                        }
-                        
+                        } 
+                    }
+                    if (SSCC != ""  && ItemNumber != "" && PalletQty != "")
+                    {
+                        SharedFunctions.InsertDESADV(OrderNumber, ItemNumber, PalletQty, SSCC, SSCCType, con);
+                        SSCC = "";
+                        ItemNumber = "";
+                        PalletQty = "";
                     }
                     /**
                      * Check to ensure that the insert is not run too early
