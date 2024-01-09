@@ -409,7 +409,6 @@ namespace EDI_Orders
                     if (SSCC != ""  && ItemNumber != "" && PalletQty != "")
                     {
                         SharedFunctions.InsertDESADV(OrderNumber, ItemNumber, PalletQty, SSCC, SSCCType, con);
-                        SSCC = "";
                         ItemNumber = "";
                         PalletQty = "";
                     }
