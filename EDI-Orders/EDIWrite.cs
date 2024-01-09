@@ -102,7 +102,7 @@ namespace EDI_Orders
                     /**
                      * * Retrives the data from the database and then writes it line by line into a file.
                      */
-                    string file = ConfigurationManager.AppSettings["Test"] + "/" + row["OrderNumber"].ToString() + ".txt";
+                    string file = ConfigurationManager.AppSettings["KTNOrders"] + "/" + row["OrderNumber"].ToString() + ".txt";
                     string fileName = row["OrderNumber"].ToString() + ".txt";
                     fileName = fileName.PadRight((35 - fileName.Length), ' ');
                     FileStream f = new FileStream(file, FileMode.Create);
@@ -150,13 +150,15 @@ namespace EDI_Orders
                     text = ID;            //Can be swapped for GLNs
                     if ((row["DelPostalName"].ToString() == "DTC Customer") || (row["DelPostalName"].ToString() == "Ecommerce"))
                     {
+                        Console.WriteLine("error in query");
                         SqlConnection conDTC = new SqlConnection
                         {
                             ConnectionString = ConfigurationManager.ConnectionStrings["DTC"].ConnectionString
                         };
                         DataTable GDPRData = SharedFunctions.QueryDB(conDTC, "OSP_GET_GDPR_DATA", row["DelPostCode"].ToString(), row["OrderReference"].ToString());
+                        Console.WriteLine("Error on row reading       " + row["DelPostCode"].ToString() + "     " + row["OrderReference"].ToString() + "     " + GDPRData.ToString());
                         DataRow GDPR = GDPRData.Rows[0];
-
+                        Console.WriteLine("Passed query");
 
                         text = text.PadRight(20, ' ');
                         text += GDPR["PostalName"].ToString();
@@ -199,6 +201,7 @@ namespace EDI_Orders
                         text += row["DelCountryCode"].ToString();
                         text = text.PadRight(370, ' ');
                     }
+                    Console.WriteLine("Made past first DTC");
                     if ((row["DelPostalName"].ToString() == "DTC Customer") || (row["DelPostalName"].ToString() == "Ecommerce"))
                     {
                         SqlConnection conDTC = new SqlConnection
@@ -230,7 +233,7 @@ namespace EDI_Orders
                         text = text.PadRight(846, ' ');
                         text += row["DelAddressLine2"].ToString(); // GDPR[""].ToString();  //Del Name 2
                     }
-
+                    Console.WriteLine("Made second DTC");
                     streamWriter.WriteLine("000009NADDES" + text.PadRight(996, ' ') + "");             //Can be swapped for GLNs but will need swapping to ensure the correct lcoation
                     text = "";
 
@@ -290,6 +293,7 @@ namespace EDI_Orders
                         text += row["DelCountryCode"].ToString();
                         text = text.PadRight(370, ' ');
                     }
+                    Console.WriteLine("Made past third DTC");
                     if ((row["DelPostalName"].ToString() == "DTC Customer") || (row["DelPostalName"].ToString() == "Ecommerce"))
                     {
                         SqlConnection conDTC = new SqlConnection
@@ -323,7 +327,7 @@ namespace EDI_Orders
                         text = text.PadRight(846, ' ');
                         text += row["DelAddressLine2"].ToString();  //Del Add 2
                     }
-
+                    Console.WriteLine("Made past all DTC");
                     streamWriter.WriteLine("000010NADINV" + text.PadRight(996, ' ') + "");
                     text = "";
 
@@ -333,7 +337,7 @@ namespace EDI_Orders
 
                     text = row["Incoterms"].ToString();                                //Section reserved for incoterms
                     text = text.PadRight(10, ' ');
-                    string temp = row["DelCity"].ToString().Substring(0, 25);
+                    string temp = row["DelCity"].ToString().PadRight(50, ' ').Substring(0, 25);
                     text = text + temp.PadRight(25, ' ');
                     text = text + row["DelCountryCode"].ToString().PadRight(3, ' ');
                     text = text.PadLeft(175, ' ');
@@ -353,11 +357,11 @@ namespace EDI_Orders
                     if (flag)
                     {
                         string name = Path.GetFileName(file);
-                        File.Move(file, ConfigurationManager.AppSettings["Test"] + "/WEB" + name);
+                        File.Move(file, ConfigurationManager.AppSettings["GDPROrder"] + "/WEB" + name);
                     }
                     else if (fi.Length > 0)
                     {
-                        File.Move(file, ConfigurationManager.AppSettings["Test"] + "/" + Path.GetFileName(file));
+                        File.Move(file, ConfigurationManager.AppSettings["KTNOrders"] + "/" + Path.GetFileName(file));
                     }
                     else
                     {
@@ -962,7 +966,7 @@ namespace EDI_Orders
                         insertTracker.ExecuteNonQuery();
                         insertTracker.Parameters.Clear();
                         con.Close();
-                        //SharedFunctions.QueryDB(con, "OSP_INSERT_TO_TRACKER", fileName, row["OrderNumber"].ToString());
+                        SharedFunctions.QueryDB(con, "OSP_INSERT_TO_TRACKER", fileName, row["OrderNumber"].ToString());
                     }
                     catch (Exception ex)
                     {

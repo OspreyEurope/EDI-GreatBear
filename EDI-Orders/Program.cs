@@ -90,7 +90,7 @@ namespace EDI_Orders
                     {
                         #region KTN Write
                         case "WriteOrder":
-                            EDIWrite.WriteOrder(Orbis, "0000419040");
+                            EDIWrite.WriteOrder(Orbis, "0000551259");
                             break;
                         case "WriteProductList":
                             EDIWrite.WriteProductList(OERA, "100994002");
