@@ -945,7 +945,7 @@ namespace EDI_Orders
                         insertTracker.ExecuteNonQuery();
                         insertTracker.Parameters.Clear();
                         con.Close();
-                        //SharedFunctions.QueryDB(con, "OSP_INSERT_TO_TRACKER", fileName, row["OrderNumber"].ToString());
+                        SharedFunctions.QueryDB(con, "OSP_INSERT_TO_TRACKER", fileName, row["OrderNumber"].ToString());
                     }
                     catch (Exception ex)
                     {
