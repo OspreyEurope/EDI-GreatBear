@@ -1,16 +1,10 @@
 ﻿using System;
 using System.Data.SqlClient;
 using System.Data;
-using System.IO;
 using System.Linq;
-using System.Xml.Linq;
 using System.Configuration;
 using Path = System.IO.Path;
-using static System.Net.WebRequestMethods;
 using File = System.IO.File;
-using System.Reflection;
-using System.Diagnostics;
-using System.IO.Packaging;
 
 namespace EDI_Orders
 {

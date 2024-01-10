@@ -1,17 +1,9 @@
 ﻿using System;
-using System.CodeDom;
-using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Runtime.Remoting.Messaging;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web;
 
 namespace EDI_Orders
 {
@@ -368,7 +360,6 @@ namespace EDI_Orders
                         storedProcedure.Parameters.AddWithValue("DateReceived", "20" + DateRecieved);
                         storedProcedure.Parameters.AddWithValue("OrderNumber", OrderNumber);
                         storedProcedure.Parameters.AddWithValue("Dateshipped", Dateshipped);
-                        //storedProcedure.Parameters.AddWithValue("CustomerOrderNumber", CustomerOrderNumber);
                         storedProcedure.Parameters.AddWithValue("transporter", transporter);
                         storedProcedure.Parameters.AddWithValue("OriginalFileName", Path.GetFileName(file));
                         storedProcedure.Parameters.AddWithValue("PL", "LOAD");
@@ -411,62 +402,8 @@ namespace EDI_Orders
                     if (SSCC != ""  && ItemNumber != "" && PalletQty != "")
                     {
                         SharedFunctions.InsertDESADV(OrderNumber, ItemNumber, PalletQty, SSCC, SSCCType, con);
-                        //ItemNumber = "";
                         PalletQty = "";
                     }
-                    /**
-                     * Check to ensure that the insert is not run too early
-                     */
-                    //if (header == "LX")
-                    //{
-                    //    p++;
-                    //}
-                    //if (header == "N9")
-                    //{
-                    //    if (s[1].Trim() == "CN")
-                    //    {
-                    //        CarrierTrackingNo = s[2];
-                    //    }
-                    //}
-                    //if (header == "W12")
-                    //{
-                    //    PackedQty = s[2].Trim();
-                    //    PalletQty = s[2].Trim();
-                    //    ItemNumber = s[8].Trim();
-                    //}
-                    //if (header == "MAN")
-                    //{
-                    //    switch (s[1].Trim())
-                    //    {
-                    //        case "CP":
-                    //            ConNumber = s[2].Trim();
-                    //            //Consignment number
-                    //            break;
-                    //        case "AA":
-                    //            SSCC = s[2];
-                    //            //ConNumber = s[5];
-                    //            SSCCType = "Pallet";
-                    //            //SSCC Pallet
-                    //            break;
-                    //        case "GM":
-                    //            SSCC = s[2];
-                    //            ConNumber = s[5];
-                    //            SSCCType = "Carton";
-                    //            break;
-                    //        //SSCC Carton
-                    //        default:
-                    //            //Error
-                    //            break;
-                    //    }
-                    //}
-                    //else
-                    //{
-                    //    string[][] info = HandleLine(s);
-                    //    foreach (string[] t in info)
-                    //    {
-                    //        storedProcedure.Parameters.AddWithValue(t[0], t[1]);
-                    //    }
-                    //}
                 }
                 con.Close();
                 string name = Path.GetFileName(file);

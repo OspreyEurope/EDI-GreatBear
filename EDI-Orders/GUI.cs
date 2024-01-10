@@ -5,7 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
-using System.Xml.Linq;
 
 namespace EDI_Orders
 {
