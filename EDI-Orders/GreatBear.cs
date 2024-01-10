@@ -390,8 +390,9 @@ namespace EDI_Orders
                             {
                                 CommandType = CommandType.StoredProcedure
                             };
+                            Console.WriteLine(OrderNumber.Substring(0, 10) + "            " + OrderNumber.Substring(11, 6) + "       " + ItemNumber);
                             UpdateTracker.Parameters.AddWithValue("OrderNumber", OrderNumber.Substring(0, 10));
-                            UpdateTracker.Parameters.AddWithValue("WHOrderNumber", OrderNumber.Substring(10, 6));
+                            UpdateTracker.Parameters.AddWithValue("WHOrderNumber", OrderNumber.Substring(11, 6));
                             UpdateTracker.Parameters.AddWithValue("ConNumber", ConNumber);
                             UpdateTracker.Parameters.AddWithValue("PackedQty", PackedQty);
                             UpdateTracker.Parameters.AddWithValue("Transport", transporter);
@@ -399,6 +400,7 @@ namespace EDI_Orders
                             UpdateTracker.Parameters.AddWithValue("FileName", Path.GetFileName(file));
                             UpdateTracker.Parameters.AddWithValue("ItemNumber", ItemNumber);
                             UpdateTracker.ExecuteNonQuery();
+                            Console.WriteLine("Completed with parameters" + Dateshipped + " " + Path.GetFileName(file));
                             UpdateTracker.Parameters.Clear();
                         }
                         catch (Exception ex)
@@ -409,7 +411,7 @@ namespace EDI_Orders
                     if (SSCC != ""  && ItemNumber != "" && PalletQty != "")
                     {
                         SharedFunctions.InsertDESADV(OrderNumber, ItemNumber, PalletQty, SSCC, SSCCType, con);
-                        ItemNumber = "";
+                        //ItemNumber = "";
                         PalletQty = "";
                     }
                     /**
