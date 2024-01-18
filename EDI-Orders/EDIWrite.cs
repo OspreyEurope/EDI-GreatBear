@@ -1099,6 +1099,7 @@ namespace EDI_Orders
                     itemCount++;
                     File.Move(file, ConfigurationManager.AppSettings["GBItems"] + "/" + Path.GetFileName(file));
                 }
+                con.Close();
 
                 SharedFunctions.UpdateRecords(con, "OSP_UPDATE_PRODUCTLIST_SENT", "108016515");
             }

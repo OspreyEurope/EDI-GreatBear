@@ -365,15 +365,24 @@ namespace EDI_Orders
          */
         public static void UpdateRecords(SqlConnection con, string SP, string id)
         {
-            con.Open();
-            SqlCommand dataQuery = new SqlCommand(SP, con);
-            
-            if (id != "")
+            try
             {
-                dataQuery.Parameters.AddWithValue("@id", id);
+                con.Open();
+                SqlCommand dataQuery = new SqlCommand(SP, con)
+                {
+                    CommandType = CommandType.StoredProcedure
+                };
+                if (id != "")
+                {
+                    dataQuery.Parameters.AddWithValue("@id", id);
+                }
+                dataQuery.ExecuteNonQuery();
+                con.Close();
             }
-            dataQuery.ExecuteNonQuery();
-            con.Close();
+            catch (Exception ex)
+            {
+                SharedFunctions.Writefile("Update Product List Error: " + ex.Message, "");
+            }
         }
         #endregion
 
