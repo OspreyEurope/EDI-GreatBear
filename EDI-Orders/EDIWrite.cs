@@ -900,6 +900,8 @@ namespace EDI_Orders
 
                         streamWriter.Write("PER*CN*" + GDPR["PostalName"] + "*EM*" + GDPR["EmailAddress"] + "~");
                         streamWriter.Write("PER*CN*" + GDPR["PostalName"] + "*TE*" + GDPR["TelephoneNo"] + "~");
+
+                        //streamWriter.Write("PER*CN*" + row["DelPostalName"] + "*EM*" + row["DelEmail"] + "*TE*" + GDPR["TelephoneNo"] + "~");
                     }
                     else
                     {
@@ -917,6 +919,9 @@ namespace EDI_Orders
 
                         streamWriter.Write("PER*CN*" + row["DelPostalName"] + "*EM*" + row["DelEmail"] + "~");
                         streamWriter.Write("PER*CN*" + row["DelPostalName"] + "*TE*" + row["DelTelephone"] + "~");
+
+                        //streamWriter.Write("PER*CN*" + row["DelPostalName"] + "*EM*" + row["DelEmail"] + "*TE*" + row["DelTelephone"] + "~");
+                        
                     }
                     #endregion
 
