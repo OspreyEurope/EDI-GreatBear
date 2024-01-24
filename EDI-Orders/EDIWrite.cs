@@ -893,6 +893,8 @@ namespace EDI_Orders
                         streamWriter.Write("N1*ST*" + GDPR["PostalName"] + "*91*" + row["CustomerAccountRef"] + "-" + row["CustomerAccountRef"] + "~");
                         streamWriter.Write("N3*" + GDPR["AddressLine1"] + "~");                                                                                              //+ "*" + GDPR["AddressLine2"] 
                         streamWriter.Write("N4*" + row["DelCity"] + "*" + GDPR["AddressLine3"] + "*" + row["DelPostCode"] + "*" + row["DelCountryCode"] + "~");
+                        streamWriter.Write("G61*EM*GDPR" + GDPR["EmailAddress"] + "~");
+                        streamWriter.Write("G61*TE*GDPR" + GDPR["TelephoneNo"] + "~");
                     }
                     else
                     {
@@ -903,8 +905,11 @@ namespace EDI_Orders
                         streamWriter.Write("N1*ST*" + row["DelPostalName"] + "*91*" + row["CustomerAccountRef"] + "-" + row["CustomerAccountRef"] + "~");
                         streamWriter.Write("N3*" + row["DelAddressLine1"] + "~");                                                                                                  //+ "*" + row["DelAddressLine2"]
                         streamWriter.Write("N4*" + row["DelCity"] + "*" + row["DelAddressLine3"] + "*" + row["DelPostCode"] + "*" + row["DelCountryCode"] + "~");
+                        streamWriter.Write("G61*EM*GDPR" + row["DelEmail"] + "~");
+                        streamWriter.Write("G61*TE*GDPR" + row["DelTelephone"] + "~");
                     }
                     #endregion
+
                     streamWriter.Write("G62*02*" + DateFormatting + "~");
                     streamWriter.Write("W66*PD*M***JDF~");
                     con.Close();
