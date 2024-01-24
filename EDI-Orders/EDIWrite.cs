@@ -901,7 +901,7 @@ namespace EDI_Orders
                         streamWriter.Write("PER*CN*" + GDPR["PostalName"] + "*EM*" + GDPR["EmailAddress"] + "~");
                         streamWriter.Write("PER*CN*" + GDPR["PostalName"] + "*TE*" + GDPR["TelephoneNo"] + "~");
 
-                        //streamWriter.Write("PER*CN*" + row["DelPostalName"] + "*EM*" + row["DelEmail"] + "*TE*" + GDPR["TelephoneNo"] + "~");
+                        //streamWriter.Write("PER*CN*" + GDPR["PostalName"] + "*EM*" + GDPR["EmailAddress"] + "*TE*" + GDPR["TelephoneNo"] + "~");
                     }
                     else
                     {
