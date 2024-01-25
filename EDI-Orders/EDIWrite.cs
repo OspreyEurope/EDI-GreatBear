@@ -898,10 +898,10 @@ namespace EDI_Orders
                         //streamWriter.Write("G61*EM*" + GDPR["EmailAddress"] + "~");
                         //streamWriter.Write("G61*TE*" + GDPR["TelephoneNo"] + "~");
 
-                        streamWriter.Write("PER*CN*" + GDPR["PostalName"] + "*EM*" + GDPR["EmailAddress"] + "~");
-                        streamWriter.Write("PER*CN*" + GDPR["PostalName"] + "*TE*" + GDPR["TelephoneNo"] + "~");
+                        //streamWriter.Write("PER*CN*" + GDPR["PostalName"] + "*EM*" + GDPR["EmailAddress"] + "~");
+                        //streamWriter.Write("PER*CN*" + GDPR["PostalName"] + "*TE*" + GDPR["TelephoneNo"] + "~");
 
-                        //streamWriter.Write("PER*CN*" + GDPR["PostalName"] + "*EM*" + GDPR["EmailAddress"] + "*TE*" + GDPR["TelephoneNo"] + "~");
+                        streamWriter.Write("PER*CN*" + GDPR["PostalName"] + "*EM*" + GDPR["EmailAddress"] + "*TE*" + GDPR["TelephoneNo"] + "~");
                     }
                     else
                     {
@@ -917,10 +917,10 @@ namespace EDI_Orders
                         //streamWriter.Write("G61*EM*" + row["DelEmail"] + "~");
                         //streamWriter.Write("G61*TE*" + row["DelTelephone"] + "~");
 
-                        streamWriter.Write("PER*CN*" + row["DelPostalName"] + "*EM*" + row["DelEmail"] + "~");
-                        streamWriter.Write("PER*CN*" + row["DelPostalName"] + "*TE*" + row["DelTelephone"] + "~");
+                        //streamWriter.Write("PER*CN*" + row["DelPostalName"] + "*EM*" + row["DelEmail"] + "~");
+                        //streamWriter.Write("PER*CN*" + row["DelPostalName"] + "*TE*" + row["DelTelephone"] + "~");
 
-                        //streamWriter.Write("PER*CN*" + row["DelPostalName"] + "*EM*" + row["DelEmail"] + "*TE*" + row["DelTelephone"] + "~");
+                        streamWriter.Write("PER*CN*" + row["DelPostalName"] + "*EM*" + row["DelEmail"] + "*TE*" + row["DelTelephone"] + "~");
                         
                     }
                     #endregion
