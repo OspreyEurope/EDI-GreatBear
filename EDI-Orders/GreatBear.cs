@@ -444,7 +444,7 @@ namespace EDI_Orders
                     switch (s[0].Trim())
                     {
                         case "ISA":
-                            date = s[9].ToString();
+                            date = s[9].Trim().ToString();
                             break;
                         case "LIN":
                             ItemNumber = s[3].ToString();
