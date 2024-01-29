@@ -444,7 +444,7 @@ namespace EDI_Orders
                     switch (s[0].Trim())
                     {
                         case "ISA":
-                            date = s[9].Trim().ToString();
+                            date = s[9].ToString();
                             break;
                         case "LIN":
                             ItemNumber = s[3].ToString();
@@ -462,7 +462,7 @@ namespace EDI_Orders
                         storedProcedure.Parameters.AddWithValue("ItemDescription", ItemDescription);
                         storedProcedure.Parameters.AddWithValue("Quantity", Qty);
                         storedProcedure.Parameters.AddWithValue("ItemNumber", ItemNumber);
-                        storedProcedure.Parameters.AddWithValue("DateOfMovement", "20" + date);
+                        storedProcedure.Parameters.AddWithValue("DateOfMovement", "20" + date.Trim());
                         storedProcedure.Parameters.AddWithValue("Warehouse", "GBD");
                         storedProcedure.ExecuteNonQuery();
                         storedProcedure.Parameters.Clear();
@@ -519,7 +519,7 @@ namespace EDI_Orders
 
                 storedProcedure.Parameters.AddWithValue("ID", ID);
                 storedProcedure.Parameters.AddWithValue("MessageType", MessageType);
-                storedProcedure.Parameters.AddWithValue("DateReceived", "20" + DateRecieved);
+                storedProcedure.Parameters.AddWithValue("DateReceived", "20" + DateRecieved.Trim());
                 storedProcedure.Parameters.AddWithValue("Warehouse", Warehouse);
                 storedProcedure.Parameters.AddWithValue("OriginalFileName", Path.GetFileName(file));
                 storedProcedure.Parameters.AddWithValue("FileAction", FileAction);
@@ -570,7 +570,7 @@ namespace EDI_Orders
                         storedProcedure.Parameters.AddWithValue("StockMovementType", StockMovementType);
                         storedProcedure.Parameters.AddWithValue("TypeOfOperation", TypeOfOperation);
                         storedProcedure.Parameters.AddWithValue("Reason", Reason);
-                        storedProcedure.Parameters.AddWithValue("DateOfMovement", Date);
+                        storedProcedure.Parameters.AddWithValue("DateOfMovement", Date.Trim());
 
                         storedProcedure.ExecuteNonQuery();
                         storedProcedure.Parameters.Clear();
