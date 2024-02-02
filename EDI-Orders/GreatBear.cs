@@ -11,7 +11,7 @@ namespace EDI_Orders
     {
         #region Process GreatBear
         /**
-         * This is the decision making for any files in the recieved file for the GB enviroment,
+         * This is the decision making for any files in the received file for the GB enviroment,
          * This function wil call the correct fucntinos to handle the file and to move it to the correct location.
          */
         public static void ProcessGreatBear(SqlConnection con)
@@ -139,7 +139,7 @@ namespace EDI_Orders
             {
                 case "ISA":
                     //result[0] = new string[] { "Warehouse", line[6]};
-                    //result[1] = new string[] { "DateRecieved", line[9] };
+                    //result[1] = new string[] { "DateReceived", line[9] };
                     break;
                 case "GS":
 
@@ -265,7 +265,7 @@ namespace EDI_Orders
                  */
                 int p = 0;
                 string Warehouse = "";
-                string DateRecieved = "";
+                string DateReceived = "";
                 string OrderNumber = "";
                 string Dateshipped = "";
                 string CustomerOrderNumber = "";
@@ -294,7 +294,7 @@ namespace EDI_Orders
                             {
                                 Warehouse = "GBD";
                             }
-                            DateRecieved = s[9].Trim();
+                            DateReceived = s[9].Trim();
                             break;
                         case "GS":
                             ID = s[6];
@@ -357,7 +357,7 @@ namespace EDI_Orders
                     {
                         Console.WriteLine("Now hits insert");
                         storedProcedure.Parameters.AddWithValue("Warehouse", Warehouse);
-                        storedProcedure.Parameters.AddWithValue("DateReceived", "20" + DateRecieved);
+                        storedProcedure.Parameters.AddWithValue("DateReceived", "20" + DateReceived);
                         storedProcedure.Parameters.AddWithValue("OrderNumber", OrderNumber);
                         storedProcedure.Parameters.AddWithValue("Dateshipped", Dateshipped);
                         storedProcedure.Parameters.AddWithValue("transporter", transporter);
@@ -422,7 +422,7 @@ namespace EDI_Orders
         #region Write STKBAL
         /**
          * This writes the daily stock balance message into the DB,
-         * This is recieved once a day every day.
+         * This is received once a day every day.
          */
         public static void WriteSTKBAL(SqlConnection con, string[][] Document, string file)
         {
@@ -490,7 +490,7 @@ namespace EDI_Orders
 
         #region Write STKMVT
         /**
-         * This function handles stock movements on the rare occasion these files are recieved,
+         * This function handles stock movements on the rare occasion these files are received,
          * This will write them the same way as they are written for KTn.
          */
         public static void WriteSTKMVT(SqlConnection con, string[][] Document, string file)
@@ -504,7 +504,7 @@ namespace EDI_Orders
                 };
 
                 string Warehouse = Document[0][6];
-                string DateRecieved = Document[1][4];
+                string DateReceived = Document[1][4];
                 string MessageType = Document[2][1];
                 string ID = Document[2][2];
                 string FileAction = "";
@@ -519,15 +519,16 @@ namespace EDI_Orders
 
                 storedProcedure.Parameters.AddWithValue("ID", ID);
                 storedProcedure.Parameters.AddWithValue("MessageType", MessageType);
-                storedProcedure.Parameters.AddWithValue("DateReceived", "20" + DateRecieved.Trim());
+                storedProcedure.Parameters.AddWithValue("DateReceived", "20" + DateReceived.Trim());
                 storedProcedure.Parameters.AddWithValue("Warehouse", Warehouse);
                 storedProcedure.Parameters.AddWithValue("OriginalFileName", Path.GetFileName(file));
+                storedProcedure.Parameters.AddWithValue("DatePeriod", "20" + DateReceived.Trim());
                 storedProcedure.Parameters.AddWithValue("FileAction", FileAction);
 
                 storedProcedure.ExecuteNonQuery();
                 storedProcedure.Parameters.Clear();
 
-                WRiteSTKMVTItems(con, Document, DateRecieved, ID, file);
+                WRiteSTKMVTItems(con, Document, DateReceived, ID, file);
                 string name = Path.GetFileName(file);
                 File.Move(file, ConfigurationManager.AppSettings["GBProcessed"] + "/STKMVT" + name);
             }
@@ -641,7 +642,7 @@ namespace EDI_Orders
                 {
                     Warehouse = "GBD";
                 }
-                string DateRecieved = Document[0][9];
+                string DateReceived = Document[0][9];
                 string MessageType = Document[2][1];
                 string CustomerReferenceTransport = Document[3][4];
                 string ID = Document[3][4];
@@ -665,7 +666,7 @@ namespace EDI_Orders
                 storedProcedure.Parameters.AddWithValue("ID", ID);
                 storedProcedure.Parameters.AddWithValue("MessageType", MessageType);
                 storedProcedure.Parameters.AddWithValue("Warehouse", Warehouse);
-                storedProcedure.Parameters.AddWithValue("DateReceived", "20" + DateRecieved.Trim());
+                storedProcedure.Parameters.AddWithValue("DateReceived", "20" + DateReceived.Trim());
                 storedProcedure.Parameters.AddWithValue("OriginalFileName", Path.GetFileName(file));
                 storedProcedure.Parameters.AddWithValue("FileAction", FileAction);
                 storedProcedure.Parameters.AddWithValue("CustomerReferenceInbound", ID);
@@ -677,7 +678,7 @@ namespace EDI_Orders
                 storedProcedure.ExecuteNonQuery();
                 storedProcedure.Parameters.Clear();
 
-                WriteRECCONITEMS(con, Document, ID, file, DateRecieved);
+                WriteRECCONITEMS(con, Document, ID, file, DateReceived);
                 Console.WriteLine("File Written");
                 File.Move(file, ConfigurationManager.AppSettings["GBProcessed"] + "/RECCON" + name);
             }
@@ -696,7 +697,7 @@ namespace EDI_Orders
          * This function writes the item infrmation into a different table to the RECCON details,
          * it i passed a few variables as to be able to link the item to the correct reccon data.
          */
-        public static void WriteRECCONITEMS(SqlConnection con, string[][] Document, string ID, string file, string DateRecieved)
+        public static void WriteRECCONITEMS(SqlConnection con, string[][] Document, string ID, string file, string DateReceived)
         {
             try
             {
@@ -726,7 +727,7 @@ namespace EDI_Orders
                         storedProcedure.Parameters.AddWithValue("ID", ID);
                         storedProcedure.Parameters.AddWithValue("ItemNumber", ItemNumber);
                         storedProcedure.Parameters.AddWithValue("RecievedQuantity", RecievedQuantity);
-                        storedProcedure.Parameters.AddWithValue("DateReceived", "20" + DateRecieved.Trim());
+                        storedProcedure.Parameters.AddWithValue("DateReceived", "20" + DateReceived.Trim());
 
                         storedProcedure.ExecuteNonQuery();
                         storedProcedure.Parameters.Clear();
