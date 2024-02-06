@@ -900,7 +900,16 @@ namespace EDI_Orders
                         
                         streamWriter.Write("N4*" + row["DelCity"] + "**" + row["DelPostCode"] + "*" + row["DelCountryCode"] + "~");
                         streamWriter.Write("N1*ST*" + GDPR["PostalName"] + "*91*" + row["CustomerAccountRef"] + "-" + row["CustomerAccountRef"] + "~");
-                        streamWriter.Write("N3*" + GDPR["AddressLine1"] + "*" + GDPR["AddressLine2"] + "~");                                                                                              //+ "*" + GDPR["AddressLine2"] 
+                        //streamWriter.Write("N3*" + GDPR["AddressLine1"] + "*" + GDPR["AddressLine2"] + "~"); 
+                        streamWriter.Write("N3*" + GDPR["AddressLine1"]);
+
+                        if ((GDPR["AddressLie2"] != null) || !(GDPR["AddressLie2"].Equals("")))
+                        {
+                            streamWriter.Write("*" + GDPR["AddressLine2"]);
+                        }
+
+                        streamWriter.Write("~");
+
                         streamWriter.Write("N4*" + row["DelCity"] + "*" + GDPR["AddressLine3"] + "*" + row["DelPostCode"] + "*" + row["DelCountryCode"] + "~");
                         //streamWriter.Write("PER*CN*" + GDPR["PostalName"] + "*EM*" + GDPR["EmailAddress"] + "*TE*" + GDPR["TelephoneNo"] + "~");
 
@@ -935,7 +944,17 @@ namespace EDI_Orders
 
                         streamWriter.Write("N4*" + row["InvoiceCity"] + "**" + row["InvoicePostCode"] + "*" + row["DelCountryCode"] + "~");
                         streamWriter.Write("N1*ST*" + row["DelPostalName"] + "*91*" + row["CustomerAccountRef"] + "-" + row["CustomerAccountRef"] + "~");
-                        streamWriter.Write("N3*" + row["DelAddressLine1"] + "*" + row["DelAddressLine2"] + "~");                                                                                                  //+ "*" + row["DelAddressLine2"]
+                        //streamWriter.Write("N3*" + row["DelAddressLine1"] + "*" + row["DelAddressLine2"] + "~");
+
+                        streamWriter.Write("N3*" + row["DelAddressLine1"]);
+
+                        if ((row["DelAddressLine2"] != null) || !(row["DelAddressLine2"].Equals("")))
+                        {
+                            streamWriter.Write("*" + row["DelAddressLine2"]);
+                        }
+
+                        streamWriter.Write("~");
+
                         streamWriter.Write("N4*" + row["DelCity"] + "*" + row["DelAddressLine3"] + "*" + row["DelPostCode"] + "*" + row["DelCountryCode"] + "~");
                         //streamWriter.Write("PER*CN*" + row["DelPostalName"] + "*EM*" + row["DelEmail"] + "*TE*" + row["DelTelephone"] + "~");
                     }
