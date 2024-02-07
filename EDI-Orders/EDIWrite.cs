@@ -889,9 +889,9 @@ namespace EDI_Orders
                         streamWriter.Write("N1*BP*" + GDPR["PostalName"] + "*91*" + row["CustomerAccountRef"] + "~");
                         streamWriter.Write("N1*BT*" + GDPR["PostalName"] + "*91*" + row["CustomerAccountRef"] + "~");
                         //streamWriter.Write("N3*" + GDPR["AddressLine1"] + "*" + GDPR["AddressLine2"] + "~");
-                        streamWriter.Write("N3*" + GDPR["AddressLine1"]);      
-                        
-                        if (GDPR["AddressLine2"] != null)
+                        streamWriter.Write("N3*" + GDPR["AddressLine1"]);
+
+                        if (GDPR["AddressLine2"] != DBNull.Value)
                         {
                             streamWriter.Write("*" + GDPR["AddressLine2"]);
                         }
@@ -903,7 +903,7 @@ namespace EDI_Orders
                         //streamWriter.Write("N3*" + GDPR["AddressLine1"] + "*" + GDPR["AddressLine2"] + "~"); 
                         streamWriter.Write("N3*" + GDPR["AddressLine1"]);
 
-                        if (GDPR["AddressLine2"] != null)
+                        if (GDPR["AddressLine2"] != DBNull.Value)
                         {
                             streamWriter.Write("*" + GDPR["AddressLine2"]);
                         }
@@ -935,7 +935,9 @@ namespace EDI_Orders
                         //streamWriter.Write("N3*" + row["InvoiceAddressLine1"] + "*" + row["InvoiceAddressLine2"] + "~");
                         streamWriter.Write("N3*" + row["InvoiceAddressLine1"]);
 
-                        if (row["InvoiceAddressLine2"] != null)
+                        
+
+                        if (row["InvoiceAddressLine2"] != DBNull.Value)
                         {
                             streamWriter.Write("*" + row["InvoiceAddressLine2"]);
                         }
@@ -948,7 +950,7 @@ namespace EDI_Orders
 
                         streamWriter.Write("N3*" + row["DelAddressLine1"]);
 
-                        if (row["DelAddressLine2"] != null)
+                        if (row["DelAddressLine2"] != DBNull.Value)
                         {
                             streamWriter.Write("*" + row["DelAddressLine2"]);
                         }
