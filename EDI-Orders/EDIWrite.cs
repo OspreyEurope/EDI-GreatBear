@@ -979,6 +979,7 @@ namespace EDI_Orders
                     if (GDPRFlag)
                     {
                         File.Move(file, ConfigurationManager.AppSettings["GDPROrderGB"] + "/" + "WEB" + Path.GetFileName(file));
+                        fileName = "WEB" + Path.GetFileName(file);
                     }
                     else
                     {
