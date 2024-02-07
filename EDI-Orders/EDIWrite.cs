@@ -935,7 +935,7 @@ namespace EDI_Orders
                         //streamWriter.Write("N3*" + row["InvoiceAddressLine1"] + "*" + row["InvoiceAddressLine2"] + "~");
                         streamWriter.Write("N3*" + row["InvoiceAddressLine1"]);
 
-                        if ((row["InvoiceAddressLine2"] != null) || !(row["InvoiceAddressLine2"].Equals("")))
+                        if (row["InvoiceAddressLine2"] != null)
                         {
                             streamWriter.Write("*" + row["InvoiceAddressLine2"]);
                         }
@@ -948,7 +948,7 @@ namespace EDI_Orders
 
                         streamWriter.Write("N3*" + row["DelAddressLine1"]);
 
-                        if ((row["DelAddressLine2"] != null) || !(row["DelAddressLine2"].Equals("")))
+                        if (row["DelAddressLine2"] != null)
                         {
                             streamWriter.Write("*" + row["DelAddressLine2"]);
                         }
