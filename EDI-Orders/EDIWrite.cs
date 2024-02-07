@@ -888,7 +888,7 @@ namespace EDI_Orders
                         DataRow GDPR = GDPRData.Rows[0];
                         streamWriter.Write("N1*BP*" + GDPR["PostalName"] + "*91*" + row["CustomerAccountRef"] + "~");
                         streamWriter.Write("N1*BT*" + GDPR["PostalName"] + "*91*" + row["CustomerAccountRef"] + "~");
-                        streamWriter.Write("N3*" + GDPR["AddressLine1"] + "*" + GDPR["AddressLine2"] + "~");
+                        //streamWriter.Write("N3*" + GDPR["AddressLine1"] + "*" + GDPR["AddressLine2"] + "~");
                         streamWriter.Write("N3*" + GDPR["AddressLine1"]);      
                         
                         if (GDPR["AddressLine2"] != null)
@@ -900,7 +900,7 @@ namespace EDI_Orders
                         
                         streamWriter.Write("N4*" + row["DelCity"] + "**" + row["DelPostCode"] + "*" + row["DelCountryCode"] + "~");
                         streamWriter.Write("N1*ST*" + GDPR["PostalName"] + "*91*" + row["CustomerAccountRef"] + "-" + row["CustomerAccountRef"] + "~");
-                        streamWriter.Write("N3*" + GDPR["AddressLine1"] + "*" + GDPR["AddressLine2"] + "~"); 
+                        //streamWriter.Write("N3*" + GDPR["AddressLine1"] + "*" + GDPR["AddressLine2"] + "~"); 
                         streamWriter.Write("N3*" + GDPR["AddressLine1"]);
 
                         if (GDPR["AddressLine2"] != null)
