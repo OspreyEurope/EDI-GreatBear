@@ -859,7 +859,7 @@ namespace EDI_Orders
                     /**
                      * Retrives the data from the database and then writes it line by line into a file.
                      */
-                    string file = ConfigurationManager.AppSettings["GeneratingGB"] + "/" + row["OrderNumber"].ToString() + ".edi";
+                    string file = ConfigurationManager.AppSettings["GeneratingGB"] + "/" + row["OrderNumber"].ToString() + "-" + row["WHOrderNumber"] + ".edi";
                     string fileName = row["OrderNumber"].ToString() + ".txt";
                     FileStream f = new FileStream(file, FileMode.Create);
                     Encoding utf8WithoutBom = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false);
