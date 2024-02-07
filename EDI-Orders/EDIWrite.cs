@@ -1138,6 +1138,8 @@ namespace EDI_Orders
                     streamWriter.Write("REF*LEV*1*EA~");
                     streamWriter.Write("REF*EAN*" + r[3].ToString() + "*1~");
                     streamWriter.Write("REF*LEV*2*IP~");
+                    //streamWriter.Write("REF*EAN*" + r[999].ToString() + "*2~");
+                    //streamWriter.Write("REF*IPQ" + r[000].ToString() + "*EA~");
                     streamWriter.Write("REF*LEV*3*CAS~");
                     streamWriter.Write("REF*EAN*" + r[4].ToString() + "*3~");
                     streamWriter.Write("REF*CGW*" + r[10].ToString() + "*KG~");
