@@ -911,7 +911,21 @@ namespace EDI_Orders
                         streamWriter.Write("~");
 
                         streamWriter.Write("N4*" + row["DelCity"] + "*" + GDPR["AddressLine3"] + "*" + row["DelPostCode"] + "*" + row["DelCountryCode"] + "~");
-                        streamWriter.Write("PER*CN*" + GDPR["PostalName"] + "*EM*" + GDPR["EmailAddress"] + "*TE*" + GDPR["TelephoneNo"] + "~");
+
+                        if ((GDPR["EmailAddress"]  != DBNull.Value) || (GDPR["TelephoneNo"] != DBNull.Value)) 
+                        {
+                            streamWriter.Write("PER*CN*" + GDPR["PostalName"]);
+                            if((GDPR["EmailAddress"] != DBNull.Value))
+                            {
+                                streamWriter.Write("*EM*" + GDPR["EmailAddress"]);
+                            }
+                            if (GDPR["TelephoneNo"] != DBNull.Value)
+                            {
+                                streamWriter.Write("*TE*" + GDPR["TelephoneNo"]);
+                            }
+                            streamWriter.Write("~");
+                        }
+                        
 
                         conDTC.Open();
                         SqlCommand Update = new SqlCommand("OSP_UPDATE_GDPR", conDTC)
@@ -958,7 +972,22 @@ namespace EDI_Orders
                         streamWriter.Write("~");
 
                         streamWriter.Write("N4*" + row["DelCity"] + "*" + row["DelAddressLine3"] + "*" + row["DelPostCode"] + "*" + row["DelCountryCode"] + "~");
-                        streamWriter.Write("PER*CN*" + row["DelPostalName"] + "*EM*" + row["DelEmail"] + "*TE*" + row["DelTelephone"] + "~");
+                        //streamWriter.Write("PER*CN*" + row["DelPostalName"] + "*EM*" + row["DelEmail"] + "*TE*" + row["DelTelephone"] + "~");
+
+                        if ((row["DelEmail"] != DBNull.Value) || (row["DelTelephone"] != DBNull.Value))
+                        {
+                            streamWriter.Write("PER*CN*" + row["DelPostalName"]);
+                            if ((row["DelEmail"] != DBNull.Value))
+                            {
+                                streamWriter.Write("*EM*" + row["DelEmail"]);
+                            }
+                            if (row["DelTelephone"] != DBNull.Value)
+                            {
+                                streamWriter.Write("*TE*" + row["DelTelephone"]);
+                            }
+                            streamWriter.Write("~");
+                        }
+
                     }
                     #endregion
 
