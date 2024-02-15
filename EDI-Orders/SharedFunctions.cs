@@ -549,7 +549,7 @@ namespace EDI_Orders
                 System.Net.ServicePointManager.ServerCertificateValidationCallback = new System.Net.Security.RemoteCertificateValidationCallback(RemoteServerCertificateValidationCallback);
                 SmtpClient smtp = new SmtpClient
                 {
-                    Host = "10.10.118.250",
+                    Host = "smtp-relay.helenoftroy.com",
                     UseDefaultCredentials = true,
                     EnableSsl = false,
                     Port = 25
