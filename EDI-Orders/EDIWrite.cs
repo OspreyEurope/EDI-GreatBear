@@ -826,6 +826,8 @@ namespace EDI_Orders
         {
             try
             {
+                Console.WriteLine("Hit 1");
+                Console.WriteLine("Length is" + data["DelPostCode"].ToString().Length);
                 if((data["DelPostCode"] != DBNull.Value) && (data["DelPostCode"].ToString().Length > 4))
                 {
                     Console.WriteLine("Post Code is okay.");
@@ -869,9 +871,11 @@ namespace EDI_Orders
                 int SESTVal = Int32.Parse(SEST[2].ToString());
                 int ISAIEAVal = Int32.Parse(ISAIEA[2].ToString());
                 int total = 0;
+                Console.WriteLine(data.Rows.Count);
                 for (int i = 0; i < data.Rows.Count; i++)
                 {
                     ValidatePostCode(data.Rows[i],id);
+                    Console.WriteLine("Made It");
                     bool GDPRFlag = false;
                     con.Open();
                     DataRow row = data.Rows[i];
@@ -890,7 +894,7 @@ namespace EDI_Orders
                      * Writes the delivery information for the an order in the X12 format.
                      */
                     streamWriter.Write("ST*940*" + (SESTVal).ToString() + "~");
-                    streamWriter.Write("W05*C*" + row["OrderNumber"] + "-" + row["WHOrderNumber"] + "*" + row["OrderReference"].ToString().Substring(0,20) + "*****" + row["OrderImporttype"] + "-" + row["Priority"] + "~");
+                    streamWriter.Write("W05*C*" + row["OrderNumber"] + "-" + row["WHOrderNumber"] + "*" + row["OrderReference"].ToString().PadRight(20, ' ').Substring(0,20).Trim() + "*****" + row["OrderImporttype"] + "-" + row["Priority"] + "~");
                     streamWriter.Write("N1*DE*Osprey Europe*9*5056302200001~");
                     #region GDPR data insert
                     /** 
