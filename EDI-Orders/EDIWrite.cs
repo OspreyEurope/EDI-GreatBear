@@ -871,7 +871,7 @@ namespace EDI_Orders
                      * Writes the delivery information for the an order in the X12 format.
                      */
                     streamWriter.Write("ST*940*" + (SESTVal).ToString() + "~");
-                    streamWriter.Write("W05*C*" + row["OrderNumber"] + "-" + row["WHOrderNumber"] + "*" + row["OrderReference"] + "*****" + row["OrderImporttype"] + "-" + row["Priority"] + "~");
+                    streamWriter.Write("W05*C*" + row["OrderNumber"] + "-" + row["WHOrderNumber"] + "*" + row["OrderReference"].ToString().Substring(0,20) + "*****" + row["OrderImporttype"] + "-" + row["Priority"] + "~");
                     streamWriter.Write("N1*DE*Osprey Europe*9*5056302200001~");
                     #region GDPR data insert
                     /** 
@@ -885,6 +885,10 @@ namespace EDI_Orders
                             ConnectionString = ConfigurationManager.ConnectionStrings["DTC"].ConnectionString
                         };
                         DataTable GDPRData = SharedFunctions.QueryDB(conDTC, "OSP_GET_GDPR_DATA", row["DelPostCode"].ToString(), row["OrderReference"].ToString());
+                        Console.WriteLine(row["DelPostCode"].ToString());
+                        Console.WriteLine(row["OrderReference"].ToString());
+
+                        Console.WriteLine(GDPRData.Rows.Count);
                         DataRow GDPR = GDPRData.Rows[0];
                         streamWriter.Write("N1*BP*" + GDPR["PostalName"] + "*91*" + row["CustomerAccountRef"] + "~");
                         streamWriter.Write("N1*BT*" + GDPR["PostalName"] + "*91*" + row["CustomerAccountRef"] + "~");
@@ -968,7 +972,6 @@ namespace EDI_Orders
                         streamWriter.Write("~");
 
                         streamWriter.Write("N4*" + row["DelCity"] + "*" + row["DelAddressLine3"] + "*" + row["DelPostCode"] + "*" + row["DelCountryCode"] + "~");
-                        //streamWriter.Write("PER*CN*" + row["DelPostalName"] + "*EM*" + row["DelEmail"] + "*TE*" + row["DelTelephone"] + "~");
 
                         if ((row["DelEmail"] != DBNull.Value) || (row["DelTelephone"] != DBNull.Value))
                         {
@@ -986,7 +989,7 @@ namespace EDI_Orders
 
                     }
                     #endregion
-
+                    
                     streamWriter.Write("G62*02*" + DateFormatting + "~");
                     streamWriter.Write("W66*PD*M***JDF~");
                     con.Close();
