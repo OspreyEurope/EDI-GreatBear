@@ -1030,6 +1030,7 @@ namespace EDI_Orders
                     catch (Exception ex)
                     {
                         SharedFunctions.Writefile("Failed on write tracker: " + ex.Message, "");
+                        SharedFunctions.ErrorAlert("Failed on Write Tracker: " + id + " body for GB ", ex);
                     }
 
                     try
@@ -1051,6 +1052,7 @@ namespace EDI_Orders
                     catch (Exception ex)
                     {
                         SharedFunctions.Writefile("Failed on write tracker: " + ex.Message, "");
+                        SharedFunctions.ErrorAlert("aid on write Tracker: " + id + " body for GB ", ex);
                     }
                 }
                 SharedFunctions.UpdateCounters(Orbis, "OSP_UPDATE_GBITEMS_VALS", "1", "2", "3", (GEGSVal + 1).ToString(), (SESTVal + 1).ToString(), (ISAIEAVal + total).ToString());
