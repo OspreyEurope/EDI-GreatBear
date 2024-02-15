@@ -822,7 +822,25 @@ namespace EDI_Orders
 
         #endregion
 
-       
+       public static void ValidatePostCode (DataRow data, string id)
+        {
+            try
+            {
+                if((data["DelPostCode"] != DBNull.Value) && (data["DelPostCode"].ToString().Length > 4))
+                {
+                    Console.WriteLine("Post Code is okay.");
+                }
+                else
+                {
+                    throw new Exception();
+                }
+            }
+            catch (Exception ex)
+            {
+                SharedFunctions.Writefile("Post Code for order: " + id + " Does not meet the correct criteria, error: " + ex.Message, "");
+                SharedFunctions.ErrorAlert("Post Code for order: " + id + " Does not meet the correct criteria, error: ", ex);
+            }
+        }
 
         #region Great Bear
         #region Write Order Header
@@ -853,6 +871,7 @@ namespace EDI_Orders
                 int total = 0;
                 for (int i = 0; i < data.Rows.Count; i++)
                 {
+                    ValidatePostCode(data.Rows[i],id);
                     bool GDPRFlag = false;
                     con.Open();
                     DataRow row = data.Rows[i];
