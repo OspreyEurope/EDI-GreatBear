@@ -554,7 +554,7 @@ namespace EDI_Orders
                     EnableSsl = false,
                     Port = 25
                 };
-                //smtp.Send(mail);
+                smtp.Send(mail);
             }
         }
 
