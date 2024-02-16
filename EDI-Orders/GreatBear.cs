@@ -531,6 +531,7 @@ namespace EDI_Orders
                 WRiteSTKMVTItems(con, Document, DateReceived, ID, file);
                 string name = Path.GetFileName(file);
                 File.Move(file, ConfigurationManager.AppSettings["GBProcessed"] + "/STKMVT" + name);
+                con.Close();
             }
             catch (Exception ex)
             {
