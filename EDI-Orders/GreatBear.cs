@@ -317,7 +317,7 @@ namespace EDI_Orders
                             }
                             break;
                         case "W12":
-                            PackedQty = s[2].Trim();
+                            PackedQty = s[3].Trim();
                             PalletQty = s[3].Trim();
                             ItemNumber = s[8].Trim();
                             break;
