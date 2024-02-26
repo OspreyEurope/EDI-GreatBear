@@ -1370,7 +1370,7 @@ namespace EDI_Orders
                 FileStream f = new FileStream(file, FileMode.Create);
                 Encoding utf8WithoutBom = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false);
                 StreamWriter streamWriter = new StreamWriter(f, utf8WithoutBom);
-                string fileName = "PO" + id + ".txt";
+                string fileName = "RM" + id + ".txt";
                 int counter = 1;
                 WritePLHeader(streamWriter, fileName, GEGS[2].ToString(), ISAIEAVal.ToString());
                 foreach (DataRow row in data.Rows)
@@ -1382,7 +1382,7 @@ namespace EDI_Orders
                     streamWriter.Write("HL*1**S~");
                     streamWriter.Write("N1*SF**ZZ*" + row["CustAccRef"].ToString().Replace("$", "") + "~");
                     streamWriter.Write("HL*2*" + row["PrimaryKey"] + "*O~");
-                    streamWriter.Write("PRF*" + id + "~");
+                    streamWriter.Write("PRF*" + row["EDIReturnRef"] + "~");
                     streamWriter.Write("HL*3*" + row["PrimaryKey"] + "*I~");
                     streamWriter.Write("LIN*1*VN*" + row["StockItemCode"] + "~");
                     streamWriter.Write("SN1**" + QTY + "*EA~");
