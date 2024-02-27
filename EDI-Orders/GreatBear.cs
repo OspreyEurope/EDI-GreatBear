@@ -327,20 +327,16 @@ namespace EDI_Orders
                             {
                                 case "CP":
                                     ConNumber = s[2].Trim();
-                                    //Consignment number
                                     break;
                                 case "AA":
                                     SSCC = s[2];
-                                    //ConNumber = s[5];
                                     SSCCType = "Pallet";
-                                    //SSCC Pallet
                                     break;
                                 case "GM":
                                     SSCC = s[2];
                                     ConNumber = s[5];
                                     SSCCType = "Carton";
                                     break;
-                                //SSCC Carton
                                 default:
                                     //Error
                                     break;
