@@ -353,7 +353,7 @@ namespace EDI_Orders
                     /**
                      * This section checks that all the correct location in the file has been reached before inserting the data into the DB.
                      */
-                    if ((header == "LX" && p > 1) || header == "W03")
+                    if (header == "W12")     //(header == "LX" && p > 1) || header == "W03" ||
                     {
                         Console.WriteLine("Now hits insert");
                         storedProcedure.Parameters.AddWithValue("Warehouse", Warehouse);
