@@ -205,7 +205,7 @@ namespace EDI_Orders
                     {
                         SharedFunctions.Writefile("File Quarantined: " + name, ex.Message);
                         SharedFunctions.ErrorAlert("Read STKMVT", ex);
-                        File.Move(file, ConfigurationManager.AppSettings["KTNSTKMVTQuarantined"] + "/" + name + "&" + DateTime.Now);
+                        File.Move(file, ConfigurationManager.AppSettings["KTNSTKMVTQuarantined"] + "/" + name + "&" + DateTime.Now.ToString().Replace(':', '-').Replace('/', '-').Replace(' ', '-').Trim());
                     }
                     break;
 
@@ -232,7 +232,7 @@ namespace EDI_Orders
                     {
                         SharedFunctions.Writefile("File Quarantined: " + name, ex.Message);
                         SharedFunctions.ErrorAlert("Read PPLCON", ex);
-                        File.Move(file, ConfigurationManager.AppSettings["KTNPPLCONQuarantined"] + "/" + name + "&" + DateTime.Now);
+                        File.Move(file, ConfigurationManager.AppSettings["KTNPPLCONQuarantined"] + "/" + name + "&" + DateTime.Now.ToString().Replace(':', '-').Replace('/', '-').Replace(' ', '-').Trim());
                     }
 
                     break;
@@ -258,7 +258,7 @@ namespace EDI_Orders
                     {
                         SharedFunctions.Writefile("File Quarantined: " + name, ex.Message);
                         SharedFunctions.ErrorAlert("Read RECCON", ex);
-                        File.Move(file, ConfigurationManager.AppSettings["KTNRECCONQuarantined"] + "/" + name + "&" + DateTime.Now);
+                        File.Move(file, ConfigurationManager.AppSettings["KTNRECCONQuarantined"] + "/" + name + "&" + DateTime.Now.ToString().Replace(':', '-').Replace('/', '-').Replace(' ', '-').Trim());
                     }
 
                     break;

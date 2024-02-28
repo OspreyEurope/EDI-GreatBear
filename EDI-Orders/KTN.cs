@@ -486,13 +486,13 @@ namespace EDI_Orders
                 switch (type)
                 {
                     case "PPLCON":
-                        File.Move(file, ConfigurationManager.AppSettings["KTNPPLCONQuarantined"] + "/" + name);
+                        File.Move(file, ConfigurationManager.AppSettings["KTNPPLCONQuarantined"] + "/" + name + '&' + DateTime.Now.ToString().Replace(':', '-').Replace('/', '-').Replace(' ', '-').Trim());
                         break;
                     case "RECCON":
-                        File.Move(file, ConfigurationManager.AppSettings["KTNRECCONQuarantined"] + "/" + name);
+                        File.Move(file, ConfigurationManager.AppSettings["KTNRECCONQuarantined"] + "/" + name + '&' + DateTime.Now.ToString().Replace(':', '-').Replace('/', '-').Replace(' ', '-').Trim());
                         break;
                     case "STKMVT":
-                        File.Move(file, ConfigurationManager.AppSettings["KTNSTKMVTQuarantined"] + "/" + name);
+                        File.Move(file, ConfigurationManager.AppSettings["KTNSTKMVTQuarantined"] + "/" + name + '&' + DateTime.Now.ToString().Replace(':', '-').Replace('/', '-').Replace(' ', '-').Trim());
                         break;
                 }
                 SharedFunctions.Writefile("There was an issue: " + ex.Message, "File Moved to PKTN" + type + "Quarantined");

@@ -471,7 +471,7 @@ namespace EDI_Orders
                             {
                                 Console.WriteLine(file);
                                 KTN.ProcessKTN(file, Orbis);
-                                File.Move(file, ConfigurationManager.AppSettings["KTNPPLCONProcessed"] + "/" + name);
+                                //File.Move(file, ConfigurationManager.AppSettings["KTNPPLCONProcessed"] + "/" + name);
                                 Console.WriteLine(file + " Was Processed Successfully.");
                             }
                         }
