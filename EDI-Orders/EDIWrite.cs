@@ -828,9 +828,13 @@ namespace EDI_Orders
             {
                 Console.WriteLine("Hit 1");
                 Console.WriteLine("Length is" + data["DelPostCode"].ToString().Length);
-                if((data["DelPostCode"] != DBNull.Value) && (data["DelPostCode"].ToString().Length > 4))
+                if((data["DelPostCode"] != DBNull.Value) && (data["DelPostCode"].ToString().Length > 4) && (data["InvoiceCountryCode"] == "GB"))
                 {
                     Console.WriteLine("Post Code is okay.");
+                }
+                else if (data["InvoiceCountryCode"] != "GB")
+                {
+                    Console.WriteLine("This Order is Not  UK order");
                 }
                 else
                 {
