@@ -334,5 +334,54 @@ namespace EDI_Orders
 
         }
         #endregion
+
+        private void SelectLocationBtn_Click(object sender, EventArgs e)
+        {
+            string Path = "";
+            var T = new Thread((ThreadStart)(() =>
+            {
+                FolderBrowserDialog ofd = new FolderBrowserDialog();
+                //ofd.InitialDirectory = "c:\\";
+
+                if (ofd.ShowDialog() == DialogResult.OK)
+                {
+                    var path = ofd.SelectedPath;
+                }
+                Path = ofd.SelectedPath;
+            }));
+
+            T.SetApartmentState(ApartmentState.STA);
+            T.Start();
+            T.Join();
+
+            FileLocationtxt.Text = Path;
+
+            MessageBox.Show("File selected, please see check the textbox to see if the file is correct");
+        }
+
+        private void SearchFilesbtn_Click(object sender, EventArgs e)
+        {
+            ResultsLV.Items.Clear();
+
+            DateTime StartDate = DateTime.Now;
+            DateTime EndDate = DateTime.Now;
+
+            if (UseDatesCheck.Checked)
+            {
+                StartDate = DateRangeSelectorTbl.SelectionRange.Start;
+                EndDate = DateRangeSelectorTbl.SelectionRange.End;
+            }
+
+            string[] files = FileProcess.GatherFiles(FileLocationtxt.Text);
+            string[] foundFiles = FileSearch.SearchFiles(files, SearchPhrasetxt.Text, StartDate, EndDate, UseDatesCheck.Checked);
+
+            foreach (string file in foundFiles)
+            {
+                if (!(string.IsNullOrEmpty(file)))
+                {
+                    ResultsLV.Items.Add(file);
+                }
+            }
+        }
     }
 }

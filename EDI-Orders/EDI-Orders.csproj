@@ -68,6 +68,8 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FileProcess.cs" />
+    <Compile Include="FileSearch.cs" />
     <Compile Include="GreatBear.cs" />
     <Compile Include="EDIFact.cs" />
     <Compile Include="EDIWrite.cs" />

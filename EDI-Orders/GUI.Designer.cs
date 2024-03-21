@@ -53,6 +53,16 @@
             this.File_Pathtxt = new System.Windows.Forms.TextBox();
             this.Select_Filebtn = new System.Windows.Forms.Button();
             this.KTNFileTypelist = new System.Windows.Forms.ListView();
+            this.SelectLocationBtn = new System.Windows.Forms.Button();
+            this.FileLocationtxt = new System.Windows.Forms.TextBox();
+            this.SearchPhraseLbl = new System.Windows.Forms.Label();
+            this.SearchPhrasetxt = new System.Windows.Forms.TextBox();
+            this.DateSelectorLbl = new System.Windows.Forms.Label();
+            this.UseDatesCheck = new System.Windows.Forms.CheckBox();
+            this.SearchFilesLbl = new System.Windows.Forms.Label();
+            this.SearchFilesbtn = new System.Windows.Forms.Button();
+            this.ResultsLV = new System.Windows.Forms.ListView();
+            this.DateRangeSelectorTbl = new System.Windows.Forms.MonthCalendar();
             this.SuspendLayout();
             // 
             // Create_Orde_KTNbtn
@@ -215,11 +225,108 @@
             this.KTNFileTypelist.UseCompatibleStateImageBehavior = false;
             this.KTNFileTypelist.View = System.Windows.Forms.View.List;
             // 
+            // SelectLocationBtn
+            // 
+            this.SelectLocationBtn.Location = new System.Drawing.Point(619, 43);
+            this.SelectLocationBtn.Name = "SelectLocationBtn";
+            this.SelectLocationBtn.Size = new System.Drawing.Size(227, 36);
+            this.SelectLocationBtn.TabIndex = 18;
+            this.SelectLocationBtn.Text = "Select Location";
+            this.SelectLocationBtn.UseVisualStyleBackColor = true;
+            this.SelectLocationBtn.Click += new System.EventHandler(this.SelectLocationBtn_Click);
+            // 
+            // FileLocationtxt
+            // 
+            this.FileLocationtxt.Location = new System.Drawing.Point(619, 89);
+            this.FileLocationtxt.Name = "FileLocationtxt";
+            this.FileLocationtxt.ReadOnly = true;
+            this.FileLocationtxt.Size = new System.Drawing.Size(227, 20);
+            this.FileLocationtxt.TabIndex = 19;
+            // 
+            // SearchPhraseLbl
+            // 
+            this.SearchPhraseLbl.AutoSize = true;
+            this.SearchPhraseLbl.Location = new System.Drawing.Point(695, 118);
+            this.SearchPhraseLbl.Name = "SearchPhraseLbl";
+            this.SearchPhraseLbl.Size = new System.Drawing.Size(77, 13);
+            this.SearchPhraseLbl.TabIndex = 20;
+            this.SearchPhraseLbl.Text = "Search Phrase";
+            // 
+            // SearchPhrasetxt
+            // 
+            this.SearchPhrasetxt.Location = new System.Drawing.Point(619, 136);
+            this.SearchPhrasetxt.Name = "SearchPhrasetxt";
+            this.SearchPhrasetxt.Size = new System.Drawing.Size(227, 20);
+            this.SearchPhrasetxt.TabIndex = 21;
+            // 
+            // DateSelectorLbl
+            // 
+            this.DateSelectorLbl.AutoSize = true;
+            this.DateSelectorLbl.Location = new System.Drawing.Point(695, 169);
+            this.DateSelectorLbl.Name = "DateSelectorLbl";
+            this.DateSelectorLbl.Size = new System.Drawing.Size(72, 13);
+            this.DateSelectorLbl.TabIndex = 22;
+            this.DateSelectorLbl.Text = "Date Selector";
+            // 
+            // UseDatesCheck
+            // 
+            this.UseDatesCheck.AutoSize = true;
+            this.UseDatesCheck.Location = new System.Drawing.Point(688, 365);
+            this.UseDatesCheck.Name = "UseDatesCheck";
+            this.UseDatesCheck.Size = new System.Drawing.Size(106, 17);
+            this.UseDatesCheck.TabIndex = 23;
+            this.UseDatesCheck.Text = "Use Date Range";
+            this.UseDatesCheck.UseVisualStyleBackColor = true;
+            // 
+            // SearchFilesLbl
+            // 
+            this.SearchFilesLbl.AutoSize = true;
+            this.SearchFilesLbl.Location = new System.Drawing.Point(695, 393);
+            this.SearchFilesLbl.Name = "SearchFilesLbl";
+            this.SearchFilesLbl.Size = new System.Drawing.Size(65, 13);
+            this.SearchFilesLbl.TabIndex = 24;
+            this.SearchFilesLbl.Text = "Search Files";
+            // 
+            // SearchFilesbtn
+            // 
+            this.SearchFilesbtn.Location = new System.Drawing.Point(619, 415);
+            this.SearchFilesbtn.Name = "SearchFilesbtn";
+            this.SearchFilesbtn.Size = new System.Drawing.Size(227, 23);
+            this.SearchFilesbtn.TabIndex = 25;
+            this.SearchFilesbtn.Text = "Search Files";
+            this.SearchFilesbtn.UseVisualStyleBackColor = true;
+            this.SearchFilesbtn.Click += new System.EventHandler(this.SearchFilesbtn_Click);
+            // 
+            // ResultsLV
+            // 
+            this.ResultsLV.HideSelection = false;
+            this.ResultsLV.Location = new System.Drawing.Point(871, 26);
+            this.ResultsLV.Name = "ResultsLV";
+            this.ResultsLV.Size = new System.Drawing.Size(318, 396);
+            this.ResultsLV.TabIndex = 26;
+            this.ResultsLV.UseCompatibleStateImageBehavior = false;
+            // 
+            // DateRangeSelectorTbl
+            // 
+            this.DateRangeSelectorTbl.Location = new System.Drawing.Point(619, 191);
+            this.DateRangeSelectorTbl.Name = "DateRangeSelectorTbl";
+            this.DateRangeSelectorTbl.TabIndex = 27;
+            // 
             // GUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(620, 450);
+            this.ClientSize = new System.Drawing.Size(1207, 450);
+            this.Controls.Add(this.DateRangeSelectorTbl);
+            this.Controls.Add(this.ResultsLV);
+            this.Controls.Add(this.SearchFilesbtn);
+            this.Controls.Add(this.SearchFilesLbl);
+            this.Controls.Add(this.UseDatesCheck);
+            this.Controls.Add(this.DateSelectorLbl);
+            this.Controls.Add(this.SearchPhrasetxt);
+            this.Controls.Add(this.SearchPhraseLbl);
+            this.Controls.Add(this.FileLocationtxt);
+            this.Controls.Add(this.SelectLocationBtn);
             this.Controls.Add(this.KTNFileTypelist);
             this.Controls.Add(this.Select_Filebtn);
             this.Controls.Add(this.File_Pathtxt);
@@ -267,5 +374,15 @@
         private System.Windows.Forms.TextBox File_Pathtxt;
         private System.Windows.Forms.Button Select_Filebtn;
         private System.Windows.Forms.ListView KTNFileTypelist;
+        private System.Windows.Forms.Button SelectLocationBtn;
+        private System.Windows.Forms.TextBox FileLocationtxt;
+        private System.Windows.Forms.Label SearchPhraseLbl;
+        private System.Windows.Forms.TextBox SearchPhrasetxt;
+        private System.Windows.Forms.Label DateSelectorLbl;
+        private System.Windows.Forms.CheckBox UseDatesCheck;
+        private System.Windows.Forms.Label SearchFilesLbl;
+        private System.Windows.Forms.Button SearchFilesbtn;
+        private System.Windows.Forms.ListView ResultsLV;
+        private System.Windows.Forms.MonthCalendar DateRangeSelectorTbl;
     }
 }
