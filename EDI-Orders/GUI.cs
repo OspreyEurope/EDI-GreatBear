@@ -335,6 +335,7 @@ namespace EDI_Orders
         }
         #endregion
 
+        #region File Finder Buttons
         private void SelectLocationBtn_Click(object sender, EventArgs e)
         {
             string Path = "";
@@ -383,5 +384,6 @@ namespace EDI_Orders
                 }
             }
         }
+        #endregion
     }
 }
