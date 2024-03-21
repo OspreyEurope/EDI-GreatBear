@@ -63,6 +63,7 @@
             this.SearchFilesbtn = new System.Windows.Forms.Button();
             this.ResultsLV = new System.Windows.Forms.ListView();
             this.DateRangeSelectorTbl = new System.Windows.Forms.MonthCalendar();
+            this.FileSearchLbl = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // Create_Orde_KTNbtn
@@ -227,7 +228,7 @@
             // 
             // SelectLocationBtn
             // 
-            this.SelectLocationBtn.Location = new System.Drawing.Point(619, 43);
+            this.SelectLocationBtn.Location = new System.Drawing.Point(619, 57);
             this.SelectLocationBtn.Name = "SelectLocationBtn";
             this.SelectLocationBtn.Size = new System.Drawing.Size(227, 36);
             this.SelectLocationBtn.TabIndex = 18;
@@ -237,7 +238,7 @@
             // 
             // FileLocationtxt
             // 
-            this.FileLocationtxt.Location = new System.Drawing.Point(619, 89);
+            this.FileLocationtxt.Location = new System.Drawing.Point(619, 103);
             this.FileLocationtxt.Name = "FileLocationtxt";
             this.FileLocationtxt.ReadOnly = true;
             this.FileLocationtxt.Size = new System.Drawing.Size(227, 20);
@@ -246,7 +247,7 @@
             // SearchPhraseLbl
             // 
             this.SearchPhraseLbl.AutoSize = true;
-            this.SearchPhraseLbl.Location = new System.Drawing.Point(695, 118);
+            this.SearchPhraseLbl.Location = new System.Drawing.Point(695, 132);
             this.SearchPhraseLbl.Name = "SearchPhraseLbl";
             this.SearchPhraseLbl.Size = new System.Drawing.Size(77, 13);
             this.SearchPhraseLbl.TabIndex = 20;
@@ -254,7 +255,7 @@
             // 
             // SearchPhrasetxt
             // 
-            this.SearchPhrasetxt.Location = new System.Drawing.Point(619, 136);
+            this.SearchPhrasetxt.Location = new System.Drawing.Point(619, 150);
             this.SearchPhrasetxt.Name = "SearchPhrasetxt";
             this.SearchPhrasetxt.Size = new System.Drawing.Size(227, 20);
             this.SearchPhrasetxt.TabIndex = 21;
@@ -262,7 +263,7 @@
             // DateSelectorLbl
             // 
             this.DateSelectorLbl.AutoSize = true;
-            this.DateSelectorLbl.Location = new System.Drawing.Point(695, 169);
+            this.DateSelectorLbl.Location = new System.Drawing.Point(695, 183);
             this.DateSelectorLbl.Name = "DateSelectorLbl";
             this.DateSelectorLbl.Size = new System.Drawing.Size(72, 13);
             this.DateSelectorLbl.TabIndex = 22;
@@ -271,7 +272,7 @@
             // UseDatesCheck
             // 
             this.UseDatesCheck.AutoSize = true;
-            this.UseDatesCheck.Location = new System.Drawing.Point(688, 365);
+            this.UseDatesCheck.Location = new System.Drawing.Point(686, 379);
             this.UseDatesCheck.Name = "UseDatesCheck";
             this.UseDatesCheck.Size = new System.Drawing.Size(106, 17);
             this.UseDatesCheck.TabIndex = 23;
@@ -281,7 +282,7 @@
             // SearchFilesLbl
             // 
             this.SearchFilesLbl.AutoSize = true;
-            this.SearchFilesLbl.Location = new System.Drawing.Point(695, 393);
+            this.SearchFilesLbl.Location = new System.Drawing.Point(708, 399);
             this.SearchFilesLbl.Name = "SearchFilesLbl";
             this.SearchFilesLbl.Size = new System.Drawing.Size(65, 13);
             this.SearchFilesLbl.TabIndex = 24;
@@ -308,15 +309,26 @@
             // 
             // DateRangeSelectorTbl
             // 
-            this.DateRangeSelectorTbl.Location = new System.Drawing.Point(619, 191);
+            this.DateRangeSelectorTbl.Location = new System.Drawing.Point(619, 205);
             this.DateRangeSelectorTbl.Name = "DateRangeSelectorTbl";
             this.DateRangeSelectorTbl.TabIndex = 27;
+            // 
+            // FileSearchLbl
+            // 
+            this.FileSearchLbl.AutoSize = true;
+            this.FileSearchLbl.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.FileSearchLbl.Location = new System.Drawing.Point(634, 9);
+            this.FileSearchLbl.Name = "FileSearchLbl";
+            this.FileSearchLbl.Size = new System.Drawing.Size(201, 31);
+            this.FileSearchLbl.TabIndex = 28;
+            this.FileSearchLbl.Text = "File Searching";
             // 
             // GUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1207, 450);
+            this.Controls.Add(this.FileSearchLbl);
             this.Controls.Add(this.DateRangeSelectorTbl);
             this.Controls.Add(this.ResultsLV);
             this.Controls.Add(this.SearchFilesbtn);
@@ -384,5 +396,6 @@
         private System.Windows.Forms.Button SearchFilesbtn;
         private System.Windows.Forms.ListView ResultsLV;
         private System.Windows.Forms.MonthCalendar DateRangeSelectorTbl;
+        private System.Windows.Forms.Label FileSearchLbl;
     }
 }
