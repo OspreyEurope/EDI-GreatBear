@@ -657,7 +657,6 @@ namespace EDI_Orders
                     InboundDeliveryType = "RETURN";
                     ID = Document[3][3].Substring(2, 10);
                     TransporterName = "Great Bear";
-
                 }
 
                 string TransportInbound = ""; //Document[0][13];
