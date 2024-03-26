@@ -653,11 +653,12 @@ namespace EDI_Orders
                 else if (InboundDeliveryType == "RM")
                 {
                     InboundDeliveryType = "RETURN";
-                    CustomerReferenceTransport = Document[3][3].Substring(2, 10);
+                    ID = Document[3][3].Substring(2, 10);
+
                 }
 
                 string TransportInbound = ""; //Document[0][13];
-                string TransporterName = "FlexPort";
+                string TransporterName = "GBD";
                 string SupplierName = Document[4][4];
                 FileAction = FileAction.Substring(0, 2);
                 
