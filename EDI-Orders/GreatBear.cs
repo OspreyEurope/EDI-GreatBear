@@ -650,7 +650,7 @@ namespace EDI_Orders
                 if (InboundDeliveryType == "PO")
                 {
                     InboundDeliveryType = "NORMAL";
-                    TransporterName = "FlexPort";
+                    TransporterName = "Flexport";
                 }
                 else if (InboundDeliveryType == "RM")
                 {
