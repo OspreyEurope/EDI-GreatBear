@@ -645,20 +645,22 @@ namespace EDI_Orders
                 string ID = Document[3][4];
                 string FileAction = Document[3][3];
                 string InboundDeliveryType = Document[3][3].Substring(1, 2);
+                string TransporterName = "";
 
                 if (InboundDeliveryType == "PO")
                 {
                     InboundDeliveryType = "NORMAL";
+                    TransporterName = "FlexPort";
                 }
                 else if (InboundDeliveryType == "RM")
                 {
                     InboundDeliveryType = "RETURN";
                     ID = Document[3][3].Substring(2, 10);
+                    TransporterName = "Great Bear";
 
                 }
 
                 string TransportInbound = ""; //Document[0][13];
-                string TransporterName = "GBD";
                 string SupplierName = Document[4][4];
                 FileAction = FileAction.Substring(0, 2);
                 
