@@ -655,7 +655,7 @@ namespace EDI_Orders
                 else if (InboundDeliveryType == "RM")
                 {
                     InboundDeliveryType = "RETURN";
-                    ID = Document[3][3].Substring(2, 10);
+                    ID = Document[3][3].Substring(3, 10);
                     TransporterName = "Great Bear";
                 }
 
